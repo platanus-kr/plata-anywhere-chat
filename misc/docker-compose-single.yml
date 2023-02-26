@@ -1,8 +1,8 @@
-version: "2"
+version: "3"
 
 services:
-  zookeeper:
-    image: confluentinc/cp-zookeeper:latest
+  pac-zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.1
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -12,10 +12,10 @@ services:
     ports:
       - "22181:2181"
 
-  kafka:
-    image: confluentinc/cp-kafka:latest
+  pac-kafka:
+    image: confluentinc/cp-kafka:7.3.1
     depends_on:
-      - zookeeper
+      - pac-zookeeper
     ports:
       - "29092:29092"
     environment:
@@ -27,7 +27,15 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
 
-  redis:
-    image: redis:alpine
+  pac-mongo:
+    image: mongo:6.0
     ports:
-      - "6379:6379"
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: localtest
+      MONGO_INITDB_ROOT_PASSWORD: localtest
+
+  #pac-redis:
+  #  image: redis:alpine
+  #  ports:
+  #    - "6379:6379"
