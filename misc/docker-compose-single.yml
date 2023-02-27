@@ -20,7 +20,7 @@ services:
       - "29092:29092"
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ZOOKEEPER_CONNECT: "pac-zookeeper:2181"
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
@@ -35,7 +35,17 @@ services:
       MONGO_INITDB_ROOT_USERNAME: localtest
       MONGO_INITDB_ROOT_PASSWORD: localtest
 
-  #pac-redis:
-  #  image: redis:alpine
-  #  ports:
-  #    - "6379:6379"
+  pac-redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  pac-mariadb:
+    image: mariadb:10.11.2
+    ports:
+      - "33306:3306"
+    environment:
+      TZ: Asia/Seoul
+    env_file: ./db/env
+    volumes:
+      - ./db/conf.d:/etc/mysql/conf.d
