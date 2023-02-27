@@ -16,7 +16,7 @@ public class MemberRestControllerV1 {
     
     private final MemberService memberService;
     
-    @PostMapping()
+    @PostMapping
     public MemberJoinDto join(@RequestBody MemberJoinDto dto) {
         return null;
     }
