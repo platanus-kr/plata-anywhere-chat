@@ -1,6 +1,7 @@
 package org.platanus.platachat.web.auth;
 
 import lombok.RequiredArgsConstructor;
+import org.platanus.platachat.web.constants.AuthConstant;
 import org.platanus.platachat.web.member.model.AppRole;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.repository.MemberRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
+import java.util.Optional;
 
 /**
  * OAuth2 가입을 위한 서비스
@@ -35,6 +37,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
         CustomOAuth2MemberDto attributes = CustomOAuth2MemberDto.ofGitHub(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
+        if (isDeletedUser(attributes)) {
+            throw new OAuth2AuthenticationException("이미 탈퇴된 회원 입니다."); // TODO : 적절한 에러 처리하기
+        }
         Member m = upsert(attributes);
 
         session.setAttribute("oAuthToken", userRequest.getAccessToken().getTokenValue());
@@ -42,8 +47,19 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(m.getAppRole().getKey())), oAuth2User.getAttributes(), attributes.getNameAttributeKey());
     }
 
+    private boolean isDeletedUser(CustomOAuth2MemberDto m) {
+        Optional<Member> findMember = memberRepository.findByProviderId(m.getProviderId());
+        if (findMember.isPresent() && findMember.get().getDeleted()) {
+            return true;
+        }
+        if (findMember.isEmpty()){
+            return false;
+        }
+        return false;
+    }
+
     private Member upsert(CustomOAuth2MemberDto m) {
-        Member buildMember = Member.builder().username(m.getUsername()).nickname(m.getName()).providerId(m.getProviderId()).provider(m.getProvider()).profileImage(m.getProfileImage()).email(m.getEmail())
+        Member buildMember = Member.builder().username(m.getUsername()).password(AuthConstant.DUMMY_PASSWORD).nickname(m.getName()).providerId(m.getProviderId()).provider(m.getProvider()).profileImage(m.getProfileImage()).email(m.getEmail()).htmlUrl(m.getBlog()).deleted(false)
                 .appRole(AppRole.ROLE_USER)
                 .build();
 

@@ -2,6 +2,7 @@ package org.platanus.platachat.web.auth;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.platanus.platachat.web.constants.AuthConstant;
 import org.platanus.platachat.web.member.model.Member;
 
 import java.util.Map;
@@ -17,6 +18,7 @@ public class CustomOAuth2MemberDto {
     private String profileImage;
     private String name;
     private String email;
+    private String blog;
 
     public static CustomOAuth2MemberDto ofGitHub(String registrationId, String userNameAttributeKey, Map<String, Object> attributes) {
         return CustomOAuth2MemberDto.builder()
@@ -28,6 +30,7 @@ public class CustomOAuth2MemberDto {
                 .profileImage(String.valueOf(attributes.get("avatar_url")))
                 .name(String.valueOf(attributes.get("name")))
                 .email(String.valueOf(attributes.get("email")))
+                .blog(String.valueOf(attributes.get("blog")))
                 .build();
     }
 
@@ -35,6 +38,7 @@ public class CustomOAuth2MemberDto {
         return Member.builder()
                 .provider(this.provider)
                 .username(this.username)
+                .password(AuthConstant.DUMMY_PASSWORD)
                 .profileImage(this.profileImage)
                 .nickname(this.name)
                 .email(this.email)
