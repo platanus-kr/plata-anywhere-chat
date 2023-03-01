@@ -1,52 +1,70 @@
 package org.platanus.platachat.web.member.model;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+
+/**
+ * 어플리케이션 회원 Entity
+ */
 @Getter
 @SuperBuilder
 @ToString(callSuper = true)
-@Table(name = "MEMBERS")
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "MEMBERS", indexes = {
+        @Index(name = "idx_username", columnList = "username", unique = true),
+        @Index(name = "idx_provider_id", columnList = "providerId", unique = true)})
 @Entity
 public class Member extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
-    
+
+    private String providerId;
+    private String provider;
+
     @NotBlank
+    @Column(unique = true, nullable = false)
     private String username;
-    
+
     @NotBlank
     private String password;
-    
+
     @NotBlank
+    @Column(unique = true)
     private String nickname;
-    
+
+    private String profileImage;
+
+    private String htmlUrl;
+
     @NotBlank
     @Email
+    @Column(unique = true)
     private String email;
-    
+
     private Boolean deleted;
-    
+
     @Enumerated(value = EnumType.STRING)
     private AppRole appRole;
-    
+
     private LocalDateTime lastActivated;
+
+    public Member update(Member m) {
+        this.nickname = m.getNickname();
+        this.profileImage = m.getProfileImage();
+        this.username = m.getUsername();
+        this.htmlUrl = m.getHtmlUrl();
+        this.email = m.getEmail();
+        return this;
+    }
 }
