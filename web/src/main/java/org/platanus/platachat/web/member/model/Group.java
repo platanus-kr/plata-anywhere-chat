@@ -1,4 +1,4 @@
 package org.platanus.platachat.web.member.model;
 
-public class Group extends BaseTime {
+public class Group {
 }
