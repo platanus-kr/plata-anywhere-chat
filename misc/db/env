@@ -1,0 +1,6 @@
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_ROOT_PASSWORD=pacpac
+MYSQL_DATABASE=pac
+MYSQL_USER=paclocal
+MYSQL_PASSWORD=paclocaldockercompose
