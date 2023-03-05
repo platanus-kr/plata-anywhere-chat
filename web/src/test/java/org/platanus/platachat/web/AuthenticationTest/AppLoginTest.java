@@ -6,7 +6,7 @@ import org.mockito.Mock;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.member.dto.MemberLoginRequestDto;
 import org.platanus.platachat.web.member.model.Member;
-import org.platanus.platachat.web.member.rest.MemberAuthRestControllerV1;
+import org.platanus.platachat.web.auth.rest.AuthRestControllerV1;
 import org.platanus.platachat.web.member.service.MemberService;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -27,7 +27,7 @@ public class AppLoginTest {
     private AuthenticationManager authenticationManager;
 
     @InjectMocks
-    private MemberAuthRestControllerV1 appAuthController;
+    private AuthRestControllerV1 appAuthController;
 
     @Test
     public void 앱_로그인_세션발급_테스트() {

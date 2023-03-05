@@ -1,4 +1,4 @@
-package org.platanus.platachat.web.member.rest;
+package org.platanus.platachat.web.auth.rest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ import javax.servlet.http.HttpSession;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-public class MemberAuthRestControllerV1 {
+public class AuthRestControllerV1 {
 
     private final AuthenticationManager authenticationManager;
     private final MemberService memberService;
@@ -55,6 +55,7 @@ public class MemberAuthRestControllerV1 {
 
     /**
      * 앱 자체 로그인
+     *
      * @param dto
      * @param request
      * @param session
