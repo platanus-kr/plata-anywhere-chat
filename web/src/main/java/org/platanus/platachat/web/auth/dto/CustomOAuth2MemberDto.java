@@ -1,4 +1,4 @@
-package org.platanus.platachat.web.auth;
+package org.platanus.platachat.web.auth.dto;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -9,6 +9,8 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -23,7 +25,12 @@ import java.time.LocalDateTime;
         @Index(name = "idx_username", columnList = "username", unique = true),
         @Index(name = "idx_provider_id", columnList = "providerId", unique = true)})
 @Entity
-public class Member extends BaseTime {
+public class Member extends BaseTime implements Serializable {
+
+    // for spring data redis deserializable
+    @Serial
+    private static final long serialVersionUID = 1363937982849761862L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

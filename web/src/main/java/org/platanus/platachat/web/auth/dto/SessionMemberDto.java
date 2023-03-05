@@ -1,4 +1,4 @@
-package org.platanus.platachat.web.auth;
+package org.platanus.platachat.web.auth.dto;
 
 import lombok.*;
 import org.platanus.platachat.web.member.model.AppRole;
@@ -14,23 +14,25 @@ import java.io.Serializable;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class SessionMember implements Serializable {
+public class SessionMemberDto implements Serializable {
     private Long id;
     private String provider;
     private String username;
     private String profileImage;
     private String htmlUrl;
-    private String name;
+    private String nickname;
     private String email;
     private AppRole appRole;
     private String token;
 
-    public SessionMember(Member m, String token) {
+    public SessionMemberDto(Member m, String token) {
         this.id = m.getId();
         this.provider = m.getProvider();
         this.username = m.getUsername();
         this.profileImage = m.getProfileImage();
         this.htmlUrl = m.getHtmlUrl();
+        this.nickname = m.getNickname();
+        this.email = m.getEmail();
         this.appRole = m.getAppRole();
         this.token = token;
     }

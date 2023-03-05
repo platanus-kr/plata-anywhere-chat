@@ -1,6 +1,8 @@
 package org.platanus.platachat.web.auth;
 
 import lombok.RequiredArgsConstructor;
+import org.platanus.platachat.web.auth.app.CustomAuthenticationSuccessHandler;
+import org.platanus.platachat.web.auth.oauth2.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -28,18 +30,22 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/oauth_login", "/nice/test", "/", "/error", "/h2-console/**").permitAll()
+                .antMatchers("/oauth_login", "/error", "/h2-console/**").permitAll()
                 .antMatchers("/member/join/**", "/member/login/**").permitAll()
+                .antMatchers("/api/v1/auth", "/api/v1/auth/login").permitAll()
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .csrf().ignoringAntMatchers("/h2-console/**", "/member/join/**", "/member/login/**")
                 .and()
                 .headers().frameOptions().sameOrigin();
-        http.oauth2Login().defaultSuccessUrl("/", true)
+        http.oauth2Login()
+                .successHandler(new CustomAuthenticationSuccessHandler())
+                .defaultSuccessUrl("/", true)
                 .and()
-                .logout().logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("JSESSIONID");
-        http.formLogin();
+                .logout().logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("SESSION");
+        http.formLogin()
+                .successHandler(new CustomAuthenticationSuccessHandler());
         http.cors().and().csrf().disable();
         return http.build();
     }

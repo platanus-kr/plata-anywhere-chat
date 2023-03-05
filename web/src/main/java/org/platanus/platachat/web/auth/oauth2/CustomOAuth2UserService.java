@@ -1,6 +1,8 @@
-package org.platanus.platachat.web.auth;
+package org.platanus.platachat.web.auth.oauth2;
 
 import lombok.RequiredArgsConstructor;
+import org.platanus.platachat.web.auth.dto.CustomOAuth2MemberDto;
+import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.constants.AuthConstant;
 import org.platanus.platachat.web.member.model.AppRole;
 import org.platanus.platachat.web.member.model.Member;
@@ -38,13 +40,18 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         CustomOAuth2MemberDto attributes = CustomOAuth2MemberDto.ofGitHub(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
         if (isDeletedUser(attributes)) {
-            throw new OAuth2AuthenticationException("이미 탈퇴된 회원 입니다."); // TODO : 적절한 에러 처리하기
+            throw new OAuth2AuthenticationException("이미 탈퇴된 회원 입니다.");
         }
         Member m = upsert(attributes);
 
         session.setAttribute("oAuthToken", userRequest.getAccessToken().getTokenValue());
-        session.setAttribute("member", new SessionMember(m.getId(), m.getProvider(), m.getUsername(), m.getProfileImage(), m.getHtmlUrl(), m.getNickname(), m.getEmail(), m.getAppRole(), userRequest.getAccessToken().getTokenValue()));
-        return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(m.getAppRole().getKey())), oAuth2User.getAttributes(), attributes.getNameAttributeKey());
+        session.setAttribute("member", new SessionMemberDto(m, userRequest.getAccessToken().getTokenValue()));
+
+        return new DefaultOAuth2User(Collections.singleton(
+                new SimpleGrantedAuthority(m.getAppRole().getKey())),
+                oAuth2User.getAttributes(),
+                attributes.getNameAttributeKey()
+        );
     }
 
     private boolean isDeletedUser(CustomOAuth2MemberDto m) {
@@ -52,7 +59,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         if (findMember.isPresent() && findMember.get().getDeleted()) {
             return true;
         }
-        if (findMember.isEmpty()){
+        if (findMember.isEmpty()) {
             return false;
         }
         return false;
