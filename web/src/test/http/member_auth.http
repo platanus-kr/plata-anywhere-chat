@@ -1,0 +1,25 @@
+### member join test
+POST http://localhost:8080/api/v1/auth
+Content-Type: application/json
+
+{
+  "username": "test2",
+  "password": "test1",
+  "nickname": "이름",
+  "email": "d@d.com"
+}
+
+### login test
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "test2",
+  "password": "test1"
+}
+
+### test suthorize
+GET http://localhost:8080/test/endpoint
+
+### logout suthorize
+GET http://localhost:8080/logout
