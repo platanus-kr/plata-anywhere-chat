@@ -1,0 +1,47 @@
+<html>
+<head>
+    <title>chat service test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+<div class="wrap">
+    <div class="chat-service">
+        <div class="room-action-menu">
+            <span>작동</span>
+        </div>
+        <div class="stream-box">
+            <div class="inner-box">
+                <div class="chat-line"> <!-- overflow add check! -->
+                    <div class="member-profile">
+                        <div class="member-profile-image">
+
+                        </div>
+                        <div class="member-nickname">
+                            <span>닉네임</span>
+                        </div>
+                    </div>
+                    <div class="member-text">
+                        <span>채팅 내용</span>
+                    </div>
+                    <div class="chat-action-menu">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" class="chat-input-text"/>
+            <input type="button" class="chat-input-send-button" value="전송"/>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+
+</body>
+</html>
