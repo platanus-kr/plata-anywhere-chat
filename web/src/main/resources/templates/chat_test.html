@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+
 </head>
 
 <body>
@@ -40,51 +43,58 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
-
 <script>
     // WebSocket 연결을 생성합니다.
-    const socket = new WebSocket('ws://localhost:3121/chat');
+    // const socket = new WebSocket('ws://localhost:3121/message');
+    const Stomp = window.StompJs.Stomp;
+    const client = Stomp.client('ws://localhost:3121/message');
+
+    client.connect({}, () => {
+        client.subscribe('/subscribe', (message) => {
+            console.log("수신: ${message.body}")
+        })
+    })
 
     // STOMP 클라이언트를 생성하고 연결합니다.
-    const client = new Client({
-        webSocketFactory: () => socket,
-        connectHeaders: {
-            // 세션키를 헤더에 추가합니다.
-            sessionKey: 'your-session-key'
-        },
-        onConnect: () => {
-            // 채팅방 토픽을 구독합니다.
-            client.subscribe('/topic/chatroom', message => {
-                // 메시지를 받으면 화면에 표시합니다.
-                console.log(message.body);
-            });
-        }
-    });
-
-    client.activate();
-
-    // 메시지를 보내는 함수입니다.
-    function sendMessage(message) {
-        // 메시지 객체를 생성합니다.
-        const chatMessage = {
-            content: message,
-            sender: 'your-name',
-            timestamp: new Date()
-        };
-
-        // 메시지 객체를 JSON 형식으로 변환합니다.
-        const chatMessageJson = JSON.stringify(chatMessage);
-
-        // 채팅방 토픽으로 메시지를 발행합니다.
-        client.publish({ destination: '/topic/chatroom', body: chatMessageJson });
-    }
+    // const client = new Client({
+    //     webSocketFactory: () => socket,
+    //     connectHeaders: {
+    //         // 세션키를 헤더에 추가합니다.
+    //         sessionKey: 'your-session-key'
+    //     },
+    //     onConnect: () => {
+    //         // 채팅방 토픽을 구독합니다.
+    //         client.subscribe('/subscribe', message => {
+    //             // 메시지를 받으면 화면에 표시합니다.
+    //             console.log(message.body);
+    //         });
+    //     }
+    // });
+    //
+    // client.activate();
+    //
+    // // 메시지를 보내는 함수입니다.
+    // function sendMessage(message) {
+    //     // 메시지 객체를 생성합니다.
+    //     const chatMessage = {
+    //         content: message,
+    //         sender: 'your-name',
+    //         timestamp: new Date()
+    //     };
+    //
+    //     // 메시지 객체를 JSON 형식으로 변환합니다.
+    //     const chatMessageJson = JSON.stringify(chatMessage);
+    //
+    //     // 채팅방 토픽으로 메시지를 발행합니다.
+    //     client.publish({ destination: '/chat/simpleTopic', body: chatMessageJson });
+    // }
 
     function sendMessageWrap(){
         // $("#chat-text").val();
         console.log($("#chat-text").val())
+        const chatText = $("#chat-text").val();
         // sendMessage($("#chat-text").val());
+        client.send('/chat/simpleTopic', {}, chatText);
 
     }
 
