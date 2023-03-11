@@ -7,6 +7,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -25,7 +26,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 //public class WebSocketConfig {
-public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
+public class WebSocketConfig extends WebSocketMessageBrokerConfigurer {
 
     /**
      * The enableSimpleBroker() method of the MessageBrokerRegistry class is used to configure a simple message broker in a Spring application. This method is not specific to reactive programming and is used in the same way in both reactive and non-reactive applications.
@@ -57,26 +58,30 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
          */
     }
 
-    @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new ChannelInterceptorAdapter() {
-            @Override
-            public Message<?> preSend(Message<?> message, MessageChannel channel) {
-                StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-                if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
-                    String destination = accessor.getDestination();
-                    if ("/chat/simpleTopic".equals(destination)) {
-                        accessor.setDestination("/subscribe/simpleTopic");
-                    }
-                }
-                return message;
-            }
-        });
-    }
+    /** https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#websocket-stomp-message-flow
+     * 여기서부터 다시보자. */
 
-    @MessageMapping("/simpleTopic")
-    public void handleSimpleTopic(@Payload String message, @Header("simpSessionId") String sessionId) {
-        log.info("Received message: " + message + " from session: " + sessionId);
-    }
+//    @Override
+//    public void configureClientInboundChannel(ChannelRegistration registration) {
+//        registration.interceptors(new ChannelInterceptorAdapter() {
+//            @Override
+//            public Message<?> preSend(Message<?> message, MessageChannel channel) {
+//                StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+//                if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+//                    String destination = accessor.getDestination();
+//                    if ("/chat/simpleTopic".equals(destination)) {
+//                        accessor.setDestination("/subscribe/simpleTopic");
+//                    }
+//                }
+//                return message;
+//            }
+//        });
+//    }
+//
+//    @MessageMapping("/chat/simpleTopic")
+//    @SendTo("/chat/simpleTopic")
+//    public void handleSimpleTopic(@Payload String message, @Header("simpSessionId") String sessionId) {
+//        log.info("Received message: " + message + " from session: " + sessionId);
+//    }
 
 }

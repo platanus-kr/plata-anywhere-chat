@@ -5,18 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="580d8748-8f73-4717-afbe-f142485a9316" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/ReactiveWebSocketConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/WebSocketConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../message/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../message/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/MessageApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/MessageApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/kafka/KafkaListenerAdaptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/kafka/KafkaListenerAdaptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/KafkaAdminConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/KafkaAdminConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/KafkaConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/KafkaConsumerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/KafkaConsumerConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/KafkaProducerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/KafkaProducerConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/chat_test.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/chat_test.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/front.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/front.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/WebSocketConfig.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,7 +121,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1678541032935</updated>
-      <workItem from="1678541034092" duration="7352000" />
+      <workItem from="1678541034092" duration="7664000" />
     </task>
     <servers />
   </component>
