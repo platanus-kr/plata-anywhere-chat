@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum MemberStatus {
-	ALIVE("ALIVE", "채팅중"),
-	WARNING("WARN", "경고"),
-	VOID("VOID", "채팅 금지");
-	private final String key;
-	private final String name;
+    ALIVE("ALIVE", "채팅중"),
+    WARNING("WARN", "경고"),
+    VOID("VOID", "채팅 금지");
+    private final String key;
+    private final String name;
 }

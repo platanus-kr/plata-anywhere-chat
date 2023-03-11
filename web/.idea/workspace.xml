@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="580d8748-8f73-4717-afbe-f142485a9316" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/ListenerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/ListenerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/PublishService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/PublishService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/TopicService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/TopicService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/kafka/KafkaListenerAdaptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/kafka/KafkaListenerAdaptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/kafka/KafkaPublishAdaptor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/KafkaAdminConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/KafkaAdminConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/RoomService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/RoomService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/model/MemberStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/model/MemberStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/model/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/model/Room.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/model/RoomMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/model/RoomMember.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/model/RoomRole.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/model/RoomRole.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/model/RoomStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/model/RoomStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/intellij-javadocs-4.0.1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/web.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/web.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="2Ms0YlnXQUiQQXUb9Kz2am85BLc" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="WebApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="web.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.platanus.platachat.web.WebApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="580d8748-8f73-4717-afbe-f142485a9316" name="Changes" comment="" />
+      <created>1678541032935</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1678541032935</updated>
+      <workItem from="1678541034092" duration="362000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
