@@ -6,6 +6,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+
 
 </head>
 
@@ -46,8 +48,11 @@
 <script>
     // WebSocket 연결을 생성합니다.
     // const socket = new WebSocket('ws://localhost:3121/message');
+    const sockjs = window.SockJS
+    const socket = new SockJS("http://localhost:3121/app");
     const Stomp = window.StompJs.Stomp;
-    const client = Stomp.client('ws://localhost:3121/message');
+    // const client = Stomp.client("ws://localhost:3121/app");
+    const client = Stomp.over(socket);
 
     client.connect({}, () => {
         client.subscribe('/subscribe', (message) => {
@@ -90,12 +95,8 @@
     // }
 
     function sendMessageWrap(){
-        // $("#chat-text").val();
-        console.log($("#chat-text").val())
         const chatText = $("#chat-text").val();
-        // sendMessage($("#chat-text").val());
         client.send('/chat/simpleTopic', {}, chatText);
-
     }
 
 
