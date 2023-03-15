@@ -5,14 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="580d8748-8f73-4717-afbe-f142485a9316" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/CustomWebSocketHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/websocket/StompBrokerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../message/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../message/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/ReactiveWebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/ReactiveWebSocketConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/WebSocketConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/chat_test.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/chat_test.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,7 +124,7 @@
       <option name="presentableId" value="Default" />
       <updated>1678541032935</updated>
       <workItem from="1678541034092" duration="7889000" />
-      <workItem from="1678578482091" duration="5751000" />
+      <workItem from="1678578482091" duration="9164000" />
     </task>
     <servers />
   </component>
