@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 
 
 </head>
@@ -16,6 +14,11 @@
     <div class="chat-service">
         <div class="room-action-menu">
             <span>작동</span>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chat-id" class="chat-input-id" value="test"/>
+            <input type="text" id="chat-text" class="chat-input-text"/>
+            <input type="button" class="chat-input-send-button" value="전송" onclick="sendMessageWrap()"/>
         </div>
         <div class="stream-box">
             <div class="inner-box">
@@ -37,68 +40,68 @@
                 </div>
             </div>
         </div>
-        <div class="chat-input">
-            <input type="text" id="chat-text" class="chat-input-text"/>
-            <input type="button" class="chat-input-send-button" value="전송" onclick="sendMessageWrap()"/>
-        </div>
+
     </div>
 
 </div>
 
 <script>
-    // WebSocket 연결을 생성합니다.
-    // const socket = new WebSocket('ws://localhost:3121/message');
-    const sockjs = window.SockJS
-    const socket = new SockJS("http://localhost:3121/app");
-    const Stomp = window.StompJs.Stomp;
-    // const client = Stomp.client("ws://localhost:3121/app");
-    const client = Stomp.over(socket);
 
-    client.connect({}, () => {
-        client.subscribe('/subscribe', (message) => {
-            console.log("수신: ${message.body}")
-        })
+    let socket = '';
+    const nickname = makeId(5);
+    $(document).ready(function () {
+        socket = new WebSocket('ws://localhost:8081/message');
+
+        socket.onopen = function (event) {
+            // 연결이 열리면 실행되는 코드
+            console.log('WebSocket 연결이 열렸습니다.');
+            let identifier = {
+                channel: "eventTopic",
+                nickname: nickname
+            }
+            let message = {
+                command: "subscribe",
+                identifier: identifier
+            }
+            console.log(message);
+            socket.send(JSON.stringify(message));
+        };
+
+        $(".chat-input-id").val(nickname);
+
+        socket.addEventListener('message', function (data) {
+            let response = JSON.parse(data.data);
+            console.log('Message from server: ', response);
+            $('.chat-line').append('<p><b>' + response.identifier.nickname + '</b> : ' + response.message + ' | <span>'+ response.timestamp +'</span></p>');
+        });
     })
 
-    // STOMP 클라이언트를 생성하고 연결합니다.
-    // const client = new Client({
-    //     webSocketFactory: () => socket,
-    //     connectHeaders: {
-    //         // 세션키를 헤더에 추가합니다.
-    //         sessionKey: 'your-session-key'
-    //     },
-    //     onConnect: () => {
-    //         // 채팅방 토픽을 구독합니다.
-    //         client.subscribe('/subscribe', message => {
-    //             // 메시지를 받으면 화면에 표시합니다.
-    //             console.log(message.body);
-    //         });
-    //     }
-    // });
-    //
-    // client.activate();
-    //
-    // // 메시지를 보내는 함수입니다.
-    // function sendMessage(message) {
-    //     // 메시지 객체를 생성합니다.
-    //     const chatMessage = {
-    //         content: message,
-    //         sender: 'your-name',
-    //         timestamp: new Date()
-    //     };
-    //
-    //     // 메시지 객체를 JSON 형식으로 변환합니다.
-    //     const chatMessageJson = JSON.stringify(chatMessage);
-    //
-    //     // 채팅방 토픽으로 메시지를 발행합니다.
-    //     client.publish({ destination: '/chat/simpleTopic', body: chatMessageJson });
-    // }
-
-    function sendMessageWrap(){
-        const chatText = $("#chat-text").val();
-        client.send('/chat/simpleTopic', {}, chatText);
+    function makeId(length) {
+        let result = '';
+        const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        let counter = 0;
+        while (counter < length) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            counter += 1;
+        }
+        return result;
     }
 
+
+    function sendMessageWrap() {
+        const chatText = $("#chat-text").val();
+        let identifier = {
+            channel: "eventTopic",
+            nickname: nickname
+        }
+        let message = {
+            command: "message",
+            message: chatText,
+            identifier: identifier
+        }
+        socket.send(JSON.stringify(message));
+    }
 
 </script>
 

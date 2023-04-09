@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.platanus.platachat.message.broker.ListenerService;
 import org.platanus.platachat.message.chat.dto.MessageDto;
 import org.platanus.platachat.message.constant.SimpleConfigConstant;
-import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 

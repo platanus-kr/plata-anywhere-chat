@@ -1,5 +1,6 @@
 package org.platanus.platachat.message.config;
 
+
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.platanus.platachat.message.broker.ListenerService;
@@ -13,6 +14,7 @@ import org.springframework.kafka.core.KafkaAdmin;
 
 import java.util.HashMap;
 import java.util.Map;
+
 
 @EnableKafka
 @Configuration
