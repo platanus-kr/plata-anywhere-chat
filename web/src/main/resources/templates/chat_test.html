@@ -50,7 +50,7 @@
     let socket = '';
     const nickname = makeId(5);
     $(document).ready(function () {
-        socket = new WebSocket('ws://localhost:8081/message');
+        socket = new WebSocket('ws://localhost:3121/message');
 
         socket.onopen = function (event) {
             // 연결이 열리면 실행되는 코드
