@@ -9,6 +9,9 @@ import org.platanus.platachat.message.room.model.Room;
 
 public interface RoomService {
     // part1
+    
+    
+    // part1
     Room join(JoinRequestDto requestDto);
 
     // part1

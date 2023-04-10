@@ -1,4 +1,4 @@
-package org.platanus.platachat.message.config;
+package org.platanus.platachat.message.broker.config;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

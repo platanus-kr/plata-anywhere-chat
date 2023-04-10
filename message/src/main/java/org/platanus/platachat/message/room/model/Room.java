@@ -3,7 +3,11 @@ package org.platanus.platachat.message.room.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import lombok.Builder;
+import lombok.Getter;
 
+@Getter
+@Builder
 public class Room {
     private Long id;
     private String name;

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.platanus.platachat.message.broker.BrokerService;
 import org.platanus.platachat.message.chat.dto.IdentifierDto;
 import org.platanus.platachat.message.chat.dto.MessageResponseDto;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 public class MessageBroadcaster {
 
+    private final BrokerService brokerService;
     private final MessageFlux messageFlux;
     private final SubscriptionManager subscriptionManager;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
@@ -53,6 +56,7 @@ public class MessageBroadcaster {
                             .build();
                     try {
                         String payload = objectMapper.writeValueAsString(messageResponseDto);
+                        brokerService.sendChatMessage(channel, message);
                         sink.next(session.textMessage(payload));
                     } catch (JsonProcessingException e) {
                         log.error("Error serializing message to JSON", e);

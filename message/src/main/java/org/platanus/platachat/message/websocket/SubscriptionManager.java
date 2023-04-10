@@ -2,6 +2,8 @@ package org.platanus.platachat.message.websocket;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.platanus.platachat.message.broker.BrokerService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
@@ -17,6 +19,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Component
 @RequiredArgsConstructor
 public class SubscriptionManager {
+    
+    private final BrokerService brokerService;
 
     private final MessageFlux messageFlux;
 
@@ -47,6 +51,7 @@ public class SubscriptionManager {
         String uniqueKey = channel + "-" + session.getId();
         subscriptions.computeIfAbsent(channel, key -> new CopyOnWriteArraySet<>()).add(session);
         Flux<WebSocketMessage> flux = Flux.create(sink -> messageFlux.addSink(channel, session, sink));
+        brokerService.sendChatMessage(channel, "OK kafka topic init.");
         session.send(flux).doOnTerminate(() -> messageFlux.removeSink(channel, session)).subscribe();
     }
 

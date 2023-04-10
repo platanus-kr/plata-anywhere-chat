@@ -5,24 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="580d8748-8f73-4717-afbe-f142485a9316" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/chat/dto/BrokerRequestDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/chat/dto/ChannelSubscribeDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/chat/dto/IdentifierDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/chat/dto/MessageRequestDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/chat/dto/MessageResponseDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/websocket/MessageBroadcaster.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/websocket/MessageFlux.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/websocket/MessageWebSocketHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/websocket/SubscriptionManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/websocket/config/CustomWebFluxConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/websocket/config/CustomWebSocketConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../message/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../message/build.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/BrokerService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/kafka/KafkaBrokerAdaptor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/kafka/KafkaPublishAdaptor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/RoomController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/dto/CreateRequestDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/dto/CreateResponseDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/ListenerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/ListenerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/PublishService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/PublishService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/TopicService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/TopicService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/dto/SubscribeRequestDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/dto/SubscribeResponseDto.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/kafka/KafkaListenerAdaptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/kafka/KafkaListenerAdaptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/chat/dto/MessageDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/KafkaAdminConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/config/KafkaAdminConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/KafkaConsumerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/config/KafkaConsumerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/config/KafkaProducerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/config/KafkaProducerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/constant/SimpleConfigConstant.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/contants/SimpleConfigConstant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/RoomService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/RoomService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/model/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/room/model/Room.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/websocket/MessageBroadcaster.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/websocket/MessageBroadcaster.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/websocket/SubscriptionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/websocket/SubscriptionManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/platanus/platachat/web/config/CustomWebMvcConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/platanus/platachat/web/config/CustomWebMvcConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/chat_test.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/chat_test.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,23 +80,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;spring.configuration.checksum&quot;: &quot;bfb0fa3af7de8ed235fa4ef483a8ce4c&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Pla/Development/repo/study/spring-chat/web",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "spring.configuration.checksum": "bfb0fa3af7de8ed235fa4ef483a8ce4c",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -143,6 +148,7 @@
       <workItem from="1678578482091" duration="9164000" />
       <workItem from="1680235718176" duration="1744000" />
       <workItem from="1681039808534" duration="1746000" />
+      <workItem from="1681106694668" duration="1860000" />
     </task>
     <servers />
   </component>

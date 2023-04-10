@@ -2,6 +2,7 @@ package org.platanus.platachat.message.broker;
 
 import org.platanus.platachat.message.chat.dto.BrokerRequestDto;
 
+@Deprecated
 public interface ListenerService {
     // 리스너
     String simpleListener(String message);
