@@ -5,12 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
-
-
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style-chatroom.css}"/>
 </head>
 
 <body>
 <div class="wrap">
+
+    <div class="enter-room">
+        <label for="chat-nickname-init">닉네임</label><input type="text" name="chat-nickname-init" id="chat-nickname-init" class="chat-input-nickname-init" value="" disabled />
+        <label for="chat-room">채팅방 명 </label><input type="text" name="chat-room" id="chat-room" class="chat-input-room" value="test" />
+        <input type="button" class="chat-input-room-button" value="입장" onclick="sendSubscribe()" />
+
+    </div>
+
     <div class="chat-service">
         <div class="room-action-menu">
             <span>작동</span>
@@ -49,23 +57,16 @@
 
     let socket = '';
     const nickname = makeId(5);
+    let chatRoomName = '';
     $(document).ready(function () {
-        socket = new WebSocket('ws://localhost:3121/message');
+        $(".chat-input-nickname-init").val(nickname);
 
+        socket = new WebSocket('ws://localhost:3121/message');
         socket.onopen = function (event) {
             // 연결이 열리면 실행되는 코드
             console.log('WebSocket 연결이 열렸습니다.');
-            let identifier = {
-                channel: "eventTopic",
-                nickname: nickname
-            }
-            let message = {
-                command: "subscribe",
-                identifier: identifier
-            }
-            console.log(message);
-            socket.send(JSON.stringify(message));
         };
+
 
         $(".chat-input-id").val(nickname);
 
@@ -75,6 +76,29 @@
             $('.chat-line').append('<p><b>' + response.identifier.nickname + '</b> : ' + response.message + ' | <span>'+ response.timestamp +'</span></p>');
         });
     })
+
+    function sendSubscribe() {
+        chatRoomName = $(".chat-input-room").val();
+        if (chatRoomName.length < 1) {
+            alert("채팅방 명을 입력해야 합니다");
+            return;
+        }
+
+        console.log("입장");
+        let identifier = {
+            channel: chatRoomName,
+            nickname: nickname
+        }
+        let message = {
+            command: "subscribe",
+            identifier: identifier
+        }
+        console.log(message);
+        socket.send(JSON.stringify(message));
+        $(".enter-room").css("display", "none");
+        // $(".chat-service").css("display");
+        $(".chat-service").css("display", "block");
+    }
 
     function makeId(length) {
         let result = '';
@@ -92,7 +116,7 @@
     function sendMessageWrap() {
         const chatText = $("#chat-text").val();
         let identifier = {
-            channel: "eventTopic",
+            channel: chatRoomName,
             nickname: nickname
         }
         let message = {
@@ -101,6 +125,7 @@
             identifier: identifier
         }
         socket.send(JSON.stringify(message));
+
     }
 
 </script>

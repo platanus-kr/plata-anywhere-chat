@@ -12,8 +12,8 @@ public class ChatWebController {
 	 * 채팅 테스트용 컨트롤러
 	 * @return thymeleaf template
 	 */
-	@GetMapping("/test")
+	@GetMapping("/simple")
 	public String chatTest() {
-		return "chat_test";
+		return "simple_room";
 	}
 }

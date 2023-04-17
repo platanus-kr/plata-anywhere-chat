@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 public class MessageBroadcaster {
 
-    private final BrokerService brokerService;
+    //private final BrokerService brokerService;
     private final MessageFlux messageFlux;
     private final SubscriptionManager subscriptionManager;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
@@ -56,7 +56,7 @@ public class MessageBroadcaster {
                             .build();
                     try {
                         String payload = objectMapper.writeValueAsString(messageResponseDto);
-                        brokerService.sendChatMessage(channel, message);
+                        //brokerService.sendChatMessage(channel, message);
                         sink.next(session.textMessage(payload));
                     } catch (JsonProcessingException e) {
                         log.error("Error serializing message to JSON", e);

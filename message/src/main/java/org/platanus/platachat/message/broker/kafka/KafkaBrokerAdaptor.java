@@ -25,6 +25,6 @@ public class KafkaBrokerAdaptor implements BrokerService {
 	@Override
 	public void receiveChatMessage(ConsumerRecord<String, String> record) {
 		String message = record.value();
-		messageBroadcaster.broadcastMessageToSubscribers(message);
+		//messageBroadcaster.broadcastMessageToSubscribers(message);
 	}
 }
