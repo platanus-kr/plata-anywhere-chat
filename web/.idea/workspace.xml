@@ -5,15 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="580d8748-8f73-4717-afbe-f142485a9316" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/css/style-chatroom.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/BrokerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/BrokerService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/kafka/KafkaBrokerAdaptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/broker/kafka/KafkaBrokerAdaptor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/websocket/MessageBroadcaster.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/websocket/MessageBroadcaster.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/websocket/SubscriptionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../message/src/main/java/org/platanus/platachat/message/websocket/SubscriptionManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/platanus/platachat/web/auth/SpringSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/platanus/platachat/web/auth/SpringSecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/platanus/platachat/web/chat/web/ChatWebController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/platanus/platachat/web/chat/web/ChatWebController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/chat_test.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/simple_room.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/front.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/front.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/simple_room.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/simple_room.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +142,7 @@
       <workItem from="1681039808534" duration="1746000" />
       <workItem from="1681106694668" duration="1860000" />
       <workItem from="1681265522102" duration="1224000" />
-      <workItem from="1681712275272" duration="2872000" />
+      <workItem from="1681712275272" duration="5763000" />
     </task>
     <servers />
   </component>

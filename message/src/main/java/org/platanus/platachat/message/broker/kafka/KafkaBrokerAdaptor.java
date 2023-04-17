@@ -18,6 +18,11 @@ public class KafkaBrokerAdaptor implements BrokerService {
 	private final MessageBroadcaster messageBroadcaster;
 	
 	@Override
+	public void sendSubscription(String topic) {
+	
+	}
+	
+	@Override
 	public void sendChatMessage(String topic, String message) {
 		kafkaTemplate.send(topic, message);
 	}

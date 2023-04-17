@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 public class MessageBroadcaster {
 
-    //private final BrokerService brokerService;
+    private final BrokerService brokerService;
     private final MessageFlux messageFlux;
     private final SubscriptionManager subscriptionManager;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
