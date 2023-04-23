@@ -1,92 +1,148 @@
 # Plata Anywhere Chat
 
+회원 기능을 가지는 웹 채팅 프로그램
 
+**프로젝트 목표**
 
-## Getting started
+- MessageBroker를 통해 pub-sub 패턴의 기본적인 이해
+- 간소화된 MSA 구조에서 에그리거트간 메시지 전달 방법의 이해
+- Spring Security를 사용한 OAuth, REST API, formLogin 3가지 로그인의 구현
+- Redis를 사용한 세션 클러스터링 구축 및 어플리케이션 간 세션 공유
+- 백프래셔, Rate Limit 이해 및 적용
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+---
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## 프로젝트 소개
 
-## Add your files
+**🕶️ 프로젝트 구조 개요**  
+**web**: 회원, 채팅 저장, 채팅 기록 조회 등 영속성과 관련된 기능 담당  
+**message**: 채팅방 구독, 메시지 발행, 메시지 소비 등 채팅과 관련된 주요 기능 담당
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+### 프로젝트 구조 상세
+
+#### web
+
+> Spring Web MVC (버전 기입하기)  
+> Spring Data JPA, Spring Data MongoDB  
+> MariaDB, MongoDB  
+> Spring Security - OAuth2 client + app login  
+> Spring Session Data Redis  
+> Thymeleaf + jQuery + STOMP.js
+
+**어플리케이션 인증**
 
 ```
-cd existing_repo
-git remote add origin https://git.canxan.com/platanus/plata-chat.git
-git branch -M master
-git push -uf origin master
+├── auth : 어플리케이션 인증
+│   ├── SessionClusterFactory.java
+│   ├── SpringSecurityConfig.java
+│   ├── app : 어플리케이션 자체 인증
+│   │   ├── CustomAuthenticationProvider.java
+│   │   ├── CustomAuthenticationSuccessHandler.java
+│   │   ├── CustomUserDetailsService.java
+│   │   ├── CustomUserDetailsUserAdaptor.java
+│   │   └── PasswordEncoderConfig.java
+│   ├── argumentresolver
+│   │   ├── HasMember.java
+│   │   └── LoginMemberArgumentResolver.java
+│   ├── dto : 세션에 인증 정보를 담기 위한 DTO
+│   │   ├── CustomOAuth2MemberDto.java
+│   │   └── SessionMemberDto.java
+│   ├── oauth2 : OAuth2 인증
+│   │   └── CustomOAuth2UserService.java
+│   ├── rest : 어플리케이션 인증을 위한 REST
+│   │   └── AuthRestControllerV1.java
+│   └── web
+│       └── AuthWebController.java
 ```
 
-## Integrate with your tools
+**채팅**
 
-- [ ] [Set up project integrations](https://git.canxan.com/platanus/plata-chat/-/settings/integrations)
+```
+├── chat : 채팅
+│   ├── model
+│   │   ├── Message.java
+│   │   ├── Room.java
+│   │   └── RoomPublic.java
+│   ├── repository : 채팅방 정보를 위한 데이터베이스 레이어
+│   │   ├── MessageRepository.java
+│   │   ├── RoomRepository.java
+│   │   ├── jpa : 채팅방 정보 JPA 인터페이스
+│   │   │   └── RoomJpaRepository.java
+│   │   └── mongo : 채팅 저장 MongoDB 인터페이스
+│   │       └── MessageMongoRepository.java
+│   └── service
+│       ├── ChatService.java
+│       └── ChatServiceImpl.java
+```
 
-## Collaborate with your team
+**회원**
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+```
+└── member : 회원
+    ├── dto
+    │   ├── GroupCreateDto.java
+    │   ├── MemberJoinRequestDto.java
+    │   ├── MemberJoinResponseDto.java
+    │   ├── MemberLoginRequestDto.java
+    │   └── MemberLoginResponseDto.java
+    ├── model
+    │   ├── AppRole.java
+    │   ├── BaseTime.java
+    │   ├── ChatRole.java
+    │   ├── Group.java
+    │   └── Member.java
+    ├── repository : 회원 정보를 위한 데이터베이스 레이어
+    │   ├── GroupRepository.java
+    │   ├── MemberRepository.java
+    │   └── jpa : JPA 인터페이스
+    │       ├── GroupJpaRepository.java
+    │       └── MemberJpaRepository.java
+    └── service
+        ├── MemberService.java
+        └── MemberServiceImpl.java
+```
 
-## Test and Deploy
+아아아
 
-Use the built-in continuous integration in GitLab.
+#### message
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+> Spring WebFlux  
+> Kafka  
+> Spring Security - reactive  
+> Spring Session Data Redis
 
-***
+### v1 주요 기능
 
-# Editing this README
+- GitHub 회원 가입 기능
+- 어플리케이션 자체 회원 가입 기능
+- 채팅방 입장, 채팅, 채팅방 퇴장
+- 채팅 기록 저장, 채팅 기록 조회
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+### v2 목표 기능
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+<details>
+<summary>
+예정된 기능
+</summary>
+<ul>
+<li>채팅방 내 회원 권한 기능 (오퍼레이터 권한, 채금 기능 등)</li>
+<li>회원 초대 기능 - 초대 후 채팅방 입장</li>
+<li>private 방 개설 - 1:1, N:M 비밀 채팅방</li>
+</ul>
+</details>
 
-## Name
-Choose a self-explaining name for your project.
+### 주요 기능 flow
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+(UML)
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### 로컬 실행
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+<details>
+<summary>
+로컬 실행 방법
+</summary>
+```
+작성중
+```
+> ㅋㅌㄹㅍ
+</details>

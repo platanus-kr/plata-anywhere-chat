@@ -1,0 +1,8 @@
+.hide-scrollbar::-webkit-scrollbar {
+    @apply w-0;
+    @apply h-0;
+}
+
+.hide-scrollbar {
+    @apply -webkit-scrollbar;
+}
