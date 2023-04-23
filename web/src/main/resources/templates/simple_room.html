@@ -10,50 +10,65 @@
 </head>
 
 <body>
-<div class="wrap max-w-md mx-auto bg-white">
+<div class="wrap flex flex-col item-center sm:w-[42rem] mx-auto bg-white h-screen">
 
-    <div class="enter-room box-border p-4 ">
+    <div class="enter-room p-4 box-border absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div class="flex flex-wrap">
+            <label for="chat-nickname-init"
+                   class="text-sm font-medium leading-6 text-gray-900">
+                채팅방에서 사용 할 닉네임
+            </label>
+            <input type="text"
+                   name="chat-nickname-init"
+                   id="chat-nickname-init"
+                   class="chat-input-nickname-init block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                   value=""
+                   disabled/>
 
-        <label for="chat-nickname-init" class="block text-sm font-medium leading-6 text-gray-900">닉네임</label>
-        <input type="text" name="chat-nickname-init" id="chat-nickname-init" class="chat-input-nickname-init block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value="" disabled />
+            <label for="chat-room"
+                   class="text-sm font-medium mt-5 leading-6 text-gray-900">
+                접속할 채팅방 명
+            </label>
+            <input type="text"
+                   name="chat-room"
+                   id="chat-room"
+                   class="chat-input-room-init chat-input-room block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                   value="test"/>
+            <div class="ml-auto">
+                <input type="button"
+                       class="chat-input-room-button rounded-md bg-indigo-600 my-3 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                       value="입장" onclick="sendSubscribe()"/>
+            </div>
 
-        <label for="chat-room" class="block text-sm font-medium leading-6 text-gray-900">채팅방 명 </label>
-        <input type="text" name="chat-room" id="chat-room" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value="test" />
-
-        <input type="button" class="chat-input-room-button rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" value="입장" onclick="sendSubscribe()" />
-
+        </div>
     </div>
 
-    <div class="chat-service ">
-        <div class="room-action-menu">
-            <span>작동</span>
+    <div class="chat-service hidden box-border p-4 flex flex-col h-full">
+        <div class="room-action-menu h-8 w-full sticky top-0 z-10">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 viewBox="0 0 448 512"
+                 class="w-6 h-6">
+                <path
+                        d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/>
+            </svg>
         </div>
-        <div class="chat-input">
-            <input type="text" id="chat-id" class="chat-input-id" value="test"/>
-            <input type="text" id="chat-text" class="chat-input-text"/>
-            <input type="button" class="chat-input-send-button rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" value="전송" onclick="sendMessageWrap()"/>
-        </div>
-        <div class="stream-box">
-            <div class="inner-box">
-                <div class="chat-line"> <!-- overflow add check! -->
-                    <div class="member-profile">
-                        <div class="member-profile-image">
 
-                        </div>
-                        <div class="member-nickname">
-                            <span>닉네임</span>
-                        </div>
-                    </div>
-                    <div class="member-text">
-                        <span>채팅 내용</span>
-                    </div>
-                    <div class="chat-action-menu">
-
-                    </div>
-                </div>
+        <div class="stream-box flex-grow  overflow-hidden">
+            <div class="inner-box overflow-y-auto h-full hide-scrollbar">
+                <!-- chat message line-->
             </div>
         </div>
 
+        <div class="chat-input w-full flex h-8 sticky bottom-0 z-10">
+            <input type="text" id="chat-id"
+                   class="chat-input-id block w-16 rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 "
+                   disabled/>
+            <input type="text" id="chat-text"
+                   class="chat-input-text block w-full mr-3 rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6"/>
+            <input type="button"
+                   class="chat-input-send-button rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                   value="전송" onclick="sendMessageWrap()"/>
+        </div>
     </div>
 
 </div>
@@ -78,9 +93,53 @@
         socket.addEventListener('message', function (data) {
             let response = JSON.parse(data.data);
             console.log('Message from server: ', response);
-            $('.chat-line').append('<p><b>' + response.identifier.nickname + '</b> : ' + response.message + ' | <span>'+ response.timestamp +'</span></p>');
+            $('.stream-box .inner-box').append(messageGenerator(response));
+            $('.stream-box .inner-box').animate({ scrollTop: $('.stream-box .inner-box')[0].scrollHeight }, 'fast');
+
+        });
+
+        $('#chat-text').on('keypress', function(e) {
+            if (e.which === 13) { // 13은 Enter 키의 keyCode입니다.
+                e.preventDefault(); // 기본 Enter 키 동작을 막습니다.
+                sendMessageWrap(); // 메소드 실행
+            }
         });
     })
+
+    function messageGenerator(response) {
+
+        return '<div class="chat-line flex justify-between items-start mb-2"> <!-- overflow add check! -->\n' +
+            '            <div class="part-left flex items-stretch text-left">\n' +
+            '                <div class="member-profile flex mr-2 self-start">\n' + // 16.666
+            '                    <div class="member-profile-image">\n' +
+            '                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"\n' +
+            '                             alt="profile image" class="w-4 h-4 rounded-full">\n' +
+            '                    </div>\n' +
+            '                    <div class="member-nickname ml-1">\n' +
+            '                        <span class="text-sm">' +
+            response.identifier.nickname + '</span>\n' +
+            '                    </div>\n' +
+            '                </div>\n' +
+            '                <div class="chat-message-text w-72 sm:w-[29rem] break-words">\n' +
+            '                    <span class="text-sm">' +
+            response.message + '</span>\n' +
+            '                </div>\n' +
+            '            </div>\n' +
+            '\n' +
+            '            <div class="part-right flex text-right items-stretch w-24">\n' +
+            '                <div class="chat-message-timestamp self-center">\n' +
+            '                    <span class="text-sm text-slate-400">' +
+            response.timestamp + '</span>\n' +
+            '                </div>\n' +
+            '                       <div class="chat-action-menu self-center ml-1">\n' +
+            '                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-4 h-4">\n' +
+            '                                <path class="fill-slate-600"\n' +
+            '                                        d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/></svg>\n' +
+            '                            </svg>\n' +
+            '                        </div>\n' +
+            '        </div>\n' +
+            '    </div>'
+    }
 
     function sendSubscribe() {
         chatRoomName = $(".chat-input-room").val();
@@ -100,9 +159,8 @@
         }
         console.log(message);
         socket.send(JSON.stringify(message));
-        $(".enter-room").css("display", "none");
-        // $(".chat-service").css("display");
-        $(".chat-service").css("display", "block");
+        $(".enter-room").addClass("hidden");
+        $(".chat-service").removeClass("hidden");
     }
 
     function makeId(length) {
@@ -130,6 +188,7 @@
             identifier: identifier
         }
         socket.send(JSON.stringify(message));
+        $("#chat-text").val("");
 
     }
 

@@ -1,5 +1,8 @@
+.hide-scrollbar::-webkit-scrollbar {
+    @apply w-0;
+    @apply h-0;
+}
 
-
-.chat-service {
-    display: none;
+.hide-scrollbar {
+    @apply -webkit-scrollbar;
 }

@@ -20,7 +20,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @RequiredArgsConstructor
 public class SubscriptionManager {
     
-    private final BrokerService brokerService;
+//    private final BrokerService brokerService;
 
     private final MessageFlux messageFlux;
 
@@ -51,7 +51,7 @@ public class SubscriptionManager {
         String uniqueKey = channel + "-" + session.getId();
         subscriptions.computeIfAbsent(channel, key -> new CopyOnWriteArraySet<>()).add(session);
         Flux<WebSocketMessage> flux = Flux.create(sink -> messageFlux.addSink(channel, session, sink));
-        brokerService.sendSubscription(channel);
+//        brokerService.sendSubscription(channel);
         session.send(flux).doOnTerminate(() -> messageFlux.removeSink(channel, session)).subscribe();
     }
 

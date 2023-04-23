@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.platanus.platachat.message.chat.dto.ChannelSubscribeDto;
 import org.platanus.platachat.message.chat.dto.IdentifierDto;
 import org.platanus.platachat.message.chat.dto.MessageRequestDto;
+import org.platanus.platachat.message.utils.XSSFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
@@ -105,13 +106,13 @@ public class MessageWebSocketHandler implements WebSocketHandler {
      * @return 메시지 브로드캐스트 후 Mono.empty()
      */
     private Mono<Void> processMessageCommand(ChannelSubscribeDto stub, String messageText) {
-        String message;
-        try {
-            message = objectMapper.writeValueAsString(messageText);
-        } catch (JsonProcessingException e) {
-            log.error("Error serializing message to JSON", e);
-            return Mono.empty();
-        }
+        String message = XSSFilter.filterXSS(messageText);
+//        try {
+//            message = objectMapper.writeValueAsString(messageText);
+//        } catch (JsonProcessingException e) {
+//            log.error("Error serializing message to JSON", e);
+//            return Mono.empty();
+//        }
         // 채팅방에 있는 모든 사용자에게 메시지를 전달합니다.
         messageBroadcaster.broadcastMessageToSubscribers(stub.getChannel(), stub.getNickname(), message);
         return Mono.empty();
