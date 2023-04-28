@@ -41,6 +41,7 @@ public class MessageWebSocketHandler implements WebSocketHandler {
     @Override
     public Mono<Void> handle(WebSocketSession session) {
         AtomicReference<ChannelSubscribeDto> channelSub = new AtomicReference<>();
+        log.info(session.getAttributes().toString());
         return session.receive()
                 .map(WebSocketMessage::getPayloadAsText)
                 .publishOn(Schedulers.boundedElastic())

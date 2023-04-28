@@ -25,7 +25,7 @@ public class SpringSecurityConfig {
 				//.pathMatchers("/api/v1/auth", "/api/v1/auth/login").permitAll()
 				//.pathMatchers("/message/**").permitAll() // 테스트를 위한 임시 개방
 				//.pathMatchers("/css/**").permitAll() // 테스트를 위한 임시 개방
-				.pathMatchers("/").permitAll()
+				.pathMatchers("/**").permitAll()
 				.anyExchange().authenticated()
 				.and()
 				//.oauth2Login()

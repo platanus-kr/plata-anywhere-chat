@@ -24,7 +24,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         if (principal instanceof Member) {
             Member m = (Member) principal;
             // SessionMemberDto 객체 생성 및 저장
-            session.setAttribute("member", new SessionMemberDto(m, request.getSession().getId()));
+            session.setAttribute("member", new SessionMemberDto(m, session.getId()));
         }
     }
 }
