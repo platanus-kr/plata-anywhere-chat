@@ -21,16 +21,16 @@ public class CustomWebSocketConfig {
 
     @Bean
     public HandlerMapping handlerMapping() {
-        Map<String, CorsConfiguration> corsConfigurationMap = new HashMap<>();
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("http://localhost:3120");
-        corsConfigurationMap.put("/message/**", corsConfiguration);
+//        Map<String, CorsConfiguration> corsConfigurationMap = new HashMap<>();
+//        CorsConfiguration corsConfiguration = new CorsConfiguration();
+//        corsConfiguration.addAllowedOrigin("http://172.30.1.76:3120");
+//        corsConfigurationMap.put("/message/**", corsConfiguration);
 
         SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
         mapping.setUrlMap(
                 Map.of("/message/**", messageWebSocketHandler));
         mapping.setOrder(10);
-        mapping.setCorsConfigurations(corsConfigurationMap);
+//        mapping.setCorsConfigurations(corsConfigurationMap);
         return mapping;
     }
 
