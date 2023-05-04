@@ -15,6 +15,7 @@
     <div class="enter-room p-4 box-border absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <div class="flex flex-wrap">
             <p><b>🕵️‍♀️ 회원 정보 - </b><span th:text="${member}"></span></p>
+            <hr />
             <label for="chat-nickname-init"
                    class="text-sm font-medium leading-6 text-gray-900">
                 채팅방에서 사용 할 닉네임
@@ -54,8 +55,8 @@
             </svg>
         </div>
 
-        <div class="stream-box flex-grow overflow-hidden">
-            <div class="inner-box overflow-y-auto h-full hide-scrollbar">
+        <div class="stream-box flex-shrink-0 overflow-hidden">
+            <div class="inner-box flex-shrink-0 overflow-y-auto h-screen hide-scrollbar">
                 <!-- chat message line-->
             </div>
         </div>
@@ -153,7 +154,7 @@
         let identifier = {
             channel: chatRoomName,
             nickname: nickname,
-            session: getPACSessionId()
+            token: getPACSessionId()
         }
         let message = {
             command: "subscribe",
@@ -167,7 +168,9 @@
 
     function getPACSessionId() {
         const sessionId = "PAC_SESSIONID"
-        return document.cookie.match(new RegExp('(^| )' + sessionId + '=([^;]+)'));
+        const sessionValue =  document.cookie.match(new RegExp('(^| )' + sessionId + '=([^;]+)'))
+        console.log(sessionValue);
+        return sessionValue;
 
     }
 
@@ -189,7 +192,7 @@
         let identifier = {
             channel: chatRoomName,
             nickname: nickname,
-            session: getPACSessionId()
+            token: getPACSessionId()
         }
         let message = {
             command: "message",

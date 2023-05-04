@@ -21,4 +21,9 @@ public class ChannelSubscribeDto {
      * 채널에서 사용하기 위한 닉네임
      */
     private final String nickname;
+    
+    /**
+     * 채널에서 사용하기 위한 세션
+     */
+    private final String session;
 }
