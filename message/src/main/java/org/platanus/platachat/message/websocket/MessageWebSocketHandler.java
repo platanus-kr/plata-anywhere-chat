@@ -1,31 +1,28 @@
 package org.platanus.platachat.message.websocket;
 
 
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.platanus.platachat.message.chat.dto.ChannelSubscribeDto;
 import org.platanus.platachat.message.chat.dto.IdentifierDto;
 import org.platanus.platachat.message.chat.dto.MessageRequestDto;
 import org.platanus.platachat.message.utils.XSSFilter;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.web.server.context.ServerSecurityContextRepository;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.socket.HandshakeInfo;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
-import org.springframework.web.server.ServerWebExchange;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.SignalType;
 import reactor.core.scheduler.Schedulers;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 @Component
@@ -34,9 +31,9 @@ public class MessageWebSocketHandler implements WebSocketHandler {
 
     private final SubscriptionManager subscriptionManager;
     private final MessageBroadcaster messageBroadcaster;
-    
-    private final ServerSecurityContextRepository serverSecurityContextRepository;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    private final ReactiveAuthenticationManager authenticationManager;
+
 
     /**
      * <h4>메시지 처리를 위한 핸들러</h4>
@@ -86,8 +83,19 @@ public class MessageWebSocketHandler implements WebSocketHandler {
             channelSub.set(stub);
 
             if ("subscribe".equals(command)) {
-                session.getAttributes().put("pacSessionId", stub.getSession());
-                return processSubscribeCommand(stub, session);
+                // https://www.baeldung.com/spring-session-reactive
+//                session.getAttributes().put("pacSessionId", stub.getSession());
+ Authentication authentication = new UsernamePasswordAuthenticationToken(null, stub.getSession());
+
+                return authenticationManager.authenticate(authentication)
+                        .flatMap(auth -> {
+                            UserDetails userDetails = (UserDetails) auth.getPrincipal();
+
+                            // 여기서 필요한 작업을 수행하세요
+                            return processSubscribeCommand(stub, session);
+                        });
+
+
             } else if ("message".equals(command)) {
                 return processMessageCommand(stub, messageRequestDto.getMessage());
             }
@@ -154,13 +162,4 @@ public class MessageWebSocketHandler implements WebSocketHandler {
             subscriptionManager.removeSubscription(stub.getChannel(), session);
         }
     }
-    
-    //
-    //public Mono<SecurityContext> findSecurityContextBySessionId(ServerWebExchange exchange, String sessionId) {
-    //    return exchange.getSession()
-    //            .filter(webSession -> webSession.getId().equals(sessionId))
-    //            .flatMap(webSession -> serverSecurityContextRepository.load(exchange));
-    //}
-    //
-    
 }
