@@ -9,9 +9,7 @@ import org.platanus.platachat.message.chat.dto.ChannelSubscribeDto;
 import org.platanus.platachat.message.chat.dto.IdentifierDto;
 import org.platanus.platachat.message.chat.dto.MessageRequestDto;
 import org.platanus.platachat.message.utils.XSSFilter;
-import org.springframework.security.core.Authentication;
-import org.springframework.session.ReactiveSessionRepository;
-import org.springframework.session.Session;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
@@ -31,7 +29,14 @@ public class MessageWebSocketHandler implements WebSocketHandler {
     private final SubscriptionManager subscriptionManager;
     private final MessageBroadcaster messageBroadcaster;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-    private final ReactiveSessionRepository<? extends Session> sessionRepository;
+    //    private final ReactiveSessionRepository<? extends Session> sessionRepository;
+//    private final WebSessionManager webSessionManager;
+//    private final ServerWebExchange serverWebExchange;
+//    private final SessionKeyFilterConfig sessionKeyFilterConfig;
+
+
+    @Value("${server.servlet.session.cookie.name}")
+    private String sessionKey;
 
 
     /**
@@ -44,6 +49,11 @@ public class MessageWebSocketHandler implements WebSocketHandler {
      */
     @Override
     public Mono<Void> handle(WebSocketSession session) {
+//        String findSessionKey = (String) session.getAttributes().get(sessionKey);
+//        log.info(findSessionKey);
+//        String sessionValue = (String) serverWebExchange.getAttribute(sessionKey);
+//        String sessionValue = sessionKeyFilter().getSessionValue();
+//        log.info(sessionValue);
         //HandshakeInfo handshakeInfo = session.getHandshakeInfo();
         //handshakeInfo.getHeaders();
         AtomicReference<ChannelSubscribeDto> channelSub = new AtomicReference<>();
