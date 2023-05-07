@@ -15,7 +15,7 @@
     <div class="enter-room p-4 box-border absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <div class="flex flex-wrap">
             <p><b>🕵️‍♀️ 회원 정보 - </b><span th:text="${member}"></span></p>
-            <hr />
+            <hr/>
             <label for="chat-nickname-init"
                    class="text-sm font-medium leading-6 text-gray-900">
                 채팅방에서 사용 할 닉네임
@@ -96,11 +96,11 @@
             let response = JSON.parse(data.data);
             console.log('Message from server: ', response);
             $('.stream-box .inner-box').append(messageGenerator(response));
-            $('.stream-box .inner-box').animate({ scrollTop: $('.stream-box .inner-box')[0].scrollHeight }, 'fast');
+            $('.stream-box .inner-box').animate({scrollTop: $('.stream-box .inner-box')[0].scrollHeight}, 'fast');
 
         });
 
-        $('#chat-text').on('keypress', function(e) {
+        $('#chat-text').on('keypress', function (e) {
             if (e.which === 13) { // 13은 Enter 키의 keyCode입니다.
                 e.preventDefault(); // 기본 Enter 키 동작을 막습니다.
                 sendMessageWrap(); // 메소드 실행
@@ -168,7 +168,11 @@
 
     function getPACSessionId() {
         const sessionId = "PAC_SESSIONID"
-        const sessionValue =  document.cookie.match(new RegExp('(^| )' + sessionId + '=([^;]+)'))
+        const sessionValue = document.cookie.match(new RegExp('(^| )' + sessionId + '=([^;]+)'))
+        // var sessionValue;
+        // const value = `; ${document.cookie}`;
+        // const parts = value.split(`; ${sessionId}=`);
+        // if (parts.length === 2) sessionValue = parts.pop().split(';').shift();
         console.log(sessionValue);
         return sessionValue;
 

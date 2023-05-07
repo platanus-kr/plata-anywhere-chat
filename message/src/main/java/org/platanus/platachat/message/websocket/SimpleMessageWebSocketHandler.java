@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class  SimpleMessageWebSocketHandler implements WebSocketHandler {
+public class SimpleMessageWebSocketHandler implements WebSocketHandler {
 
     private final SubscriptionManager subscriptionManager;
     private final MessageBroadcaster messageBroadcaster;

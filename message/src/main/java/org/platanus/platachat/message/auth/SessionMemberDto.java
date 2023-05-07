@@ -1,15 +1,10 @@
 package org.platanus.platachat.message.auth;
 
-import java.io.Serializable;
-
+import lombok.*;
 import org.platanus.platachat.message.auth.model.AppRole;
 import org.platanus.platachat.message.auth.model.Member;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import java.io.Serializable;
 
 /**
  * 세션에 직렬화 하기 위한 DTO

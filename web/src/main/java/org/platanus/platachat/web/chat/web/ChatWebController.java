@@ -7,6 +7,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/chat")
 public class ChatWebController {
@@ -21,7 +24,15 @@ public class ChatWebController {
 	}
 	
 	@GetMapping("/simple_haslogin")
-	public String chatTestHasLogin(Model model, @HasMember SessionMemberDto member) {
+	public String chatTestHasLogin(Model model,
+								   @HasMember SessionMemberDto member,
+								   HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		String sessionId = null;
+		if (session != null) {
+			sessionId = session.getId();
+		}
+		model.addAttribute("pacsessionid", sessionId);
 		model.addAttribute("member", member);
 		return "simple_room_haslogin";
 	}

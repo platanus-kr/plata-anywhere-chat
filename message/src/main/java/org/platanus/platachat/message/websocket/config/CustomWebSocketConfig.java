@@ -2,8 +2,6 @@ package org.platanus.platachat.message.websocket.config;
 
 
 import lombok.RequiredArgsConstructor;
-
-import org.platanus.platachat.message.websocket.MessageBroadcaster;
 import org.platanus.platachat.message.websocket.MessageWebSocketHandler;
 import org.platanus.platachat.message.websocket.SimpleMessageWebSocketHandler;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +17,7 @@ import java.util.Map;
 public class CustomWebSocketConfig {
 
     private final SimpleMessageWebSocketHandler simpleMessageWebSocketHandler;
-    
+
     private final MessageWebSocketHandler messageWebSocketHandler;
 
     @Bean

@@ -1,6 +1,5 @@
 package org.platanus.platachat.message.websocket.config;
 
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 

@@ -9,10 +9,9 @@ import org.platanus.platachat.message.chat.dto.ChannelSubscribeDto;
 import org.platanus.platachat.message.chat.dto.IdentifierDto;
 import org.platanus.platachat.message.chat.dto.MessageRequestDto;
 import org.platanus.platachat.message.utils.XSSFilter;
-import org.springframework.security.authentication.ReactiveAuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.session.ReactiveSessionRepository;
+import org.springframework.session.Session;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
@@ -32,7 +31,7 @@ public class MessageWebSocketHandler implements WebSocketHandler {
     private final SubscriptionManager subscriptionManager;
     private final MessageBroadcaster messageBroadcaster;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-    private final ReactiveAuthenticationManager authenticationManager;
+    private final ReactiveSessionRepository<? extends Session> sessionRepository;
 
 
     /**
@@ -82,20 +81,34 @@ public class MessageWebSocketHandler implements WebSocketHandler {
                     .build();
             channelSub.set(stub);
 
+//            try {
+//                // payload에서 세션 ID를 추출하는 로직을 구현해야 합니다.
+//                String sessionId = stub.getSession();
+//
+//                return sessionRepository.findById(sessionId)
+//                        .flatMap(findSession -> {
+//                            // 세션에서 원하는 정보를 가져오고 처리를 수행합니다.
+//                            // 예를 들어, 인증 정보를 가져오려면 다음과 같이 할 수 있습니다.
+//                            Authentication authentication = findSession.getAttribute("SPRING_SECURITY_CONTEXT");
+//
+//                            if (authentication == null || !authentication.isAuthenticated()) {
+//                                return Mono.error(new RuntimeException("Invalid session"));
+//                            }
+//
+//                            // 세션 정보를 사용하여 원하는 로직을 구현합니다.
+//                            // ...
+//                            return Mono.empty();
+//                        })
+//                        .switchIfEmpty(Mono.error(new RuntimeException("Session not found")))
+//                        .then();
+//            } catch (Exception e) {
+//                return Mono.error(new RuntimeException("Error handling message", e));
+//            }
+
             if ("subscribe".equals(command)) {
                 // https://www.baeldung.com/spring-session-reactive
 //                session.getAttributes().put("pacSessionId", stub.getSession());
- Authentication authentication = new UsernamePasswordAuthenticationToken(null, stub.getSession());
-
-                return authenticationManager.authenticate(authentication)
-                        .flatMap(auth -> {
-                            UserDetails userDetails = (UserDetails) auth.getPrincipal();
-
-                            // 여기서 필요한 작업을 수행하세요
-                            return processSubscribeCommand(stub, session);
-                        });
-
-
+                return processSubscribeCommand(stub, session);
             } else if ("message".equals(command)) {
                 return processMessageCommand(stub, messageRequestDto.getMessage());
             }

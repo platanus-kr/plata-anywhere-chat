@@ -2,8 +2,6 @@ package org.platanus.platachat.message.websocket;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.platanus.platachat.message.broker.BrokerService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
@@ -19,7 +17,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Component
 @RequiredArgsConstructor
 public class SubscriptionManager {
-    
+
 //    private final BrokerService brokerService;
 
     private final MessageFlux messageFlux;
@@ -44,8 +42,8 @@ public class SubscriptionManager {
      * 세션 구독 정보를 <code>subscriptions</code>에 저장한다. <code>ConcurrentHashMap</code> 에 저장.<br />
      * 구독후 채널에 구독 메시지 브로드케스트.<br />
      *
-     * @param channel  구독 하고자 하는 채널명
-     * @param session  구독 하고자 하는 세션
+     * @param channel 구독 하고자 하는 채널명
+     * @param session 구독 하고자 하는 세션
      */
     public void addSubscription(String channel, WebSocketSession session) {
         String uniqueKey = channel + "-" + session.getId();
