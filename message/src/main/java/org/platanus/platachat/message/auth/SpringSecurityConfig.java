@@ -19,16 +19,16 @@ public class SpringSecurityConfig {
      */
 
 //    private final CustomAuthenticationProvider customAuthenticationProvider;
-    private final CustomWebFilter customWebFilter;
+//    private final CustomWebFilter customWebFilter;
 
     @Bean
     public SecurityWebFilterChain configure(ServerHttpSecurity http) {
         http.authorizeExchange()
-//                .pathMatchers("/**").permitAll()
-                .pathMatchers("/simplemessage/**").permitAll()
+                .pathMatchers("/**").permitAll()
+//                .pathMatchers("/simplemessage/**").permitAll()
                 .anyExchange().authenticated()
                 .and()
-                .addFilterAt(customWebFilter, SecurityWebFiltersOrder.FIRST)
+//                .addFilterAt(customWebFilter, SecurityWebFiltersOrder.FIRST)
 //                .addFilterBefore(customWebFilter, SecurityWebFiltersOrder.FIRST)
                 .csrf().disable()
                 .httpBasic().disable()

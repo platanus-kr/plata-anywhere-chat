@@ -15,17 +15,18 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
-@Component
-@RequiredArgsConstructor
+//@Component
+//@RequiredArgsConstructor
 //public class CustomWebFilter  {
-public class CustomWebFilter implements WebFilter {
+public class CustomWebFilter{
+//public class CustomWebFilter implements WebFilter {
 
-    private final SessionHandlerForMVC sessionHandler;
+//    private final SessionHandlerForMVC sessionHandler;
 
-    @Override
-    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        return sessionHandler.handleRequest(exchange).then(chain.filter(exchange));
-    }
+//    @Override
+//    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+//        return sessionHandler.handleRequest(exchange).then(chain.filter(exchange));
+//    }
 
 //    private final ServerSecurityContextRepository repository;
 

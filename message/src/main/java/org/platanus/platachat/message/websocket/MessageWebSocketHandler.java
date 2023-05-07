@@ -57,7 +57,7 @@ public class MessageWebSocketHandler implements WebSocketHandler {
         //HandshakeInfo handshakeInfo = session.getHandshakeInfo();
         //handshakeInfo.getHeaders();
         AtomicReference<ChannelSubscribeDto> channelSub = new AtomicReference<>();
-        log.info(session.getAttributes().toString());
+//        log.info(session.getAttributes().toString());
         return session.receive()
                 .map(WebSocketMessage::getPayloadAsText)
                 .publishOn(Schedulers.boundedElastic())
@@ -90,10 +90,10 @@ public class MessageWebSocketHandler implements WebSocketHandler {
                     .session(identifier.getToken())
                     .build();
             channelSub.set(stub);
-
 //            try {
 //                // payload에서 세션 ID를 추출하는 로직을 구현해야 합니다.
 //                String sessionId = stub.getSession();
+            log.info("stub.session : " + stub.getSession());
 //
 //                return sessionRepository.findById(sessionId)
 //                        .flatMap(findSession -> {

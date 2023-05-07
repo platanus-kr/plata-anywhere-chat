@@ -42,15 +42,17 @@ public class SessionHandlerForMVC {
 //            log.info("s: {}", s);
 //            return Mono.empty();
 //        }).then().subscribe();
-        ServerHttpRequest request = exchange.getRequest();
-        Flux<DataBuffer> body = request.getBody();
-        body.flatMap(d -> {
-            ByteBuffer byteBuffer = d.asByteBuffer();
-            Charset charset = StandardCharsets.UTF_8;
-            String data = charset.decode(byteBuffer).toString();
-            log.info("data: {}", data);
-            return Mono.empty();
-        }).subscribe();
+//        ServerHttpRequest request = exchange.getRequest();
+//        Flux<DataBuffer> body = request.getBody();
+//        body.flatMap(d -> {
+//            ByteBuffer byteBuffer = d.asByteBuffer();
+//            Charset charset = StandardCharsets.UTF_8;
+//            String data = charset.decode(byteBuffer).toString();
+//            log.info("data: {}", data);
+//            return Mono.empty();
+//        }).subscribe();
+        Object cachedRequestBodyObject = exchange.getAttribute("cachedRequestBodyObject");
+        log.info("cachedRequestBodyObject: {}", cachedRequestBodyObject);
         return Mono.empty();
     }
 }
