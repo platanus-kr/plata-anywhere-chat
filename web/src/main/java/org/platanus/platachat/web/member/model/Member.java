@@ -13,6 +13,11 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 /**
  * 어플리케이션 회원 Entity
  */
@@ -63,7 +68,9 @@ public class Member extends BaseTime implements Serializable {
 
     @Enumerated(value = EnumType.STRING)
     private AppRole appRole;
-
+    
+    @JsonSerialize(using= LocalDateTimeSerializer.class)
+    @JsonDeserialize(using= LocalDateTimeDeserializer.class)
     private LocalDateTime lastActivated;
 
     public Member update(Member m) {
