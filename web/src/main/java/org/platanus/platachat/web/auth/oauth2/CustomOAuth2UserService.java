@@ -1,12 +1,15 @@
 package org.platanus.platachat.web.auth.oauth2;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.platanus.platachat.web.auth.dto.CustomOAuth2MemberDto;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.constants.AuthConstant;
 import org.platanus.platachat.web.member.model.AppRole;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.repository.MemberRepository;
+import org.springframework.boot.rsocket.context.LocalRSocketServerPort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -23,6 +26,8 @@ import java.util.Optional;
 /**
  * OAuth2 가입을 위한 서비스
  */
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
@@ -37,6 +42,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
+        log.info(oAuth2User.getAttributes().toString());
         CustomOAuth2MemberDto attributes = CustomOAuth2MemberDto.ofGitHub(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
         if (isDeletedUser(attributes)) {
@@ -72,7 +78,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         Member findMember = memberRepository.findByProviderId(buildMember.getProviderId()).map(e -> e.update(buildMember)).orElse(buildMember);
         if (findMember == null) {
-            Member defaultMember = m.toMember();
+            findMember = m.toMember();
         }
 
         return memberRepository.save(findMember);

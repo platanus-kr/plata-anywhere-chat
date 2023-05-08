@@ -37,6 +37,7 @@ public class CustomOAuth2MemberDto {
     public Member toMember() {
         return Member.builder()
                 .provider(this.provider)
+                .providerId(this.providerId)
                 .username(this.username)
                 .password(AuthConstant.DUMMY_PASSWORD)
                 .profileImage(this.profileImage)
