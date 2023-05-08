@@ -10,6 +10,9 @@ import org.platanus.platachat.message.chat.dto.IdentifierDto;
 import org.platanus.platachat.message.chat.dto.MessageRequestDto;
 import org.platanus.platachat.message.utils.XSSFilter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.session.ReactiveSessionRepository;
+import org.springframework.session.Session;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
@@ -29,12 +32,11 @@ public class MessageWebSocketHandler implements WebSocketHandler {
     private final SubscriptionManager subscriptionManager;
     private final MessageBroadcaster messageBroadcaster;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    private final ReactiveSessionRepository<? extends Session> sessionRepository;
     //    private final ReactiveSessionRepository<? extends Session> sessionRepository;
 //    private final WebSessionManager webSessionManager;
 //    private final ServerWebExchange serverWebExchange;
 //    private final SessionKeyFilterConfig sessionKeyFilterConfig;
-
-
     @Value("${server.servlet.session.cookie.name}")
     private String sessionKey;
 
@@ -114,14 +116,40 @@ public class MessageWebSocketHandler implements WebSocketHandler {
 //            } catch (Exception e) {
 //                return Mono.error(new RuntimeException("Error handling message", e));
 //            }
+// 레디스에서 세션 정보를 조회하고 처리하는 로직을 추가합니다.
+            return sessionRepository.findById(stub.getSession())
+                    .flatMap(findSession -> {
+                        // 세션에서 원하는 정보를 가져오고 처리를 수행합니다.
+                        Authentication authentication = findSession.getAttribute("SPRING_SECURITY_CONTEXT");
+                
+                        if (authentication == null || !authentication.isAuthenticated()) {
+                            return Mono.error(new RuntimeException("Invalid session"));
+                        }
+                
+                        if ("subscribe".equals(command)) {
+                            return processSubscribeCommand(stub, session);
+                        } else if ("message".equals(command)) {
+                            return processMessageCommand(stub, messageRequestDto.getMessage());
+                        } else {
+                            return Mono.<Void>empty();
+                        }
+                    })
+                    .switchIfEmpty(Mono.defer(() -> {
+                        log.error("Session not found");
+                        return Mono.<Void>error(new RuntimeException("Session not found"));
+                    }))
+                    .onErrorResume(e -> {
+                        log.error("Error handling message", e);
+                        return Mono.empty();
+                    });
 
-            if ("subscribe".equals(command)) {
-                // https://www.baeldung.com/spring-session-reactive
-//                session.getAttributes().put("pacSessionId", stub.getSession());
-                return processSubscribeCommand(stub, session);
-            } else if ("message".equals(command)) {
-                return processMessageCommand(stub, messageRequestDto.getMessage());
-            }
+//            if ("subscribe".equals(command)) {
+//                // https://www.baeldung.com/spring-session-reactive
+////                session.getAttributes().put("pacSessionId", stub.getSession());
+//                return processSubscribeCommand(stub, session);
+//            } else if ("message".equals(command)) {
+//                return processMessageCommand(stub, messageRequestDto.getMessage());
+//            }
         } catch (IOException e) {
             log.error("Error parsing WebSocket message", e);
         }
