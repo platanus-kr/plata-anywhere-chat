@@ -17,10 +17,25 @@ import java.util.Collections;
 public class CustomUserDetailsUserAdaptor extends User {
 
     private final Member member;
+//    private final SessionMemberDto sessionMember;
+
     public CustomUserDetailsUserAdaptor(Member m) {
         super(m.getUsername(), m.getPassword(), getAuthorities(m.getAppRole()));
         this.member = m;
     }
+
+//    public CustomUserDetailsUserAdaptor(SessionMemberDto sessionMemberDto) {
+//        super(sessionMemberDto.getUsername(), null, getAuthorities(sessionMemberDto.getAppRole()));
+//        this.sessionMember = sessionMemberDto;
+//    }
+//
+//    public static CustomUserDetailsUserAdaptor of(UserDetails m) {
+//        SessionMemberDto sessionMemberDto = new SessionMemberDto(m, null);
+//        CustomUserDetailsUserAdaptor customUserDetailsUserAdaptor = new CustomUserDetailsUserAdaptor(sessionMemberDto);
+//        Member member1 = customUserDetailsUserAdaptor.getMember();
+//        member1.setPassword(m.getPassword());
+//        return customUserDetailsUserAdaptor;
+//    }
 
     private static Collection<? extends GrantedAuthority> getAuthorities(AppRole role) {
         return Collections.singleton(new SimpleGrantedAuthority(role.getKey()));

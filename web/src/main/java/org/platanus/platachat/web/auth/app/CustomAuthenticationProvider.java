@@ -25,6 +25,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String password = (String) authentication.getCredentials();
 
         CustomUserDetailsUserAdaptor memberContext = (CustomUserDetailsUserAdaptor) customUserDetailsService.loadUserByUsername(username);
+//        CustomUserDetailsUserAdaptor memberContext = CustomUserDetailsUserAdaptor.of(customUserDetailsService.loadUserByUsername(username));
         String passwordInDb = memberContext.getMember().getPassword();
 
         if (!passwordEncoder.matches(password, passwordInDb)){

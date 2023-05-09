@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.platanus.platachat.message.auth.SessionMemberDto;
 import org.platanus.platachat.message.chat.dto.ChannelSubscribeDto;
 import org.platanus.platachat.message.chat.dto.IdentifierDto;
 import org.platanus.platachat.message.chat.dto.MessageRequestDto;
@@ -120,11 +121,13 @@ public class MessageWebSocketHandler implements WebSocketHandler {
             return sessionRepository.findById(stub.getSession())
                     .flatMap(findSession -> {
                         // 세션에서 원하는 정보를 가져오고 처리를 수행합니다.
-                        Authentication authentication = findSession.getAttribute("SPRING_SECURITY_CONTEXT");
+//                        Authentication authentication = findSession.getAttribute("SPRING_SECURITY_CONTEXT");
+                        SessionMemberDto memberDto = findSession.getAttribute("member");
+                        log.info(memberDto.toString());
                 
-                        if (authentication == null || !authentication.isAuthenticated()) {
-                            return Mono.error(new RuntimeException("Invalid session"));
-                        }
+//                        if (authentication == null || !authentication.isAuthenticated()) {
+//                            return Mono.error(new RuntimeException("Invalid session"));
+//                        }
                 
                         if ("subscribe".equals(command)) {
                             return processSubscribeCommand(stub, session);

@@ -23,7 +23,20 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         Object principal = authentication.getPrincipal();
         if (principal instanceof Member) {
             Member m = (Member) principal;
+//        if (principal instanceof SessionMemberDto) {
+//            SessionMemberDto m = (SessionMemberDto) principal;
+//            SessionMemberDto build = SessionMemberDto.builder()
+//                    .id(m.getId())
+//                    .username(m.getUsername())
+//                    .nickname(m.getNickname())
+//                    .email(m.getEmail())
+//                    .profileImage(m.getProfileImage())
+//                    .htmlUrl(m.getHtmlUrl())
+//                    .appRole(m.getAppRole())
+//                    .token(session.getId())
+//                    .build();
             // SessionMemberDto 객체 생성 및 저장
+//            session.setAttribute("member", build);
             session.setAttribute("member", new SessionMemberDto(m, session.getId()));
         }
     }

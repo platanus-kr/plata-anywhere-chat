@@ -1,9 +1,6 @@
 package org.platanus.platachat.web.member.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
@@ -17,6 +14,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import org.platanus.platachat.web.auth.serialize.SessionMemberDtoDeserializer;
+import org.platanus.platachat.web.auth.serialize.SessionMemberDtoSerializer;
+import org.platanus.platachat.web.member.serializer.MemberDeserializer;
+import org.platanus.platachat.web.member.serializer.MemberSerializer;
 
 /**
  * 어플리케이션 회원 Entity
@@ -26,6 +27,8 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 @ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonSerialize(using = MemberSerializer.class)
+@JsonDeserialize(using = MemberDeserializer.class)
 @Table(name = "MEMBERS", indexes = {
         @Index(name = "idx_username", columnList = "username", unique = true),
         @Index(name = "idx_provider_id", columnList = "providerId", unique = true)})
@@ -48,6 +51,7 @@ public class Member extends BaseTime implements Serializable {
     @Column(unique = true, nullable = false)
     private String username;
 
+    @Setter
     @NotBlank
     private String password;
 

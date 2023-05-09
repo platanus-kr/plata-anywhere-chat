@@ -1,6 +1,10 @@
 package org.platanus.platachat.web.auth.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
+import org.platanus.platachat.web.auth.serialize.SessionMemberDtoDeserializer;
+import org.platanus.platachat.web.auth.serialize.SessionMemberDtoSerializer;
 import org.platanus.platachat.web.member.model.AppRole;
 import org.platanus.platachat.web.member.model.Member;
 
@@ -12,6 +16,8 @@ import java.io.Serializable;
 @Getter
 @Builder
 @ToString
+@JsonSerialize(using = SessionMemberDtoSerializer.class)
+@JsonDeserialize(using = SessionMemberDtoDeserializer.class)
 @NoArgsConstructor
 @AllArgsConstructor
 public class SessionMemberDto implements Serializable {
