@@ -1,11 +1,16 @@
 package org.platanus.platachat.web.member.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.WritableTypeId;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import org.platanus.platachat.web.member.model.Member;
 
 import java.io.IOException;
+
+import static com.fasterxml.jackson.core.JsonToken.START_OBJECT;
 
 public class MemberSerializer extends JsonSerializer<Member> {
 
@@ -26,5 +31,16 @@ public class MemberSerializer extends JsonSerializer<Member> {
         jsonGenerator.writeStringField("appRole", member.getAppRole().toString());
         jsonGenerator.writeStringField("lastActivated", member.getLastActivated().toString());
         jsonGenerator.writeEndObject();
+    }
+
+    @Override
+    public void serializeWithType(Member value, JsonGenerator gen,
+                                  SerializerProvider provider, TypeSerializer typeSer)
+            throws IOException, JsonProcessingException {
+
+        WritableTypeId typeId = typeSer.typeId(value, START_OBJECT);
+        typeSer.writeTypePrefix(gen, typeId);
+        serialize(value, gen, provider);
+        typeSer.writeTypeSuffix(gen, typeId);
     }
 }

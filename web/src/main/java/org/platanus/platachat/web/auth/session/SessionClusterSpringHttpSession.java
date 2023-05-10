@@ -1,6 +1,8 @@
 package org.platanus.platachat.web.auth.session;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.auth.serialize.*;
@@ -31,49 +33,57 @@ public class SessionClusterSpringHttpSession {
 //        return ConfigureRedisAction.NO_OP;
 //    }
     
-    //@Bean
-    //public LettuceConnectionFactory connectionFactory() {
-    //    return new LettuceConnectionFactory();
-    //}
+//    @Bean
+    public LettuceConnectionFactory connectionFactory() {
+        return new LettuceConnectionFactory();
+    }
 
-    //@Bean
-    //public GenericJackson2JsonRedisSerializer sessionMemberDtoRedisSerializer() {
-    //    ObjectMapper objectMapper = new ObjectMapper();
-    //    SimpleModule module = new SimpleModule();
-    //    module.addSerializer(SessionMemberDto.class, new SessionMemberDtoSerializer());
-    //    module.addDeserializer(SessionMemberDto.class, new SessionMemberDtoDeserializer());
-    //    //module.addSerializer(Member.class, new MemberSerializer());
-    //    //module.addDeserializer(Member.class, new MemberDeserializer());
-    //    //module.addSerializer(SecurityContextImpl.class, new SecurityContextImplSerializer());
-    //    //module.addDeserializer(SecurityContextImpl.class, new SecurityContextImplDeserializer());
-    //    //module.addSerializer(Authentication.class, new AuthenticationSerializer());
-    //    //module.addDeserializer(Authentication.class, new AuthenticationDeserializer());
-    //
-    //    objectMapper.registerModule(module);
-    //    return new GenericJackson2JsonRedisSerializer(objectMapper);
-    //}
+//    @Bean
+    public GenericJackson2JsonRedisSerializer customRedisSerializer() {
+        PolymorphicTypeValidator typeValidator = BasicPolymorphicTypeValidator.builder()
+                .allowIfBaseType(Object.class)
+                .build();
 
-    //@Bean
-    //public RedisOperations<String, Object> sessionRedisOperations(LettuceConnectionFactory connectionFactory,
-    //                                                              GenericJackson2JsonRedisSerializer sessionMemberDtoRedisSerializer) {
-    //    RedisTemplate<String, Object> template = new RedisTemplate<>();
-    //    template.setConnectionFactory(connectionFactory);
-    //    template.setKeySerializer(new StringRedisSerializer());
-    //    template.setValueSerializer(sessionMemberDtoRedisSerializer);
-    //    //template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-    //    template.setHashKeySerializer(new StringRedisSerializer());
-    //    //template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
-    //    template.setHashValueSerializer(sessionMemberDtoRedisSerializer);
-    //    template.setDefaultSerializer(new StringRedisSerializer());
-    //    //template.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
-    //    return template;
-    //}
+        ObjectMapper objectMapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+//        module.addSerializer(SessionMemberDto.class, new SessionMemberDtoSerializer());
+//        module.addDeserializer(SessionMemberDto.class, new SessionMemberDtoDeserializer());
+//        module.addSerializer(Member.class, new MemberSerializer());
+//        module.addDeserializer(Member.class, new MemberDeserializer());
+//        module.addSerializer(SecurityContextImpl.class, new SecurityContextImplSerializer());
+//        module.addDeserializer(SecurityContextImpl.class, new SecurityContextImplDeserializer());
+//        module.addSerializer(Authentication.class, new AuthenticationSerializer());
+//        module.addDeserializer(Authentication.class, new AuthenticationDeserializer());
 
-    //@Bean
-    //public RedisSessionRepository sessionRepository(RedisOperations<String, Object> sessionRedisOperations) {
-    //    RedisSessionRepository sessionRepository = new RedisSessionRepository(sessionRedisOperations);
-    //    return sessionRepository;
-    //}
+        objectMapper.registerModule(module);
+        objectMapper.activateDefaultTyping(typeValidator, ObjectMapper.DefaultTyping.JAVA_LANG_OBJECT);
+        return new GenericJackson2JsonRedisSerializer(objectMapper);
+    }
+
+//    @Bean
+    public RedisOperations<String, Object> sessionRedisOperations(LettuceConnectionFactory connectionFactory,
+                                                                  GenericJackson2JsonRedisSerializer customRedisSerializer) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(connectionFactory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+//        redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
+        redisTemplate.setValueSerializer(customRedisSerializer);
+        redisTemplate.setHashKeySerializer(customRedisSerializer);
+//        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(customRedisSerializer);
+//        redisTemplate.setHashValueSerializer(new JdkSerializationRedisSerializer());
+        //redisTemplate.setDefaultSerializer(new JdkSerializationRedisSerializer()); // 이거 별로 쓸모없음
+        //redisTemplate.setEnableDefaultSerializer(true);
+//        redisTemplate.setStringSerializer(new StringRedisSerializer());
+//        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
+    }
+
+//    @Bean
+    public RedisSessionRepository sessionRepository(RedisOperations<String, Object> sessionRedisOperations) {
+        RedisSessionRepository sessionRepository = new RedisSessionRepository(sessionRedisOperations);
+        return sessionRepository;
+    }
 
     
     ///

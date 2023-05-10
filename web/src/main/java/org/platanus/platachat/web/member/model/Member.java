@@ -27,8 +27,8 @@ import org.platanus.platachat.web.member.serializer.MemberSerializer;
 @ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-//@JsonSerialize(using = MemberSerializer.class)
-//@JsonDeserialize(using = MemberDeserializer.class)
+@JsonSerialize(using = MemberSerializer.class)
+@JsonDeserialize(using = MemberDeserializer.class)
 @Table(name = "MEMBERS", indexes = {
         @Index(name = "idx_username", columnList = "username", unique = true),
         @Index(name = "idx_provider_id", columnList = "providerId", unique = true)})

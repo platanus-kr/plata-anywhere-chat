@@ -20,7 +20,7 @@ public class AuthenticationSerializer extends JsonSerializer<Authentication> {
         jsonGenerator.writeEndArray();
         jsonGenerator.writeObjectField("principal", authentication.getPrincipal());
         jsonGenerator.writeBooleanField("authenticated", authentication.isAuthenticated());
-        jsonGenerator.writeStringField("name", authentication.getName());
+//        jsonGenerator.writeStringField("name", authentication.getName());
         jsonGenerator.writeEndObject();
     }
 }

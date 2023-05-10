@@ -3,6 +3,7 @@ package org.platanus.platachat.web.auth.serialize;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 
 import java.io.IOException;
