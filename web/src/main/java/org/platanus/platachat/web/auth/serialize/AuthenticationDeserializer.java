@@ -18,20 +18,31 @@ public class AuthenticationDeserializer extends JsonDeserializer<Authentication>
 
     @Override
     public Authentication deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        JsonNode node = jsonParser.getCodec().readTree(jsonParser);
-
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        for (JsonNode authorityNode : node.get("authorities")) {
-            authorities.add(new SimpleGrantedAuthority(authorityNode.asText()));
+        //JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+        //
+        //Collection<GrantedAuthority> authorities = new ArrayList<>();
+        //for (JsonNode authorityNode : node.get("authorities")) {
+        //    authorities.add(new SimpleGrantedAuthority(authorityNode.asText()));
+        //}
+        //
+        //Object principal = jsonParser.getCodec().treeToValue(node.get("principal"), SessionMemberDto.class);
+        //boolean authenticated = node.get("authenticated").asBoolean();
+        //String name = node.get("name").asText();
+        //
+        //Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, authorities);
+        //authentication.setAuthenticated(authenticated);
+        //return authentication;
+        try {
+            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+            Collection<GrantedAuthority> authorities = new ArrayList<>();
+            for (JsonNode authNode : node.get("authorities")) {
+                authorities.add(new SimpleGrantedAuthority(authNode.asText()));
+            }
+            Object principal = node.get("principal").asText();
+            //Object credentials = node.get("credentials").asText();
+            return new UsernamePasswordAuthenticationToken(principal, null, authorities);
+        } catch (Exception e) {
+            throw new IOException("Failed to deserialize Authentication", e);
         }
-
-        Object principal = jsonParser.getCodec().treeToValue(node.get("principal"), SessionMemberDto.class);
-        boolean authenticated = node.get("authenticated").asBoolean();
-        String name = node.get("name").asText();
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, authorities);
-        authentication.setAuthenticated(authenticated);
-
-        return authentication;
     }
 }
