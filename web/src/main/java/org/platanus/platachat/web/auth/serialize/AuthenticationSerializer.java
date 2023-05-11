@@ -12,6 +12,7 @@ public class AuthenticationSerializer extends JsonSerializer<Authentication> {
 
     @Override
     public void serialize(Authentication authentication, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        System.out.println("AuthenticationSerializer 시작 지나가기");
         jsonGenerator.writeStartObject();
         jsonGenerator.writeArrayFieldStart("authorities");
         for (GrantedAuthority authority : authentication.getAuthorities()) {
@@ -22,5 +23,6 @@ public class AuthenticationSerializer extends JsonSerializer<Authentication> {
         jsonGenerator.writeBooleanField("authenticated", authentication.isAuthenticated());
 //        jsonGenerator.writeStringField("name", authentication.getName());
         jsonGenerator.writeEndObject();
+        System.out.println("AuthenticationSerializer 끝 지나가기");
     }
 }

@@ -11,6 +11,7 @@ public class SecurityContextImplSerializer extends JsonSerializer<SecurityContex
 
     @Override
     public void serialize(SecurityContextImpl securityContext, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        System.out.println("SecurityContextImplSerializer 지나가기");
         jsonGenerator.writeStartObject();
         jsonGenerator.writeObjectField("authentication", securityContext.getAuthentication());
         jsonGenerator.writeEndObject();

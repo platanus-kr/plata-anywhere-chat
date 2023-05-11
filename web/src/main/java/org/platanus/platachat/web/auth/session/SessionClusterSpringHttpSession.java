@@ -1,9 +1,13 @@
 package org.platanus.platachat.web.auth.session;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.auth.serialize.*;
 import org.platanus.platachat.web.member.model.Member;
@@ -24,43 +28,54 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
 import org.springframework.session.data.redis.RedisSessionRepository;
 
-//@Configuration
-//@EnableSpringHttpSession
+@Configuration
+@EnableSpringHttpSession
 public class SessionClusterSpringHttpSession {
 
-//    @Bean
+    //@Bean
 //    public static ConfigureRedisAction configureRedisAction() {
 //        return ConfigureRedisAction.NO_OP;
 //    }
     
-//    @Bean
+    @Bean
     public LettuceConnectionFactory connectionFactory() {
         return new LettuceConnectionFactory();
     }
 
-//    @Bean
+    @Bean
     public GenericJackson2JsonRedisSerializer customRedisSerializer() {
-        PolymorphicTypeValidator typeValidator = BasicPolymorphicTypeValidator.builder()
-                .allowIfBaseType(Object.class)
-                .build();
-
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleModule module = new SimpleModule();
-//        module.addSerializer(SessionMemberDto.class, new SessionMemberDtoSerializer());
-//        module.addDeserializer(SessionMemberDto.class, new SessionMemberDtoDeserializer());
-//        module.addSerializer(Member.class, new MemberSerializer());
-//        module.addDeserializer(Member.class, new MemberDeserializer());
-//        module.addSerializer(SecurityContextImpl.class, new SecurityContextImplSerializer());
-//        module.addDeserializer(SecurityContextImpl.class, new SecurityContextImplDeserializer());
-//        module.addSerializer(Authentication.class, new AuthenticationSerializer());
-//        module.addDeserializer(Authentication.class, new AuthenticationDeserializer());
-
+        //module.addSerializer(SessionMemberDto.class, new SessionMemberDtoSerializer());
+        //module.addDeserializer(SessionMemberDto.class, new SessionMemberDtoDeserializer());
+        //module.addSerializer(Member.class, new MemberSerializer());
+        //module.addDeserializer(Member.class, new MemberDeserializer());
+        module.addSerializer(SecurityContextImpl.class, new SecurityContextImplSerializer());
+        module.addDeserializer(SecurityContextImpl.class, new SecurityContextImplDeserializer());
+        //module.addSerializer(Authentication.class, new AuthenticationSerializer());
+        //module.addDeserializer(Authentication.class, new AuthenticationDeserializer());
+        
+        //test1
         objectMapper.registerModule(module);
-        objectMapper.activateDefaultTyping(typeValidator, ObjectMapper.DefaultTyping.JAVA_LANG_OBJECT);
+        //objectMapper.registerModule(new JavaTimeModule());
+    
+        /**
+         *  이부분은 위의 직렬화기/역직렬화기와 양자택일임.
+         *  다만 SecurityContextImpl 과 같이 @JsonTypeInfo 명시가 불가능한경우
+         *  직렬화를 위처럼 직접 구현해야한다.
+         */
+        // https://velog.io/@bagt/Redis-%EC%97%AD%EC%A7%81%EB%A0%AC%ED%99%94-%EC%82%BD%EC%A7%88%EA%B8%B0-feat.-RedisSerializer
+        //PolymorphicTypeValidator typeValidator = BasicPolymorphicTypeValidator.builder()
+        //        .allowIfBaseType(Object.class)
+        //        .build();
+        //objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        //objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE); // 일단이거
+        //objectMapper.activateDefaultTyping(typeValidator, ObjectMapper.DefaultTyping.NON_FINAL); // 너도
+        //objectMapper.activateDefaultTyping(typeValidator, ObjectMapper.DefaultTyping.JAVA_LANG_OBJECT);
         return new GenericJackson2JsonRedisSerializer(objectMapper);
     }
 
-//    @Bean
+    @Bean
     public RedisOperations<String, Object> sessionRedisOperations(LettuceConnectionFactory connectionFactory,
                                                                   GenericJackson2JsonRedisSerializer customRedisSerializer) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
@@ -68,18 +83,18 @@ public class SessionClusterSpringHttpSession {
         redisTemplate.setKeySerializer(new StringRedisSerializer());
 //        redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
         redisTemplate.setValueSerializer(customRedisSerializer);
-        redisTemplate.setHashKeySerializer(customRedisSerializer);
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
 //        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(customRedisSerializer);
 //        redisTemplate.setHashValueSerializer(new JdkSerializationRedisSerializer());
-        //redisTemplate.setDefaultSerializer(new JdkSerializationRedisSerializer()); // 이거 별로 쓸모없음
-        //redisTemplate.setEnableDefaultSerializer(true);
+        redisTemplate.setDefaultSerializer(customRedisSerializer); // 이거 별로 쓸모없음
+        redisTemplate.setEnableDefaultSerializer(true);
 //        redisTemplate.setStringSerializer(new StringRedisSerializer());
 //        redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
 
-//    @Bean
+    @Bean
     public RedisSessionRepository sessionRepository(RedisOperations<String, Object> sessionRedisOperations) {
         RedisSessionRepository sessionRepository = new RedisSessionRepository(sessionRedisOperations);
         return sessionRepository;
