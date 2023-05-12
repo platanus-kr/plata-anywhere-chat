@@ -4,7 +4,7 @@ package org.platanus.platachat.web.UtilTest;
 import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
-import org.platanus.platachat.web.auth.serialize.SecurityContextImplDeserializer;
+import org.platanus.platachat.web.auth.session.serialize.SecurityContextImplDeserializer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextImpl;
 

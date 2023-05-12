@@ -3,8 +3,8 @@ package org.platanus.platachat.message.broker.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.platanus.platachat.message.broker.BrokerService;
-import org.platanus.platachat.message.websocket.MessageBroadcaster;
-import org.platanus.platachat.message.websocket.SubscriptionManager;
+import org.platanus.platachat.message.websocket.broadcaster.MessageBroadcaster;
+import org.platanus.platachat.message.websocket.subscription.SubscriptionManager;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 

@@ -14,10 +14,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import org.platanus.platachat.web.auth.serialize.SessionMemberDtoDeserializer;
-import org.platanus.platachat.web.auth.serialize.SessionMemberDtoSerializer;
-import org.platanus.platachat.web.member.serializer.MemberDeserializer;
-import org.platanus.platachat.web.member.serializer.MemberSerializer;
 
 /**
  * 어플리케이션 회원 Entity
@@ -27,15 +23,14 @@ import org.platanus.platachat.web.member.serializer.MemberSerializer;
 @ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonSerialize(using = MemberSerializer.class)
-@JsonDeserialize(using = MemberDeserializer.class)
+//@JsonSerialize(using = MemberSerializer.class)
+//@JsonDeserialize(using = MemberDeserializer.class)
 @Table(name = "MEMBERS", indexes = {
         @Index(name = "idx_username", columnList = "username", unique = true),
         @Index(name = "idx_provider_id", columnList = "providerId", unique = true)})
 @Entity
 public class Member extends BaseTime implements Serializable {
 
-    // for spring data redis deserializable
     @Serial
     private static final long serialVersionUID = 1363937982849761862L;
 
