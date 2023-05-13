@@ -15,7 +15,7 @@ public class ChannelSubscribeDto {
     /**
      * 구독하고자 하는 채널명
      */
-    private final String channel;
+    private final String roomId;
 
     /**
      * 채널에서 사용하기 위한 닉네임
@@ -25,5 +25,5 @@ public class ChannelSubscribeDto {
     /**
      * 채널에서 사용하기 위한 세션
      */
-    private final String session;
+    private final String sessionId;
 }

@@ -11,5 +11,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticationValidationRetrieveRequestDto {
+public class AuthValidRetrieveRequestDto {
+    private String sessionId;
+    private String roomId;
 }

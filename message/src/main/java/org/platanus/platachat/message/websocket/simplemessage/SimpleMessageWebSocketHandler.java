@@ -70,7 +70,7 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
             String command = messageRequestDto.getCommand();
             IdentifierDto identifier = messageRequestDto.getIdentifier();
             ChannelSubscribeDto stub = ChannelSubscribeDto.builder()
-                    .channel(identifier.getChannel())
+                    .roomId(identifier.getChannel())
                     .nickname(identifier.getNickname())
                     .build();
             channelSub.set(stub);
@@ -94,9 +94,9 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
      * @return 구독 추가 후 Mono.empty()
      */
     private Mono<Void> processSubscribeCommand(ChannelSubscribeDto stub, WebSocketSession session) {
-        subscriptionManager.addSubscription(stub.getChannel(), session);
-        log.info(stub.getChannel() + " 채널에 " + stub.getNickname() + " 님이 입장하셨습니다.");
-        messageBroadcaster.broadcastMessageToSubscribers(stub.getChannel(), "SYSTEM", stub.getNickname() + "님이 채팅방에 입장 했습니다.");
+        subscriptionManager.addSubscription(stub.getRoomId(), session);
+        log.info(stub.getRoomId() + " 채널에 " + stub.getNickname() + " 님이 입장하셨습니다.");
+        messageBroadcaster.broadcastMessageToSubscribers(stub.getRoomId(), "SYSTEM", stub.getNickname() + "님이 채팅방에 입장 했습니다.");
         return Mono.empty();
     }
 
@@ -116,7 +116,7 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
 //            return Mono.empty();
 //        }
         // 채팅방에 있는 모든 사용자에게 메시지를 전달합니다.
-        messageBroadcaster.broadcastMessageToSubscribers(stub.getChannel(), stub.getNickname(), message);
+        messageBroadcaster.broadcastMessageToSubscribers(stub.getRoomId(), stub.getNickname(), message);
         return Mono.empty();
     }
 
@@ -138,9 +138,9 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
                                      WebSocketSession session) {
         if (SignalType.ON_COMPLETE.equals(signalType) || SignalType.ON_ERROR.equals(signalType)) {
             ChannelSubscribeDto stub = channelSub.get();
-            messageBroadcaster.broadcastMessageToSubscribers(stub.getChannel(),
+            messageBroadcaster.broadcastMessageToSubscribers(stub.getRoomId(),
                     "SYSTEM", stub.getNickname() + "가 퇴장합니다.");
-            subscriptionManager.removeSubscription(stub.getChannel(), session);
+            subscriptionManager.removeSubscription(stub.getRoomId(), session);
         }
     }
 }
