@@ -14,8 +14,8 @@ import reactor.core.publisher.Mono;
 @RestController("/room")
 public class RoomController {
 	
-	@GetMapping
-	Mono<CreateResponseDto> createRoom(@RequestBody CreateRequestDto dto) {
+	@GetMapping("/create")
+	public Mono<CreateResponseDto> createRoom(@RequestBody CreateRequestDto dto) {
 		
 		return Mono.just(new CreateResponseDto());
 	}

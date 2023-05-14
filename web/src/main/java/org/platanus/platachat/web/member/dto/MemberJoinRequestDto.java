@@ -28,6 +28,7 @@ public class MemberJoinRequestDto {
                 .email(this.email)
                 .provider("web")
                 .appRole(AppRole.ROLE_USER)
+                .deleted(false)
                 .lastActivated(LocalDateTime.now())
                 .build();
     }

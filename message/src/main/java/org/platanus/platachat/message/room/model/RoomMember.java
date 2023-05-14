@@ -1,6 +1,6 @@
 package org.platanus.platachat.message.room.model;
 
-import org.platanus.platachat.message.auth.model.Member;
+import org.platanus.platachat.message.member.model.Member;
 
 import java.time.LocalDateTime;
 

@@ -23,3 +23,13 @@ GET http://localhost:8080/test/endpoint
 
 ### logout suthorize
 GET http://localhost:8080/logout
+
+
+### validate session
+POST http://localhost:3120/api/v1/auth/validate
+Content-Type: application/json
+
+{
+  "sessionId" : "18bb3e98-ff6d-422c-9ce5-fd834cb14efb",
+  "roomId" : "test"
+}

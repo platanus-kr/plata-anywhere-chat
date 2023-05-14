@@ -1,4 +1,4 @@
-package org.platanus.platachat.web.auth;
+package org.platanus.platachat.web.auth.config;
 
 import lombok.RequiredArgsConstructor;
 import org.platanus.platachat.web.auth.app.CustomAuthenticationSuccessHandler;
@@ -32,7 +32,7 @@ public class SpringSecurityConfig {
         http.authorizeRequests()
                 .antMatchers("/oauth_login", "/error", "/h2-console/**").permitAll()
                 .antMatchers("/member/join/**", "/member/login/**").permitAll()
-                .antMatchers("/api/v1/auth", "/api/v1/auth/login").permitAll()
+                .antMatchers("/api/v1/auth", "/api/v1/auth/login", "/api/v1/auth/validate").permitAll()
                 .antMatchers("/chat/**").permitAll() // 테스트를 위한 임시 개방
                 .antMatchers("/css/**").permitAll() // 테스트를 위한 임시 개방
                 .antMatchers("/").permitAll()
@@ -45,9 +45,16 @@ public class SpringSecurityConfig {
                 .successHandler(new CustomAuthenticationSuccessHandler())
                 .defaultSuccessUrl("/", true)
                 .and()
-                .logout().logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("SESSION");
+                .logout().logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .deleteCookies();
         http.formLogin()
-                .successHandler(new CustomAuthenticationSuccessHandler());
+                .successHandler(new CustomAuthenticationSuccessHandler())
+                .defaultSuccessUrl("/", true)
+                .and()
+                .logout().logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .deleteCookies();
         http.cors().and().csrf().disable();
         return http.build();
     }

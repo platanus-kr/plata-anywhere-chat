@@ -1,6 +1,7 @@
 package org.platanus.platachat.web.auth.app;
 
 import lombok.RequiredArgsConstructor;
+import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.repository.MemberRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +26,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member m = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("없는 회원 입니다."));
+//        SessionMemberDto sessionMemberDto = new SessionMemberDto(m, null);
         return new CustomUserDetailsUserAdaptor(m);
+//        return new CustomUserDetailsUserAdaptor(sessionMemberDto);
     }
 }
 

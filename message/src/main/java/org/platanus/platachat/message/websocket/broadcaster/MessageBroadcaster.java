@@ -1,14 +1,13 @@
-package org.platanus.platachat.message.websocket;
+package org.platanus.platachat.message.websocket.broadcaster;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.platanus.platachat.message.broker.BrokerService;
 import org.platanus.platachat.message.chat.dto.IdentifierDto;
 import org.platanus.platachat.message.chat.dto.MessageResponseDto;
+import org.platanus.platachat.message.websocket.subscription.SubscriptionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import reactor.core.publisher.FluxSink;
@@ -16,12 +15,15 @@ import reactor.core.publisher.FluxSink;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * 채널 내 모든 구독자에게 메시지 송신
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class MessageBroadcaster {
 
-//    private final BrokerService brokerService;
+    //    private final BrokerService brokerService;
     private final MessageFlux messageFlux;
     private final SubscriptionManager subscriptionManager;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());

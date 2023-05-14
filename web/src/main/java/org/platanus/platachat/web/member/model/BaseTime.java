@@ -12,6 +12,11 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 @Getter
 @SuperBuilder
 @NoArgsConstructor
@@ -20,9 +25,13 @@ import java.time.LocalDateTime;
 public abstract class BaseTime {
     @CreatedDate
     @Column(name = "created")
+    @JsonSerialize(using= LocalDateTimeSerializer.class)
+    @JsonDeserialize(using= LocalDateTimeDeserializer.class)
     private LocalDateTime created;
 
     @LastModifiedDate
     @Column(name = "updated")
+    @JsonSerialize(using= LocalDateTimeSerializer.class)
+    @JsonDeserialize(using= LocalDateTimeDeserializer.class)
     private LocalDateTime updated;
 }
