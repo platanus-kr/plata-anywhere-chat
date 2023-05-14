@@ -23,6 +23,9 @@ import reactor.core.scheduler.Schedulers;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * 메시지 처리
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -87,11 +90,13 @@ public class MessageWebSocketHandler implements WebSocketHandler {
             channelSub.set(stub);
 
             if ("subscribe".equals(command)) {
-                // https://www.baeldung.com/spring-session-reactive
                 authService.getSessionHealth(stub.getSessionId(), stub.getRoomId())
+                        // 채팅방 구현하면서 다시 손볼것.
+                        .onErrorResume(error -> {
+                            throw new IllegalArgumentException(error.getMessage());
+                        })
                         .subscribeOn(Schedulers.boundedElastic())
                         .subscribe(response -> {
-                            log.info(response.toString());
                             if (!response.getIsAdmission() || !response.getIsLogin()) {
                                 throw new IllegalArgumentException(response.getMessage());
                             }

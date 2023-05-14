@@ -5,11 +5,15 @@ import org.platanus.platachat.message.auth.dto.AuthValidRetrieveRequestDto;
 import org.platanus.platachat.message.auth.dto.AuthValidRetrieveResponseDto;
 import org.platanus.platachat.message.contants.AuthConstant;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+/**
+ * 회원 관련 인증을 위한 REST API 서비스
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -42,6 +46,10 @@ public class AuthServiceImpl implements AuthService {
                 .uri(AuthConstant.AUTH_VALIDATE_URI)
                 .body(Mono.just(requestDto), AuthValidRetrieveRequestDto.class)
                 .retrieve()
+                .onStatus(HttpStatus::isError, response -> {
+                    // 일단 이부분은 채팅방 구현하면서 다시 하는걸로.
+                    return Mono.error(new IllegalArgumentException());
+                })
                 .bodyToMono(AuthValidRetrieveResponseDto.class);
     }
 }

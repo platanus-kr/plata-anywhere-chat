@@ -15,6 +15,9 @@ import reactor.core.publisher.FluxSink;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * 채널 내 모든 구독자에게 메시지 송신
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor

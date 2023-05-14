@@ -12,6 +12,9 @@ import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAd
 
 import java.util.Map;
 
+/**
+ * WebSocketHandler 구현
+ */
 @Configuration
 @RequiredArgsConstructor
 public class CustomWebSocketConfig {

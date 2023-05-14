@@ -9,6 +9,9 @@ import reactor.core.publisher.FluxSink;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 채널과 WebSocket 세션을 관리
+ */
 @Slf4j
 @Component
 public class MessageFlux {

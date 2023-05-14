@@ -17,7 +17,7 @@ public class CustomAuthenticationSuccessHandler {
 //        //ServerWebExchangeUtils.setAlreadyRouted(exchange);
 //
 //
-//        // 세션에 SessionMemberDto 객체를 저장합니다.
+//        // 세션에 SessionMemberDto 객체를 저장.
 //        return exchange.getSession()
 //                .doOnNext(session -> {
 //                    if (authentication.getPrincipal() instanceof Member) {

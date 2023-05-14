@@ -15,6 +15,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+/**
+ * 채널 구독 관리
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor

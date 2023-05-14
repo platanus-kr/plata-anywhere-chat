@@ -30,6 +30,6 @@ POST http://localhost:3120/api/v1/auth/validate
 Content-Type: application/json
 
 {
-  "sessionId" : "c6d083af-8c0a-4477-9bb9-a0f1aba81f08",
+  "sessionId" : "18bb3e98-ff6d-422c-9ce5-fd834cb14efb",
   "roomId" : "test"
 }

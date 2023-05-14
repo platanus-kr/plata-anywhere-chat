@@ -81,8 +81,6 @@ public class CustomAuthenticationProvider implements ReactiveAuthenticationManag
         for (String authority : authorities.split(",")) {
             grantedAuthorities.add(new SimpleGrantedAuthority(authority));
         }
-//        member.setAuthorities(grantedAuthorities);
-
         return member;
     }
 

@@ -45,9 +45,16 @@ public class SpringSecurityConfig {
                 .successHandler(new CustomAuthenticationSuccessHandler())
                 .defaultSuccessUrl("/", true)
                 .and()
-                .logout().logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("SESSION");
+                .logout().logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .deleteCookies();
         http.formLogin()
-                .successHandler(new CustomAuthenticationSuccessHandler());
+                .successHandler(new CustomAuthenticationSuccessHandler())
+                .defaultSuccessUrl("/", true)
+                .and()
+                .logout().logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .deleteCookies();
         http.cors().and().csrf().disable();
         return http.build();
     }
