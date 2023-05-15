@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document
+@Document(collection = "Messages")
 public class MessagePayload {
 	@Id
 	private String id;

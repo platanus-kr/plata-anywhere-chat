@@ -23,8 +23,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class SessionMemberDto implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = -702177806442606564L;
+//    @Serial
+//    private static final long serialVersionUID = -702177806442606564L;
     private Long id;
     private String provider;
     private String username;

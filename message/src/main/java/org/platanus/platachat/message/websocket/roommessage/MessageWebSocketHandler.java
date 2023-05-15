@@ -9,6 +9,8 @@ import org.platanus.platachat.message.auth.service.AuthService;
 import org.platanus.platachat.message.chat.dto.ChannelSubscribeDto;
 import org.platanus.platachat.message.chat.dto.IdentifierDto;
 import org.platanus.platachat.message.chat.dto.MessageRequestDto;
+import org.platanus.platachat.message.chat.model.MessagePayload;
+import org.platanus.platachat.message.chat.repository.MessagesCrudRepository;
 import org.platanus.platachat.message.utils.XSSFilter;
 import org.platanus.platachat.message.websocket.broadcaster.MessageBroadcaster;
 import org.platanus.platachat.message.websocket.subscription.SubscriptionManager;
@@ -35,6 +37,7 @@ public class MessageWebSocketHandler implements WebSocketHandler {
     private final MessageBroadcaster messageBroadcaster;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     private final AuthService authService;
+    private final MessagesCrudRepository messagesCrudRepository;
 
 
     /**
@@ -143,6 +146,13 @@ public class MessageWebSocketHandler implements WebSocketHandler {
 //            log.error("Error serializing message to JSON", e);
 //            return Mono.empty();
 //        }
+
+        // 수신된 메시지를 저장합니다.
+        messagesCrudRepository.save(MessagePayload.builder()
+                .roomId(stub.getRoomId())
+                .nickname(stub.getNickname())
+                .message(message)
+                .build());
         // 채팅방에 있는 모든 사용자에게 메시지를 전달합니다.
         messageBroadcaster.broadcastMessageToSubscribers(stub.getRoomId(), stub.getNickname(), message);
         return Mono.empty();

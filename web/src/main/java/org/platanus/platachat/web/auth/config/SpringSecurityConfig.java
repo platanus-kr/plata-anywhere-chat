@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SpringSecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2MemberService;
+//    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     /**
      * 커스텀 컨트롤러나 REST로 인증하려면 Bean 주입 필요.
@@ -28,7 +29,13 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+    public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+        return new CustomAuthenticationSuccessHandler();
+    }
+
+    @Bean
+    public SecurityFilterChain configure(HttpSecurity http,
+                                         CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/oauth_login", "/error", "/h2-console/**").permitAll()
                 .antMatchers("/member/join/**", "/member/login/**").permitAll()
@@ -40,16 +47,14 @@ public class SpringSecurityConfig {
                 .and()
                 .csrf().ignoringAntMatchers("/h2-console/**", "/member/join/**", "/member/login/**")
                 .and()
-                .headers().frameOptions().sameOrigin();
-        http.oauth2Login()
-                .successHandler(new CustomAuthenticationSuccessHandler())
+                .headers().frameOptions().sameOrigin()
+                .and()
+                .oauth2Login()
+                .successHandler(customAuthenticationSuccessHandler)
                 .defaultSuccessUrl("/", true)
                 .and()
-                .logout().logoutUrl("/logout")
-                .logoutSuccessUrl("/")
-                .deleteCookies();
-        http.formLogin()
-                .successHandler(new CustomAuthenticationSuccessHandler())
+                .formLogin()
+                .successHandler(customAuthenticationSuccessHandler)
                 .defaultSuccessUrl("/", true)
                 .and()
                 .logout().logoutUrl("/logout")

@@ -10,12 +10,12 @@ Content-Type: application/json
 }
 
 ### login test
-POST http://localhost:8080/api/v1/auth/login
+POST http://localhost:3120/api/v1/auth/login
 Content-Type: application/json
 
 {
   "username": "test2",
-  "password": "test1"
+  "password": "test2"
 }
 
 ### test suthorize
@@ -30,6 +30,6 @@ POST http://localhost:3120/api/v1/auth/validate
 Content-Type: application/json
 
 {
-  "sessionId" : "18bb3e98-ff6d-422c-9ce5-fd834cb14efb",
+  "sessionId" : "06469c41-e4ca-4fd5-af7c-e2673f6ed33a",
   "roomId" : "test"
 }
