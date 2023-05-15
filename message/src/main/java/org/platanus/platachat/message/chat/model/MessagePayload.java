@@ -1,5 +1,10 @@
 package org.platanus.platachat.message.chat.model;
 
+import java.time.LocalDateTime;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,13 +14,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Document
 public class MessagePayload {
-	// 토픽 위에서 지정
-	// 타임스템프 위에서 지정
-	// 메시지 값만 집어넣으면 됨.
+	@Id
+	private String id;
 	
+	private String roomId;
+	private String userId;
+	private String nickname;
 	private String message;
-	private String imageUrl;
+	private LocalDateTime timestamp;
 	private MessageType type;
 	
 }
