@@ -47,19 +47,14 @@ public class SpringSecurityConfig {
                 .and()
                 .csrf().ignoringAntMatchers("/h2-console/**", "/member/join/**", "/member/login/**")
                 .and()
-                .headers().frameOptions().sameOrigin()
-                .and()
-                .oauth2Login()
-                .successHandler(customAuthenticationSuccessHandler)
+                .headers().frameOptions().sameOrigin();
+        http.oauth2Login()
+                .successHandler(new CustomAuthenticationSuccessHandler())
                 .defaultSuccessUrl("/", true)
                 .and()
-                .formLogin()
-                .successHandler(customAuthenticationSuccessHandler)
-                .defaultSuccessUrl("/", true)
-                .and()
-                .logout().logoutUrl("/logout")
-                .logoutSuccessUrl("/")
-                .deleteCookies();
+                .logout().logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("SESSION");
+        http.formLogin()
+                .successHandler(new CustomAuthenticationSuccessHandler());
         http.cors().and().csrf().disable();
         return http.build();
     }

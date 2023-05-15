@@ -23,6 +23,7 @@ import reactor.core.publisher.SignalType;
 import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -152,7 +153,8 @@ public class MessageWebSocketHandler implements WebSocketHandler {
                 .roomId(stub.getRoomId())
                 .nickname(stub.getNickname())
                 .message(message)
-                .build());
+                .timestamp(LocalDateTime.now())
+                .build()).subscribe();
         // 채팅방에 있는 모든 사용자에게 메시지를 전달합니다.
         messageBroadcaster.broadcastMessageToSubscribers(stub.getRoomId(), stub.getNickname(), message);
         return Mono.empty();

@@ -3,6 +3,7 @@ package org.platanus.platachat.message.chat.model;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "Messages")
+@TypeAlias("MessagePayload")
 public class MessagePayload {
 	@Id
 	private String id;

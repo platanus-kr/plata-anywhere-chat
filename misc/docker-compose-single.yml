@@ -31,6 +31,8 @@ services:
     image: mongo:6.0
     ports:
       - 27017:27017
+    volumes:
+      - ./db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     environment:
       MONGO_INITDB_ROOT_USERNAME: localtest
       MONGO_INITDB_ROOT_PASSWORD: localtest
