@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import org.platanus.platachat.web.auth.dto.LoginProvider;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.member.model.AppRole;
 
@@ -17,7 +19,7 @@ public class SessionMemberDtoDeserializer extends JsonDeserializer<SessionMember
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         long id = node.get("id").longValue();
-        String provider = node.get("provider").asText();
+        LoginProvider provider = LoginProvider.valueOf(node.get("provider").asText());
         String username = node.get("username").asText();
         String profileImage = node.get("profileImage").asText();
         String htmlUrl = node.get("htmlUrl").asText();

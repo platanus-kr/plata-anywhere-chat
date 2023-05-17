@@ -16,6 +16,8 @@
         <div class="flex flex-wrap">
             <p><b>🕵️‍♀️ 회원 정보 - </b><span th:text="${member}"></span></p>
             <input type="hidden" id="pacSessionId" th:value="${pacsessionid}"/>
+            <input type="hidden" id="pacUserId" th:value="${member.id}"/>
+            <input type="hidden" id="pacNickname" th:value="${member.nickname}"/>
             <hr/>
             <label for="chat-nickname-init"
                    class="text-sm font-medium leading-6 text-gray-900">
@@ -79,8 +81,9 @@
 <script>
 
     let socket = '';
-    const nickname = makeId(5);
+    const nickname = document.getElementById('pacNickname').value;
     const pacSessionId = document.getElementById('pacSessionId').value;
+    const pacUserId = document.getElementById('pacUserId').value;
     let chatRoomName = '';
     $(document).ready(function () {
         // $(".chat-input-nickname-init").val(nickname);
@@ -155,6 +158,7 @@
         console.log("입장");
         let identifier = {
             channel: chatRoomName,
+            userId: pacUserId,
             nickname: nickname,
             token: pacSessionId
         }
@@ -197,6 +201,7 @@
         const chatText = $("#chat-text").val();
         let identifier = {
             channel: chatRoomName,
+            userId: pacUserId,
             nickname: nickname,
             token: pacSessionId
         }

@@ -88,6 +88,7 @@ public class MessageWebSocketHandler implements WebSocketHandler {
             IdentifierDto identifier = messageRequestDto.getIdentifier();
             ChannelSubscribeDto stub = ChannelSubscribeDto.builder()
                     .roomId(identifier.getChannel())
+                    .userId(identifier.getUserId())
                     .nickname(identifier.getNickname())
                     .sessionId(identifier.getToken())
                     .build();
@@ -151,6 +152,7 @@ public class MessageWebSocketHandler implements WebSocketHandler {
         // 수신된 메시지를 저장합니다.
         messagesCrudRepository.save(MessagePayload.builder()
                 .roomId(stub.getRoomId())
+                .userId(stub.getUserId())
                 .nickname(stub.getNickname())
                 .message(message)
                 .timestamp(LocalDateTime.now())

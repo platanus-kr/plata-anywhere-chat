@@ -23,6 +23,11 @@ public class ChannelSubscribeDto {
     private final String nickname;
     
     /**
+     * 회원 식별자
+     */
+    private final String userId;
+    
+    /**
      * 채널에서 사용하기 위한 세션
      */
     private final String sessionId;

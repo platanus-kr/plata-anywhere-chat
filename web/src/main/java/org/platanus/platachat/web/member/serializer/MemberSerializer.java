@@ -20,7 +20,7 @@ public class MemberSerializer extends JsonSerializer<Member> {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("id", member.getId());
         jsonGenerator.writeStringField("providerId", member.getProviderId());
-        jsonGenerator.writeStringField("provider", member.getProvider());
+        jsonGenerator.writeStringField("provider", member.getProvider().getKey());
         jsonGenerator.writeStringField("username", member.getUsername());
         jsonGenerator.writeStringField("password", member.getPassword());
         jsonGenerator.writeStringField("nickname", member.getNickname());

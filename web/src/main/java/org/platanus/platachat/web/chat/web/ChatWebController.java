@@ -1,6 +1,7 @@
 package org.platanus.platachat.web.chat.web;
 
 import org.platanus.platachat.web.auth.argumentresolver.HasMember;
+import org.platanus.platachat.web.auth.dto.LoginProvider;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,7 +33,13 @@ public class ChatWebController {
 		if (session != null) {
 			sessionId = session.getId();
 		}
-		model.addAttribute("pacsessionid", sessionId);
+		//model.addAttribute("pacsessionid", sessionId);
+		//member.getProvider();
+		if (!member.getProvider().equals(LoginProvider.WEB)) {
+			model.addAttribute("pacsessionid", sessionId);
+		} else {
+			model.addAttribute("pacsessionid", member.getToken());
+		}
 		model.addAttribute("member", member);
 		return "simple_room_haslogin";
 	}

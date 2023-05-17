@@ -1,6 +1,7 @@
 package org.platanus.platachat.web.AuthenticationTest;
 
 import org.junit.jupiter.api.Test;
+import org.platanus.platachat.web.auth.dto.LoginProvider;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.auth.oauth2.CustomOAuth2UserService;
 import org.platanus.platachat.web.front.web.TestController;
@@ -36,7 +37,7 @@ public class OAuth2LoginTest {
                 .username("testUser")
                 .nickname("githubOAuth2User")
                 .email("email@gmail.com")
-                .provider("github")
+                .provider(LoginProvider.GITHUB)
                 .build();
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("member", new SessionMemberDto(m, "TEST_SESSION_ID"));

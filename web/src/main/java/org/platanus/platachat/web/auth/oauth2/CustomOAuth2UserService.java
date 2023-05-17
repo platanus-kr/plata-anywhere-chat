@@ -52,6 +52,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         session.setAttribute("oAuthToken", userRequest.getAccessToken().getTokenValue());
         session.setAttribute("member", new SessionMemberDto(m, userRequest.getAccessToken().getTokenValue()));
+        //System.out.println("CustomOAuth2UserService ::"  + session.getId());
+        //session.setAttribute("member", new SessionMemberDto(m, session.getId()));
 
         return new DefaultOAuth2User(Collections.singleton(
                 new SimpleGrantedAuthority(m.getAppRole().getKey())),
@@ -72,7 +74,16 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     private Member upsert(CustomOAuth2MemberDto m) {
-        Member buildMember = Member.builder().username(m.getUsername()).password(AuthConstant.DUMMY_PASSWORD).nickname(m.getName()).providerId(m.getProviderId()).provider(m.getProvider()).profileImage(m.getProfileImage()).email(m.getEmail()).htmlUrl(m.getBlog()).deleted(false)
+        Member buildMember = Member.builder()
+                .username(m.getUsername())
+                .password(AuthConstant.DUMMY_PASSWORD)
+                .nickname(m.getName())
+                .providerId(m.getProviderId())
+                .provider(m.getProvider())
+                .profileImage(m.getProfileImage())
+                .email(m.getEmail())
+                .htmlUrl(m.getBlog())
+                .deleted(false)
                 .appRole(AppRole.ROLE_USER)
                 .build();
 

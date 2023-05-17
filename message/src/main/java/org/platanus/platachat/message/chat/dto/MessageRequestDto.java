@@ -15,6 +15,7 @@ public class MessageRequestDto {
 
     private String command;
     private String message;
+    private String userId;
     private LocalDateTime sendTime;
     private IdentifierDto identifier;
 

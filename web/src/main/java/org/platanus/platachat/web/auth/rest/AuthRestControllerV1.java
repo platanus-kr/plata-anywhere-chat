@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.platanus.platachat.web.auth.dto.AuthValidRetrieveRequestDto;
 import org.platanus.platachat.web.auth.dto.AuthValidRetrieveResponseDto;
+import org.platanus.platachat.web.auth.dto.LoginProvider;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.auth.exception.CustomAuthException;
 import org.platanus.platachat.web.constants.AuthConstant;
@@ -205,7 +206,9 @@ public class AuthRestControllerV1 {
         if (sessionMemberDto == null || authentication == null) {
             return false;
         }
-        if (!StringUtils.equals(retrieveRequestDto.getSessionId(), sessionMemberDto.getToken())) {
+        // OAuth 벤더의 토큰 유효성 검증은 하지 않는다. 어짜피 벤더에서 물림.
+        if (sessionMemberDto.getProvider().equals(LoginProvider.WEB) &&
+                !StringUtils.equals(retrieveRequestDto.getSessionId(), sessionMemberDto.getToken())) {
             return false;
         }
         if (!authentication.isAuthenticated()) {

@@ -1,6 +1,8 @@
 package org.platanus.platachat.web.member.dto;
 
 import lombok.*;
+
+import org.platanus.platachat.web.auth.dto.LoginProvider;
 import org.platanus.platachat.web.member.model.AppRole;
 import org.platanus.platachat.web.member.model.Member;
 
@@ -26,7 +28,7 @@ public class MemberJoinRequestDto {
                 .password(this.password)
                 .nickname(this.nickname)
                 .email(this.email)
-                .provider("web")
+                .provider(LoginProvider.WEB)
                 .appRole(AppRole.ROLE_USER)
                 .deleted(false)
                 .lastActivated(LocalDateTime.now())

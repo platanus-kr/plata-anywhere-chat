@@ -10,6 +10,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import org.platanus.platachat.web.auth.dto.LoginProvider;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -40,7 +42,9 @@ public class Member extends BaseTime implements Serializable {
     private Long id;
 
     private String providerId;
-    private String provider;
+    
+    @Enumerated(value = EnumType.STRING)
+    private LoginProvider provider;
 
     @NotBlank
     @Column(unique = true, nullable = false)
