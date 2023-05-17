@@ -14,7 +14,7 @@
 
     <div class="enter-room p-4 box-border absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <div class="flex flex-wrap">
-            <p><b>🕵️‍♀️ 회원 정보 - </b><span th:text="${member}"></span></p>
+            <p class="pb-10"><b>🕵️‍♀️ 회원 정보 - </b><span th:text="${member}"></span></p>
             <input type="hidden" id="pacSessionId" th:value="${pacsessionid}"/>
             <input type="hidden" id="pacUserId" th:value="${member.id}"/>
             <input type="hidden" id="pacNickname" th:value="${member.nickname}"/>

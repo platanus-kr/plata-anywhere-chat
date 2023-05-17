@@ -7,15 +7,25 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
 </head>
 <body>
-<h3>테스트 화면</h3>
-<p>hello world.</p>
-<hr />
-<h3>바로가기</h3>
-<ul>
-    <li><a href="/login">로그인폼</a></li>
-    <li><a href="/test/endpoint">인가 테스트 페이지</a></li>
-    <li><a href="/chat/simple">채팅 테스트 페이지</a></li>
-    <li><a href="/chat/simple_haslogin">채팅 테스트 페이지 - 로그인용</a></li>
-</ul>
+
+
+<div class="wrap flex flex-col item-center sm:w-[42rem] mx-auto bg-white h-screen">
+
+    <div class="pac-front box-border p-4 flex flex-col h-full">
+        <h1 class="text-lg">테스트 프론트</h1>
+        <hr />
+        <h2 class="text-sm">바로가기</h2>
+        <ul class="list-disc pl-6">
+            <li><a href="/login">로그인 폼</a></li>
+            <li><a href="/logout">로그아웃</a></li>
+            <li><a href="/test/endpoint">인가 체크 페이지</a></li>
+            <li><a href="/chat/simple">채팅 테스트 페이지 - 비로그인용</a></li>
+            <li><a href="/chat/simple_haslogin">채팅 테스트 페이지 - 로그인용</a></li>
+        </ul>
+
+    </div>
+
+</div>
+
 </body>
 </html>

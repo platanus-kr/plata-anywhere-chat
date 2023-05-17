@@ -83,7 +83,8 @@
     $(document).ready(function () {
         $(".chat-input-nickname-init").val(nickname);
 
-        socket = new WebSocket('ws://localhost:3121/simplemessage');
+        socket = new WebSocket('ws://10.131.152.153:3121/simplemessage');
+        // socket = new WebSocket('ws://localhost:3121/simplemessage');
         socket.onopen = function (event) {
             // 연결이 열리면 실행되는 코드
             console.log('WebSocket 연결이 열렸습니다.');

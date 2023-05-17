@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/test")
 public class TestController {
     @GetMapping("/endpoint")
-    public String endpointTest(@HasMember SessionMemberDto member) {
-        return member.toString();
+    public SessionMemberDto endpointTest(@HasMember SessionMemberDto member) {
+        return member;
     }
 }

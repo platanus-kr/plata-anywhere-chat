@@ -81,6 +81,7 @@ public class SecurityFilterChainConfig {
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("SESSION");
         http.formLogin()
                 .successHandler(customAuthenticationSuccessHandler);
+                //.defaultSuccessUrl("/", true);
                 //.successHandler(new CustomAuthenticationSuccessHandler());
         http.cors().and().csrf().disable();
         return http.build();
