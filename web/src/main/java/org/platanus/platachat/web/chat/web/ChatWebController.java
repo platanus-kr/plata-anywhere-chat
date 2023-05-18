@@ -6,6 +6,7 @@ import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,8 +34,6 @@ public class ChatWebController {
 		if (session != null) {
 			sessionId = session.getId();
 		}
-		//model.addAttribute("pacsessionid", sessionId);
-		//member.getProvider();
 		if (!member.getProvider().equals(LoginProvider.WEB)) {
 			model.addAttribute("pacsessionid", sessionId);
 		} else {
@@ -42,5 +41,28 @@ public class ChatWebController {
 		}
 		model.addAttribute("member", member);
 		return "simple_room_haslogin";
+	}
+	
+	@GetMapping("/store/simple")
+	public String chatLog() {
+		return "simple_chatlog";
+	}
+	
+	@GetMapping("/store/simple_haslogin")
+	public String chatLogHasLogin(Model model,
+								  @HasMember SessionMemberDto member,
+								  HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		String sessionId = null;
+		if (session != null) {
+			sessionId = session.getId();
+		}
+		if (!member.getProvider().equals(LoginProvider.WEB)) {
+			model.addAttribute("pacsessionid", sessionId);
+		} else {
+			model.addAttribute("pacsessionid", member.getToken());
+		}
+		model.addAttribute("member", member);
+		return "simple_chatlog";
 	}
 }
