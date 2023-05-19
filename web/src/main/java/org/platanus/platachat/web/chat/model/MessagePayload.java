@@ -10,9 +10,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "Messages")
@@ -20,7 +22,6 @@ import lombok.NoArgsConstructor;
 public class MessagePayload {
 	@Id
 	private String id;
-	
 	private String roomId;
 	private String userId;
 	private String nickname;

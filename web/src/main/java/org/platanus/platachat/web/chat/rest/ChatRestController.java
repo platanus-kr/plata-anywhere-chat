@@ -16,7 +16,7 @@ public class ChatRestController {
 	
 	@GetMapping("/simple/{roomId}")
 	public List<MessagePayload> getChatLogSimple(@PathVariable(value = "roomId") String roomId,
-												 @RequestParam(value = "asdf") String asdf) {
+												 @RequestParam(value = "page", required = false) int page) {
 		return new ArrayList<>();
 	}
 }

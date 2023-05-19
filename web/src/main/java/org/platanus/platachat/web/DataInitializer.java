@@ -1,10 +1,14 @@
 package org.platanus.platachat.web;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.platanus.platachat.web.chat.model.MessagePayload;
+import org.platanus.platachat.web.chat.model.MessageType;
+import org.platanus.platachat.web.chat.service.ChatService;
 import org.platanus.platachat.web.constants.ConfigConstant;
 import org.platanus.platachat.web.member.dto.MemberJoinRequestDto;
 import org.platanus.platachat.web.member.model.Member;
@@ -21,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DataInitializer {
 	
 	private final MemberService memberService;
+	private final ChatService chatService;
 	
 	@Value("${plataanywherechat.environment.profile}")
 	private String profile;
@@ -61,6 +66,20 @@ public class DataInitializer {
 		for (MemberJoinRequestDto dto : lists) {
 			memberService.join(dto);
 		}
+		
+		///
+		
+		//for(int i = 0; i <= 100; i++) {
+		//	MessagePayload build = MessagePayload.builder()
+		//			.message("테스트 " + i + "번째 메시지")
+		//			.nickname("닉네임")
+		//			.roomId("test")
+		//			.type(MessageType.TEXT)
+		//			.timestamp(LocalDateTime.now())
+		//			.userId("test1")
+		//			.build();
+		//	chatService.saveMessage(build);
+		//}
 	}
 	
 }

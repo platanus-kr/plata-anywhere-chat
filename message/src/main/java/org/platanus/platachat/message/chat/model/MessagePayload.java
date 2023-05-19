@@ -20,7 +20,6 @@ import lombok.NoArgsConstructor;
 public class MessagePayload {
 	@Id
 	private String id;
-	
 	private String roomId;
 	private String userId;
 	private String nickname;

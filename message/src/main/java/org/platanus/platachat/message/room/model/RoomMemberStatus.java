@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum MemberStatus {
+public enum RoomMemberStatus {
     ALIVE("ALIVE", "채팅중"),
     WARNING("WARN", "경고"),
     VOID("VOID", "채팅 금지");
