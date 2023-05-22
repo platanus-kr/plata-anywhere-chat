@@ -33,3 +33,7 @@ Content-Type: application/json
   "sessionId" : "06469c41-e4ca-4fd5-af7c-e2673f6ed33a",
   "roomId" : "test"
 }
+
+### chat logs
+GET http://localhost:3120/api/v1/chat/log/simple/test
+Cookie: PAC_SESSIONID=OGRiOWI3ZDUtZjRjOC00MzkyLTlmYzItZjVkMTFiYjkzMjU5;

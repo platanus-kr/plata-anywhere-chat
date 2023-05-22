@@ -1,14 +1,13 @@
-package org.platanus.platachat.web.chat.repository.mongo;
+package org.platanus.platachat.web.message.repository;
 
 
 import java.util.List;
 
-import org.platanus.platachat.web.chat.model.MessagePayload;
+import org.platanus.platachat.web.message.model.MessagePayload;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
-import org.springframework.stereotype.Repository;
 
 public interface MessageMongoRepository extends MongoRepository<MessagePayload, String> {
 	

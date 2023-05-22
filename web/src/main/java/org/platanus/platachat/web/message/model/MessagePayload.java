@@ -1,4 +1,4 @@
-package org.platanus.platachat.web.chat.model;
+package org.platanus.platachat.web.message.model;
 
 import java.time.LocalDateTime;
 

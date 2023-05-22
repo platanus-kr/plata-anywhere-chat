@@ -1,17 +1,13 @@
 package org.platanus.platachat.web;
 
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.platanus.platachat.web.chat.model.MessagePayload;
-import org.platanus.platachat.web.chat.model.MessageType;
-import org.platanus.platachat.web.chat.service.ChatService;
+import org.platanus.platachat.web.message.service.MessageService;
 import org.platanus.platachat.web.constants.ConfigConstant;
 import org.platanus.platachat.web.member.dto.MemberJoinRequestDto;
-import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -25,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DataInitializer {
 	
 	private final MemberService memberService;
-	private final ChatService chatService;
+	private final MessageService chatService;
 	
 	@Value("${plataanywherechat.environment.profile}")
 	private String profile;

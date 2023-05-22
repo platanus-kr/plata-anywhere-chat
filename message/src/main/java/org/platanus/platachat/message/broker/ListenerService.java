@@ -1,11 +1,11 @@
 package org.platanus.platachat.message.broker;
 
-import org.platanus.platachat.message.chat.dto.BrokerRequestDto;
+import org.platanus.platachat.message.broker.dto.BrokerRequestDto;
 
 @Deprecated
 public interface ListenerService {
-    // 리스너
-    String simpleListener(String message);
-
-    String dtoListener(BrokerRequestDto dto);
+	// 리스너
+	String simpleListener(String message);
+	
+	String dtoListener(BrokerRequestDto dto);
 }

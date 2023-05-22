@@ -1,6 +1,5 @@
-package org.platanus.platachat.web.chat.repository;
+package org.platanus.platachat.web.message.repository;
 
-import org.platanus.platachat.web.chat.repository.mongo.MessageMongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository

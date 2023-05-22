@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.platanus.platachat.web.chat.model.MessagePayload;
-import org.platanus.platachat.web.chat.repository.MessageRepository;
+import org.platanus.platachat.web.message.model.MessagePayload;
+import org.platanus.platachat.web.message.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.mock.mockito.MockBean;

@@ -105,6 +105,16 @@
 
         });
 
+        socket.addEventListener('close', function (event) {
+            console.log(event);
+            alert("채팅이 종료되었습니다.\n" + event);
+        });
+
+        socket.addEventListener('error', function (event) {
+            console.log(event);
+            alert("채팅 전송에 문제가 있습니다.\n" + event);
+        });
+
         $('#chat-text').on('keypress', function (e) {
             if (e.which === 13) { // 13은 Enter 키의 keyCode입니다.
                 e.preventDefault(); // 기본 Enter 키 동작을 막습니다.
