@@ -1,10 +1,13 @@
 package org.platanus.platachat.web;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.platanus.platachat.web.message.model.MessagePayload;
+import org.platanus.platachat.web.message.model.MessageType;
 import org.platanus.platachat.web.message.service.MessageService;
 import org.platanus.platachat.web.constants.ConfigConstant;
 import org.platanus.platachat.web.member.dto.MemberJoinRequestDto;
@@ -65,17 +68,17 @@ public class DataInitializer {
 		
 		///
 		
-		//for(int i = 0; i <= 100; i++) {
-		//	MessagePayload build = MessagePayload.builder()
-		//			.message("테스트 " + i + "번째 메시지")
-		//			.nickname("닉네임")
-		//			.roomId("test")
-		//			.type(MessageType.TEXT)
-		//			.timestamp(LocalDateTime.now())
-		//			.userId("test1")
-		//			.build();
-		//	chatService.saveMessage(build);
-		//}
+//		for(int i = 0; i <= 100; i++) {
+//			MessagePayload build = MessagePayload.builder()
+//					.message("테스트 " + i + "번째 메시지")
+//					.nickname("닉네임")
+//					.roomId("test")
+//					.type(MessageType.TEXT)
+//					.timestamp(LocalDateTime.now())
+//					.userId("test1")
+//					.build();
+//			chatService.saveMessage(build);
+//		}
 	}
 	
 }
