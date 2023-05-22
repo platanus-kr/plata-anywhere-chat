@@ -37,7 +37,9 @@ public interface MemberService {
      * @return 검색완료 회원
      */
     Member findByEmail(String email);
-
+    
+    Member findById(Long id);
+    
     /**
      * 회원 탈퇴
      *

@@ -73,6 +73,12 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("없는 회원 입니다."));
     }
+    
+    @Override
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("없는 회원 입니다."));
+    }
 
     @Override
     public boolean leave(Member member) {
