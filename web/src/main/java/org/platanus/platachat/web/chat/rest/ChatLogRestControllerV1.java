@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/v1/chat/log")
 @RequiredArgsConstructor
-public class ChatRestControllerV1 {
+public class ChatLogRestControllerV1 {
 	
 	private final MessageService chatService;
 	

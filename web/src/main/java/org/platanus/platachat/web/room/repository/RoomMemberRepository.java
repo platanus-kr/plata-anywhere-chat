@@ -8,5 +8,5 @@ import org.platanus.platachat.web.room.repository.jpa.RoomMemberJpaRepository;
 
 public interface RoomMemberRepository extends RoomMemberJpaRepository {
 	
-	List<RoomMember> findRoomMembersByRoom(Room room);
+
 }

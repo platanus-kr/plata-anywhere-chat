@@ -12,4 +12,6 @@ public interface RoomService {
 	Room createRoom(Room room);
 	
 	RoomMember addRoomMember(RoomMember roomMember);
+	
+	List<Room> getRoomsByMemberId(Long id);
 }

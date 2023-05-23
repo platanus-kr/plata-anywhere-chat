@@ -16,5 +16,8 @@ public class RoomCreateResponseDto {
 	 */
 	private Long roomId;
 	
+	/**
+	 * 채팅방 참여 인원
+	 */
 	private List<RoomMemberDto> participates;
 }

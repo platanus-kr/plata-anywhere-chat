@@ -9,6 +9,7 @@ import org.platanus.platachat.web.member.service.MemberService;
 import org.platanus.platachat.web.room.dto.RoomCreateRequestDto;
 import org.platanus.platachat.web.room.dto.RoomCreateResponseDto;
 import org.platanus.platachat.web.room.dto.RoomMemberDto;
+import org.platanus.platachat.web.room.dto.RoomRetrieveResponseDto;
 import org.platanus.platachat.web.room.model.Room;
 import org.platanus.platachat.web.room.model.RoomMember;
 import org.platanus.platachat.web.room.model.RoomMemberStatus;
@@ -17,9 +18,11 @@ import org.platanus.platachat.web.room.model.RoomRole;
 import org.platanus.platachat.web.room.model.RoomStatus;
 import org.platanus.platachat.web.room.service.RoomService;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -69,6 +72,15 @@ public class RoomRestControllerV1 {
 				.build();
 		
 		return build;
+	}
+	
+	@GetMapping("/list")
+	public List<RoomRetrieveResponseDto> getMyRooms(@HasMember SessionMemberDto sessionMemberDto,
+													@RequestParam(value = "page", defaultValue = "1") int page) {
+		if (page > 0) {
+			page -= 1;
+		}
+		return null;
 	}
 	
 }

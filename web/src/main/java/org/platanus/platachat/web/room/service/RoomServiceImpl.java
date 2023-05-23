@@ -33,4 +33,13 @@ public class RoomServiceImpl implements RoomService {
 		return roomMemberRepository.save(roomMember);
 	}
 	
+	@Override
+	public List<Room> getRoomsByMemberId(Long id) {
+		/**
+		 * select * from ROOMS as R
+		 * inner join ROOM_MEMBER as RM on RM.ROOM_ID = R.ID
+		 * where RM.MEMBER_ID = {id}
+		 */
+		return null;
+	}
 }
