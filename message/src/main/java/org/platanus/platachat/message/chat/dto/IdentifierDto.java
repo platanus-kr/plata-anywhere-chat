@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class IdentifierDto {
     private String channel;
-    private String userId;
+    private String memberId;
     private String nickname;
     private String token;
 

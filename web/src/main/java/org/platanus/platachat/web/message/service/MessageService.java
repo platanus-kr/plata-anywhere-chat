@@ -15,4 +15,6 @@ public interface MessageService {
 	Page<MessagePayload> getChatLogsByPaging(String roomId, int page, int offset);
 	
 	MessagePayload saveMessage(MessagePayload message);
+	
+	void deleteAll();
 }

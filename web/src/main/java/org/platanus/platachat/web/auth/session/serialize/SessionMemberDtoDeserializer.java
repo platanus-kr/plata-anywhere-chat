@@ -18,7 +18,7 @@ public class SessionMemberDtoDeserializer extends JsonDeserializer<SessionMember
     public SessionMemberDto deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
-        long id = node.get("id").longValue();
+        String id = node.get("id").asText();
         LoginProvider provider = LoginProvider.valueOf(node.get("provider").asText());
         String username = node.get("username").asText();
         String profileImage = node.get("profileImage").asText();

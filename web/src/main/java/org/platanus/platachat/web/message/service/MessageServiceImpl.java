@@ -3,8 +3,10 @@ package org.platanus.platachat.web.message.service;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.platanus.platachat.web.constants.ConfigConstant;
 import org.platanus.platachat.web.message.model.MessagePayload;
 import org.platanus.platachat.web.message.repository.MessageRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 public class MessageServiceImpl implements MessageService {
 	
 	private final MessageRepository messageRepository;
+	
+	@Value("${plataanywherechat.environment.profile}")
+	private String profile;
 	
 	@Override
 	public List<MessagePayload> getChatLogs(String roomId) {
@@ -42,5 +47,13 @@ public class MessageServiceImpl implements MessageService {
 	@Override
 	public MessagePayload saveMessage(MessagePayload message) {
 		return messageRepository.save(message);
+	}
+	
+	@Override
+	public void deleteAll() {
+		if (!profile.equals(ConfigConstant.PROPERTY_ENV_PROFILE_LOCAL)) {
+			throw new IllegalArgumentException("알맞지 않은 환경에서 접근 했습니다.");
+		}
+		messageRepository.deleteAll();
 	}
 }

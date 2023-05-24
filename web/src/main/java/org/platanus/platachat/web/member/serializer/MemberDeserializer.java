@@ -18,7 +18,7 @@ public class MemberDeserializer extends JsonDeserializer<Member> {
     public Member deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
-        long id = node.get("id").longValue();
+        String id = node.get("id").asText();
         String providerId = node.get("providerId").asText();
         LoginProvider provider = LoginProvider.valueOf(node.get("provider").asText());
         String username = node.get("username").asText();

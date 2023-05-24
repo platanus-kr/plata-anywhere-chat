@@ -7,13 +7,14 @@ import org.platanus.platachat.web.member.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-    public final MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -75,9 +76,14 @@ public class MemberServiceImpl implements MemberService {
     }
     
     @Override
-    public Member findById(Long id) {
+    public Member findById(String id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("없는 회원 입니다."));
+    }
+    
+    @Override
+    public List<Member> findAll() {
+        return memberRepository.findAll();
     }
 
     @Override

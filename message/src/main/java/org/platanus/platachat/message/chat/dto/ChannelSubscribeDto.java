@@ -25,7 +25,7 @@ public class ChannelSubscribeDto {
     /**
      * 회원 식별자
      */
-    private final String userId;
+    private final String memberId;
     
     /**
      * 채널에서 사용하기 위한 세션

@@ -14,7 +14,7 @@ public class SessionMemberDtoSerializer extends JsonSerializer<SessionMemberDto>
     @Override
     public void serialize(SessionMemberDto sessionMemberDto, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeNumberField("id", sessionMemberDto.getId());
+        jsonGenerator.writeStringField("id", sessionMemberDto.getId());
         jsonGenerator.writeStringField("provider", sessionMemberDto.getProvider().getKey());
         jsonGenerator.writeStringField("username", sessionMemberDto.getUsername());
         jsonGenerator.writeStringField("profileImage", sessionMemberDto.getProfileImage());

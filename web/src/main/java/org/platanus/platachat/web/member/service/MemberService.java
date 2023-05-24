@@ -1,5 +1,7 @@
 package org.platanus.platachat.web.member.service;
 
+import java.util.List;
+
 import org.platanus.platachat.web.member.dto.MemberJoinRequestDto;
 import org.platanus.platachat.web.member.model.Member;
 
@@ -38,7 +40,9 @@ public interface MemberService {
      */
     Member findByEmail(String email);
     
-    Member findById(Long id);
+    Member findById(String id);
+    
+    List<Member> findAll();
     
     /**
      * 회원 탈퇴

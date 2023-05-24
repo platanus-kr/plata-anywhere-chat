@@ -25,7 +25,7 @@ public class SessionMemberDto implements Serializable {
 
 //    @Serial
 //    private static final long serialVersionUID = -702177806442606564L;
-    private Long id;
+    private String id;
     private LoginProvider provider;
     private String username;
     private String profileImage;

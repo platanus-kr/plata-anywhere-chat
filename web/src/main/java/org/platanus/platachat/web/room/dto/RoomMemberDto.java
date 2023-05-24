@@ -15,7 +15,7 @@ import lombok.ToString;
 @Builder
 @ToString
 public class RoomMemberDto {
-	private long id;
+	private String id;
 	private String nickname;
 	private RoomMemberStatus status;
 	private RoomRole role;

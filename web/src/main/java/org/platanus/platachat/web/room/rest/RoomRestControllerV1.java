@@ -11,11 +11,6 @@ import org.platanus.platachat.web.room.dto.RoomCreateResponseDto;
 import org.platanus.platachat.web.room.dto.RoomMemberDto;
 import org.platanus.platachat.web.room.dto.RoomRetrieveResponseDto;
 import org.platanus.platachat.web.room.model.Room;
-import org.platanus.platachat.web.room.model.RoomMember;
-import org.platanus.platachat.web.room.model.RoomMemberStatus;
-import org.platanus.platachat.web.room.model.RoomPublic;
-import org.platanus.platachat.web.room.model.RoomRole;
-import org.platanus.platachat.web.room.model.RoomStatus;
 import org.platanus.platachat.web.room.service.RoomService;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,35 +39,27 @@ public class RoomRestControllerV1 {
 			throw new IllegalArgumentException("회원이 아닙니다");
 		}
 		
-		// 채팅방 생성
-		Room r = Room.builder()
-				.name(dto.getRoomName())
-				.description(dto.getDescription())
-				.imageUrl(dto.getImageUrl())
-				.capacity(dto.getCapacity())
-				.roomPublic(dto.getRoomPublic())
-				.roomStatus(RoomStatus.ALIVE)
-				.build();
-		Room saveRoom = roomService.createRoom(r);
-		
-		// 채팅방 초기 맴버 생성 (채팅방 오너)
-		Member m = memberService.findById(sessionMemberDto.getId());
-		RoomMember rm = RoomMember.builder()
-				.member(m)
-				.role(RoomRole.SYSOP)
-				.status(RoomMemberStatus.ALIVE)
-				.room(saveRoom)
-				.build();
-		RoomMember saveRoomMember = roomService.addRoomMember(rm);
-		
-		// 응답 생성
-		RoomCreateResponseDto build = RoomCreateResponseDto.builder()
-				.roomId(saveRoom.getId())
-				.participates(List.of(RoomMemberDto.from(m, saveRoomMember)))
-				.build();
+		RoomCreateResponseDto build = createChatRoom(dto, sessionMemberDto);
 		
 		return build;
 	}
+	
+	private RoomCreateResponseDto createChatRoom(RoomCreateRequestDto roomReqDto, SessionMemberDto smDto) {
+		
+		// 세션에서 회원 추출
+		Member m = memberService.findById(smDto.getId());
+		
+		// 채팅방 생성 후 최초 참여자 추가
+		Room r = roomService.createRoom(roomReqDto, m);
+		
+		RoomCreateResponseDto build = RoomCreateResponseDto.builder()
+				.roomId(r.getId())
+				.participates(List.of(RoomMemberDto.from(m, r.getParticipates().stream().findAny().orElseThrow())))
+				.build();
+		return build;
+	}
+	
+
 	
 	@GetMapping("/list")
 	public List<RoomRetrieveResponseDto> getMyRooms(@HasMember SessionMemberDto sessionMemberDto,

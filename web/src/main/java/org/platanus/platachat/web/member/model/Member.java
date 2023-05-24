@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.platanus.platachat.web.auth.dto.LoginProvider;
 
@@ -25,8 +26,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 @ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-//@JsonSerialize(using = MemberSerializer.class)
-//@JsonDeserialize(using = MemberDeserializer.class)
 @Table(name = "MEMBERS", indexes = {
         @Index(name = "idx_username", columnList = "username", unique = true),
         @Index(name = "idx_provider_id", columnList = "providerId", unique = true)})
@@ -37,9 +36,8 @@ public class Member extends BaseTime implements Serializable {
     private static final long serialVersionUID = 1363937982849761862L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Column(length = 36)
+    private String id;
 
     private String providerId;
     
@@ -76,6 +74,12 @@ public class Member extends BaseTime implements Serializable {
     @JsonDeserialize(using= LocalDateTimeDeserializer.class)
     private LocalDateTime lastActivated;
 
+    @PrePersist
+    public void generateId() {
+        // https://developer111.tistory.com/83
+        this.id = UUID.randomUUID().toString();
+    }
+    
     public Member update(Member m) {
         this.nickname = m.getNickname();
         this.profileImage = m.getProfileImage();

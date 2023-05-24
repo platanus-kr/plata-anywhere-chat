@@ -14,7 +14,7 @@ public class RoomCreateResponseDto {
 	/**
 	 * 생성된 채팅방 식별자
 	 */
-	private Long roomId;
+	private String roomId;
 	
 	/**
 	 * 채팅방 참여 인원

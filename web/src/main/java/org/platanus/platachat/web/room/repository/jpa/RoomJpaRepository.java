@@ -9,6 +9,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface RoomJpaRepository extends JpaRepository<Room, Long> {
-	@EntityGraph(attributePaths = {"team"})
-	List<Room> findRoomsByParticipates
 }
