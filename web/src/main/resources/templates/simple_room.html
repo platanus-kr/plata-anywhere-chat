@@ -10,10 +10,10 @@
 </head>
 
 <body>
-<div class="wrap h-screen">
+<div class="wrap flex flex-col item-center sm:w-[42rem] mx-auto bg-white">
 
 
-    <div class="chat-service p-4 hidden">
+    <div class="chat-service p-4 hidden h-[calc(100vh-1vh)]">
         <!--        <div class="room-action-menu h-8 w-full sticky top-0 z-10 bg-white">-->
         <div class="room-action-menu h-8 w-full sticky top-0 z-10 bg-white">
             <svg xmlns="http://www.w3.org/2000/svg"
@@ -24,8 +24,8 @@
             </svg>
         </div>
 
-        <div class="stream-box">
-            <div id="inner-box" class="inner-box h-full overflow-y-auto">
+        <div class="stream-box h-[calc(100vh-6rem)] pb-1">
+            <div id="inner-box" class="inner-box overflow-y-auto h-[calc(100vh-6rem)]">
                 <!--        <div class="stream-box overflow-hidden">-->
                 <!--            <div class="inner-box flex-shrink-0 overflow-y-auto h-screen hide-scrollbar">-->
                 <!-- chat message line-->
@@ -101,7 +101,8 @@
             let response = JSON.parse(data.data);
             console.log('Message from server: ', response);
             $('.stream-box .inner-box').append(messageGenerator(response));
-            $('html, body').animate({scrollTop: $('.chat-service')[0].scrollHeight}, 'fast');
+            var chatScreen = document.getElementById("inner-box");
+            $('#inner-box').animate({ scrollTop: chatScreen.scrollHeight - chatScreen.clientHeight }, 'fast');
 
         });
 
@@ -111,18 +112,18 @@
                 sendMessageWrap(); // 메소드 실행
             }
         });
-        const what = {
-            identifier: {
-                nickname: "asdfa",
-            },
-            message: "asdfqagquialwngvuilfbngval",
-            timestamp: "00:00"
-        }
-        setInterval(function () {
-            $('.stream-box .inner-box').append(messageGenerator(what));
-            var chatScreen = document.getElementById("inner-box");
-            $('#inner-box').animate({ scrollTop: chatScreen.scrollHeight - chatScreen.clientHeight }, 'fast');
-        }, 300);
+        // const what = {
+        //     identifier: {
+        //         nickname: "asdfa",
+        //     },
+        //     message: "asdfqagquialwngvuilfbngval",
+        //     timestamp: "00:00"
+        // }
+        // setInterval(function () {
+        //     $('.stream-box .inner-box').append(messageGenerator(what));
+        //     var chatScreen = document.getElementById("inner-box");
+        //     $('#inner-box').animate({ scrollTop: chatScreen.scrollHeight - chatScreen.clientHeight }, 'fast');
+        // }, 300);
     })
 
     function messageGenerator(response) {
@@ -141,8 +142,8 @@
             '                </div>\n' +
             '                <div class="chat-message-text w-72 sm:w-[29rem] break-words">\n' +
             '                    <span class="text-sm">' +
-            // response.message + '</span>\n' +
-            makeId(10) + '</span>\n' +
+            response.message + '</span>\n' +
+            // makeId(10) + '</span>\n' +
             '                </div>\n' +
             '            </div>\n' +
             '\n' +
