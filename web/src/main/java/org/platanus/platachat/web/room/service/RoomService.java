@@ -15,7 +15,7 @@ public interface RoomService {
 	
 	RoomMember addRoomMember(RoomMember roomMember);
 	
-	List<Room> getRoomsByMemberId(Long id);
-	
 	Room createRoom(RoomCreateRequestDto roomReqDto, Member m);
+	
+	List<Room> getRoomsByMemberId(String memberId);
 }

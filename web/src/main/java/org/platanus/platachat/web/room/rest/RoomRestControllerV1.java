@@ -67,6 +67,8 @@ public class RoomRestControllerV1 {
 		if (page > 0) {
 			page -= 1;
 		}
+		List<Room> roomsByMemberId = roomService.getRoomsByMemberId(sessionMemberDto.getId());
+		System.out.println(roomsByMemberId.toString());
 		return null;
 	}
 	

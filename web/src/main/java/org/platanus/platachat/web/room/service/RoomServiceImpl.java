@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.room.dto.RoomCreateRequestDto;
-import org.platanus.platachat.web.room.dto.RoomCreateResponseDto;
-import org.platanus.platachat.web.room.dto.RoomMemberDto;
 import org.platanus.platachat.web.room.model.Room;
 import org.platanus.platachat.web.room.model.RoomMember;
 import org.platanus.platachat.web.room.model.RoomMemberStatus;
@@ -68,13 +66,15 @@ public class RoomServiceImpl implements RoomService {
 	}
 	
 	@Override
-	public List<Room> getRoomsByMemberId(Long id) {
+	public List<Room> getRoomsByMemberId(String memberId) {
 		/**
 		 * select * from ROOMS as R
 		 * inner join ROOM_MEMBER as RM on RM.ROOM_ID = R.ID
 		 * where RM.MEMBER_ID = {id}
 		 */
-		return null;
+		List<Room> roomsMemberId = roomMemberRepository.findRoomsMemberId(memberId);
+		System.out.println(roomsMemberId);
+		return roomsMemberId;
 	}
 
 }
