@@ -1,4 +1,4 @@
-package org.platanus.platachat.web.message.repository;
+package org.platanus.platachat.web.message.repository.mongodb;
 
 
 import java.util.List;
