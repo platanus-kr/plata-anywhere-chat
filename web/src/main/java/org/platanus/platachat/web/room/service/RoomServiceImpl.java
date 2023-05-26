@@ -17,10 +17,10 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
-public class RoomServiceImpl implements RoomService {
-	
-	private final RoomMemberRepository roomMemberRepository;
+	@RequiredArgsConstructor
+	public class RoomServiceImpl implements RoomService {
+		
+		private final RoomMemberRepository roomMemberRepository;
 	private final RoomRepository roomRepository;
 	
 	@Override
@@ -73,7 +73,6 @@ public class RoomServiceImpl implements RoomService {
 		 * where RM.MEMBER_ID = {id}
 		 */
 		List<Room> roomsMemberId = roomMemberRepository.findRoomsMemberId(memberId);
-		System.out.println(roomsMemberId);
 		return roomsMemberId;
 	}
 

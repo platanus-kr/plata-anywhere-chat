@@ -8,7 +8,7 @@ import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.service.MemberService;
 import org.platanus.platachat.web.room.dto.RoomCreateRequestDto;
 import org.platanus.platachat.web.room.dto.RoomCreateResponseDto;
-import org.platanus.platachat.web.room.dto.RoomMemberDto;
+import org.platanus.platachat.web.room.dto.RoomMemberResponseDto;
 import org.platanus.platachat.web.room.dto.RoomRetrieveResponseDto;
 import org.platanus.platachat.web.room.model.Room;
 import org.platanus.platachat.web.room.service.RoomService;
@@ -54,7 +54,7 @@ public class RoomRestControllerV1 {
 		
 		RoomCreateResponseDto build = RoomCreateResponseDto.builder()
 				.roomId(r.getId())
-				.participates(List.of(RoomMemberDto.from(m, r.getParticipates().stream().findAny().orElseThrow())))
+				.participates(List.of(RoomMemberResponseDto.from(m, r.getParticipates().stream().findAny().orElseThrow())))
 				.build();
 		return build;
 	}
@@ -68,8 +68,7 @@ public class RoomRestControllerV1 {
 			page -= 1;
 		}
 		List<Room> roomsByMemberId = roomService.getRoomsByMemberId(sessionMemberDto.getId());
-		System.out.println(roomsByMemberId.toString());
-		return null;
+		return RoomRetrieveResponseDto.from(roomsByMemberId);
 	}
 	
 }

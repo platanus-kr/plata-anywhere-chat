@@ -14,20 +14,27 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString
-public class RoomMemberDto {
+public class RoomMemberResponseDto {
 	private String id;
 	private String nickname;
 	private RoomMemberStatus status;
 	private RoomRole role;
 	private LocalDateTime joinDateTime;
 	
-	public static RoomMemberDto from(Member m, RoomMember rm) {
-		return RoomMemberDto.builder()
+	public static RoomMemberResponseDto from(Member m, RoomMember rm) {
+		return RoomMemberResponseDto.builder()
 				.id(m.getId())
 				.nickname(m.getNickname())
 				.status(rm.getStatus())
 				.role(rm.getRole())
 				.joinDateTime(rm.getJoinDateTime())
+				.build();
+	}
+	
+	public static RoomMemberResponseDto from(Member rm) {
+		return RoomMemberResponseDto.builder()
+				.id(rm.getId())
+				.nickname(rm.getNickname())
 				.build();
 	}
 }

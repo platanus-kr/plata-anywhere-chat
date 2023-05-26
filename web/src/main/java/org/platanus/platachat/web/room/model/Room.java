@@ -31,7 +31,7 @@ import lombok.ToString;
 
 @Getter
 @Builder
-@ToString
+@ToString(exclude = {"participates"}, callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ROOMS")

@@ -1,5 +1,5 @@
 ### member join test
-POST http://localhost:8080/api/v1/auth
+POST {{pac-web}}/api/v1/auth
 Content-Type: application/json
 
 {
@@ -10,30 +10,86 @@ Content-Type: application/json
 }
 
 ### login test
-POST http://localhost:3120/api/v1/auth/login
+POST {{pac-web}}/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "username": "test2",
-  "password": "test2"
+  "username": "test1",
+  "password": "test1"
 }
 
+> {%
+client.test("getTokenFromResponse", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+  client.assert(response.contentType.mimeType === "application/json", "Expected 'application/json'");
+  client.assert(response.body.token.trim().length > 0);
+});
+
+
+// https://youtrack.jetbrains.com/issue/IDEA-239263/Response-handler-add-API-to-get-set-cookies
+all_headers = response.headers.headers;
+for (i = 0; i < all_headers.length; i++) {
+    client.log(all_headers[i].name + ": " + all_headers[i].value)
+}
+// for (i = 0; i < all_headers.length; i++) {
+//   if ( all_headers[i].name === "Set-Cookie") {
+//     client.log(all_headers[i].value);
+//     // cookieStr=all_headers[i].value.split(";")[0];
+//     // client.log(cookieStr);
+//     // cookieName=cookieStr.split("=")[0];
+//     // cookieValue=cookieStr.split("=")[1];
+//     // client.global.set( cookieName, cookieValue );
+//     // client.log(cookieName, cookieValue);
+//   }
+// }
+
+// client.global.set("PAC_SESSIONID", response.headers.valueOf("Set-Cookie").split(";")[0].split("=")[1]);
+// client.log("쿠키: "+client.global.get("PAC_SESSIONID"));
+
+// client.log(response.headers.valuesOf("Set-Cookie")[0]);
+//client.global.set("my_cookie", response.headers.valuesOf("Set-Cookie")[0]);
+
+
+// client.log(response.cookie("PAC_SESSIONID"));
+// client.global.set("spring_sessionid", response.cookie("PAC_SESSIONID"));
+client.log(response.body.token);
+client.global.set("access_token", response.body.token);
+%}
+
+
 ### test suthorize
-GET http://localhost:8080/test/endpoint
+GET {{pac-web}}/test/endpoint
 
 ### logout suthorize
-GET http://localhost:8080/logout
+GET {{pac-web}}/logout
 
 
 ### validate session
-POST http://localhost:3120/api/v1/auth/validate
+POST {{pac-web}}/api/v1/auth/validate
 Content-Type: application/json
 
 {
-  "sessionId" : "06469c41-e4ca-4fd5-af7c-e2673f6ed33a",
+  "sessionId" : "{{access_token}}",
   "roomId" : "test"
 }
 
+### chat room list
+GET {{pac-web}}/api/v1/room/list
+Content-Type: application/json
+
+{
+  "sessionId" : "{{access_token}}"
+}
+
 ### chat logs
-GET http://localhost:3120/api/v1/chat/log/simple/test
-Cookie: PAC_SESSIONID=OGRiOWI3ZDUtZjRjOC00MzkyLTlmYzItZjVkMTFiYjkzMjU5;
+GET {{pac-web}}/api/v1/chat/log/simple/test
+
+
+
+
+### #Cookie: PAC_SESSIONID=NWRiYjY2ZDQtMTk3NC00MjBkLWIxZDItZTU1NTdmMzEyMWQ3;
+
+
+
+
+
