@@ -13,9 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class MessageRequestDto {
 
-    private String command;
+    private CommandType command;
     private String message;
-    private String memberId;
     private LocalDateTime sendTime;
     private IdentifierDto identifier;
 

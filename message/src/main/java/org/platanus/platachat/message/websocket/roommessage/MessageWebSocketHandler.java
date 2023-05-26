@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.platanus.platachat.message.auth.service.AuthService;
 import org.platanus.platachat.message.chat.dto.ChannelSubscribeDto;
+import org.platanus.platachat.message.chat.dto.CommandType;
 import org.platanus.platachat.message.chat.dto.IdentifierDto;
 import org.platanus.platachat.message.chat.dto.MessageRequestDto;
 import org.platanus.platachat.message.chat.model.MessagePayload;
@@ -84,7 +85,7 @@ public class MessageWebSocketHandler implements WebSocketHandler {
                                      AtomicReference<ChannelSubscribeDto> channelSub) {
         try {
             MessageRequestDto messageRequestDto = objectMapper.readValue(payload, MessageRequestDto.class);
-            String command = messageRequestDto.getCommand();
+            CommandType command = messageRequestDto.getCommand();
             IdentifierDto identifier = messageRequestDto.getIdentifier();
             ChannelSubscribeDto stub = ChannelSubscribeDto.builder()
                     .roomId(identifier.getChannel())
@@ -94,7 +95,7 @@ public class MessageWebSocketHandler implements WebSocketHandler {
                     .build();
             channelSub.set(stub);
 
-            if ("subscribe".equals(command)) {
+            if ("subscribe".equals(command)) { // 여기부터 작업바람
                 authService.getSessionHealth(stub.getSessionId(), stub.getRoomId())
                         // 채팅방 구현하면서 다시 손볼것.
                         .onErrorResume(error -> {
