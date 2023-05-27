@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.platanus.platachat.message.chat.dto.ChannelSubscribeDto;
+import org.platanus.platachat.message.chat.dto.CommandType;
 import org.platanus.platachat.message.chat.dto.IdentifierDto;
 import org.platanus.platachat.message.chat.dto.MessageRequestDto;
 import org.platanus.platachat.message.utils.XSSFilter;
@@ -67,7 +68,7 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
                                      AtomicReference<ChannelSubscribeDto> channelSub) {
         try {
             MessageRequestDto messageRequestDto = objectMapper.readValue(payload, MessageRequestDto.class);
-            String command = messageRequestDto.getCommand();
+            CommandType command = messageRequestDto.getCommand();
             IdentifierDto identifier = messageRequestDto.getIdentifier();
             ChannelSubscribeDto stub = ChannelSubscribeDto.builder()
                     .roomId(identifier.getChannel())
@@ -75,9 +76,9 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
                     .build();
             channelSub.set(stub);
 
-            if ("subscribe".equals(command)) {
+            if (command.equals(CommandType.SUBSCRIBE)) {
                 return processSubscribeCommand(stub, session);
-            } else if ("message".equals(command)) {
+            } else if (command.equals(CommandType.MESSAGE)) {
                 return processMessageCommand(stub, messageRequestDto.getMessage());
             }
         } catch (IOException e) {

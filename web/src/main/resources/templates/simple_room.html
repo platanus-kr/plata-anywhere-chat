@@ -1,4 +1,4 @@
-<html>
+<html lang="ko">
 <head>
     <title>chat service test</title>
     <meta charset="UTF-8">
@@ -24,8 +24,8 @@
             </svg>
         </div>
 
-        <div class="stream-box h-[calc(100vh-6rem)] pb-1">
-            <div id="inner-box" class="inner-box overflow-y-auto h-[calc(100vh-6rem)]">
+        <div class="stream-box h-[calc(100vh-10rem)] pb-1">
+            <div id="inner-box" class="inner-box overflow-y-auto h-[calc(100vh-10rem)]">
                 <!--        <div class="stream-box overflow-hidden">-->
                 <!--            <div class="inner-box flex-shrink-0 overflow-y-auto h-screen hide-scrollbar">-->
                 <!-- chat message line-->
@@ -86,6 +86,32 @@
     const nickname = makeId(5);
     let chatRoomName = '';
     $(document).ready(function () {
+
+        // iOS virtual keyboard height fix
+        if (checkMobile() === "ios") {
+            $("#chat-text").on("focus", function () {
+                $(".stream-box").addClass("h-[45vh]");
+                $(".stream-box").removeClass("h-[calc(100vh-10rem)]");
+                $(".inner-box").addClass("h-[45vh]");
+                $(".inner-box").removeClass("h-[calc(100vh-10rem)]");
+                $(".chat-service").addClass("h-[45vh]");
+                $(".chat-service").removeClass("h-[calc(100vh-1vh)]");
+                callVirtualKeyboardShow();
+                clearInterval(callVirtualKeyboardHide);
+            });
+            $("#chat-text").on("focusout", function () {
+                $(".stream-box").addClass("h-[calc(100vh-10rem)]");
+                $(".stream-box").removeClass("h-[45vh]");
+                $(".inner-box").addClass("h-[calc(100vh-10rem)]");
+                $(".inner-box").removeClass("h-[45vh]");
+                $(".chat-service").addClass("h-[calc(100vh-1vh)]");
+                $(".chat-service").removeClass("h-[45vh]");
+                clearInterval(callVirtualKeyboardShow);
+                callVirtualKeyboardHide();
+            });
+        }
+
+
         $(".chat-input-nickname-init").val(nickname);
 
         socket = new WebSocket('ws://localhost:3121/simplemessage');
@@ -175,7 +201,7 @@
             nickname: nickname
         }
         let message = {
-            command: "subscribe",
+            command: "SUBSCRIBE",
             identifier: identifier
         }
         console.log(message);
@@ -204,13 +230,38 @@
             nickname: nickname
         }
         let message = {
-            command: "message",
+            command: "MESSAGE",
             message: chatText,
             identifier: identifier
         }
         socket.send(JSON.stringify(message));
         $("#chat-text").val("");
 
+    }
+
+    let callVirtualKeyboardShow = function () {
+        setTimeout(function () {
+            $('html body').scrollTop(0);
+            var chatScreen = document.getElementById("inner-box");
+            $('#inner-box').animate({scrollTop: chatScreen.scrollHeight - chatScreen.clientHeight}, 'fast');
+        }, 0);
+    }
+
+    let callVirtualKeyboardHide = function() {
+        setTimeout(function () {
+            var chatScreen = document.getElementById("inner-box");
+            $('#inner-box').animate({scrollTop: chatScreen.scrollHeight - chatScreen.clientHeight}, 'fast');
+        }, 0);
+    }
+    function checkMobile(){
+        var varUA = navigator.userAgent.toLowerCase(); //userAgent 값 얻기
+        if ( varUA.indexOf('android') > -1) {
+            return "android";
+        } else if ( varUA.indexOf("iphone") > -1||varUA.indexOf("ipad") > -1||varUA.indexOf("ipod") > -1 ) {
+            return "ios";
+        } else {
+            return "other";
+        }
     }
 
 </script>
