@@ -1,7 +1,12 @@
 package org.platanus.platachat.web.member.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.platanus.platachat.web.auth.dto.LoginProvider;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -10,13 +15,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import org.platanus.platachat.web.auth.dto.LoginProvider;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 /**
  * 어플리케이션 회원 Entity
@@ -40,7 +38,7 @@ public class Member extends BaseTime implements Serializable {
     private String id;
 
     private String providerId;
-    
+
     @Enumerated(value = EnumType.STRING)
     private LoginProvider provider;
 
@@ -69,9 +67,9 @@ public class Member extends BaseTime implements Serializable {
 
     @Enumerated(value = EnumType.STRING)
     private AppRole appRole;
-    
-    @JsonSerialize(using= LocalDateTimeSerializer.class)
-    @JsonDeserialize(using= LocalDateTimeDeserializer.class)
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime lastActivated;
 
     @PrePersist
@@ -79,7 +77,7 @@ public class Member extends BaseTime implements Serializable {
         // https://developer111.tistory.com/83
         this.id = UUID.randomUUID().toString();
     }
-    
+
     public Member update(Member m) {
         this.nickname = m.getNickname();
         this.profileImage = m.getProfileImage();

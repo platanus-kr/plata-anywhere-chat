@@ -1,7 +1,6 @@
 package org.platanus.platachat.web.auth.app;
 
 import lombok.RequiredArgsConstructor;
-import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.repository.MemberRepository;
 import org.springframework.security.core.userdetails.UserDetails;

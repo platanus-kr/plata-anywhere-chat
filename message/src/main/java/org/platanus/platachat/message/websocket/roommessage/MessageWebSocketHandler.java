@@ -6,12 +6,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.platanus.platachat.message.auth.service.AuthService;
-import org.platanus.platachat.message.chat.dto.ChannelSubscribeDto;
-import org.platanus.platachat.message.chat.dto.CommandType;
-import org.platanus.platachat.message.chat.dto.IdentifierDto;
-import org.platanus.platachat.message.chat.dto.MessageRequestDto;
-import org.platanus.platachat.message.chat.model.MessagePayload;
-import org.platanus.platachat.message.chat.repository.MessagesCrudRepository;
+import org.platanus.platachat.message.message.repository.MessageRepository;
+import org.platanus.platachat.message.websocket.dto.WebSocketSubscribeDto;
+import org.platanus.platachat.message.websocket.dto.CommandType;
+import org.platanus.platachat.message.websocket.dto.IdentifierDto;
+import org.platanus.platachat.message.websocket.dto.WebSocketRequestDto;
+import org.platanus.platachat.message.message.model.MessagePayload;
 import org.platanus.platachat.message.utils.XSSFilter;
 import org.platanus.platachat.message.websocket.broadcaster.MessageBroadcaster;
 import org.platanus.platachat.message.websocket.subscription.SubscriptionManager;
@@ -39,7 +39,7 @@ public class MessageWebSocketHandler implements WebSocketHandler {
     private final MessageBroadcaster messageBroadcaster;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     private final AuthService authService;
-    private final MessagesCrudRepository messagesCrudRepository;
+    private final MessageRepository messagesRepository;
 
 
     /**
@@ -52,15 +52,7 @@ public class MessageWebSocketHandler implements WebSocketHandler {
      */
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-//        String findSessionKey = (String) session.getAttributes().get(sessionKey);
-//        log.info(findSessionKey);
-//        String sessionValue = (String) serverWebExchange.getAttribute(sessionKey);
-//        String sessionValue = sessionKeyFilter().getSessionValue();
-//        log.info(sessionValue);
-        //HandshakeInfo handshakeInfo = session.getHandshakeInfo();
-        //handshakeInfo.getHeaders();
-        AtomicReference<ChannelSubscribeDto> channelSub = new AtomicReference<>();
-//        log.info(session.getAttributes().toString());
+        AtomicReference<WebSocketSubscribeDto> channelSub = new AtomicReference<>();
         return session.receive()
                 .map(WebSocketMessage::getPayloadAsText)
                 .publishOn(Schedulers.boundedElastic())
@@ -82,12 +74,12 @@ public class MessageWebSocketHandler implements WebSocketHandler {
      */
     private Mono<Void> handleMessage(String payload,
                                      WebSocketSession session,
-                                     AtomicReference<ChannelSubscribeDto> channelSub) {
+                                     AtomicReference<WebSocketSubscribeDto> channelSub) {
         try {
-            MessageRequestDto messageRequestDto = objectMapper.readValue(payload, MessageRequestDto.class);
-            CommandType command = messageRequestDto.getCommand();
-            IdentifierDto identifier = messageRequestDto.getIdentifier();
-            ChannelSubscribeDto stub = ChannelSubscribeDto.builder()
+            WebSocketRequestDto webSocketRequestDto = objectMapper.readValue(payload, WebSocketRequestDto.class);
+            CommandType command = webSocketRequestDto.getCommand();
+            IdentifierDto identifier = webSocketRequestDto.getIdentifier();
+            WebSocketSubscribeDto stub = WebSocketSubscribeDto.builder()
                     .roomId(identifier.getChannel())
                     .memberId(identifier.getMemberId())
                     .nickname(identifier.getNickname())
@@ -95,7 +87,7 @@ public class MessageWebSocketHandler implements WebSocketHandler {
                     .build();
             channelSub.set(stub);
 
-            if ("subscribe".equals(command)) { // 여기부터 작업바람
+            if (command.equals(CommandType.SUBSCRIBE)) { // 여기부터 작업바람
                 authService.getSessionHealth(stub.getSessionId(), stub.getRoomId())
                         // 채팅방 구현하면서 다시 손볼것.
                         .onErrorResume(error -> {
@@ -108,8 +100,11 @@ public class MessageWebSocketHandler implements WebSocketHandler {
                             }
                         });
                 return processSubscribeCommand(stub, session);
-            } else if ("message".equals(command)) {
-                return processMessageCommand(stub, messageRequestDto.getMessage());
+            } else if (command.equals(CommandType.MESSAGE)) {
+                if (webSocketRequestDto.getMessage().length() < 1){
+                    return Mono.empty();
+                }
+                return processMessageCommand(stub, webSocketRequestDto.getMessage());
             }
         } catch (IOException e) {
             log.error("Error parsing WebSocket message", e);
@@ -127,7 +122,7 @@ public class MessageWebSocketHandler implements WebSocketHandler {
      * @param session 세션
      * @return 구독 추가 후 Mono.empty()
      */
-    private Mono<Void> processSubscribeCommand(ChannelSubscribeDto stub, WebSocketSession session) {
+    private Mono<Void> processSubscribeCommand(WebSocketSubscribeDto stub, WebSocketSession session) {
         subscriptionManager.addSubscription(stub.getRoomId(), session);
         log.info(stub.getRoomId() + " 채널에 " + stub.getNickname() + " 님이 입장하셨습니다.");
         messageBroadcaster.broadcastMessageToSubscribers(stub.getRoomId(), "SYSTEM", stub.getNickname() + "님이 채팅방에 입장 했습니다.");
@@ -141,24 +136,19 @@ public class MessageWebSocketHandler implements WebSocketHandler {
      * @param messageText 메시지
      * @return 메시지 브로드캐스트 후 Mono.empty()
      */
-    private Mono<Void> processMessageCommand(ChannelSubscribeDto stub, String messageText) {
+    private Mono<Void> processMessageCommand(WebSocketSubscribeDto stub, String messageText) {
         String message = XSSFilter.filterXSS(messageText);
-//        try {
-//            message = objectMapper.writeValueAsString(messageText);
-//        } catch (JsonProcessingException e) {
-//            log.error("Error serializing message to JSON", e);
-//            return Mono.empty();
-//        }
 
-        // 수신된 메시지를 저장합니다.
-        messagesCrudRepository.save(MessagePayload.builder()
+        // 수신된 메시지를 저장.
+        messagesRepository.save(MessagePayload.builder()
                 .roomId(stub.getRoomId())
                 .userId(stub.getMemberId())
                 .nickname(stub.getNickname())
                 .message(message)
                 .timestamp(LocalDateTime.now())
                 .build()).subscribe();
-        // 채팅방에 있는 모든 사용자에게 메시지를 전달합니다.
+
+        // 채팅방에 있는 모든 사용자에게 메시지를 전달.
         messageBroadcaster.broadcastMessageToSubscribers(stub.getRoomId(), stub.getNickname(), message);
         return Mono.empty();
     }
@@ -177,10 +167,10 @@ public class MessageWebSocketHandler implements WebSocketHandler {
      * @param session    웹소켓 세션
      */
     private void handleDisconnection(SignalType signalType,
-                                     AtomicReference<ChannelSubscribeDto> channelSub,
+                                     AtomicReference<WebSocketSubscribeDto> channelSub,
                                      WebSocketSession session) {
         if (SignalType.ON_COMPLETE.equals(signalType) || SignalType.ON_ERROR.equals(signalType)) {
-            ChannelSubscribeDto stub = channelSub.get();
+            WebSocketSubscribeDto stub = channelSub.get();
             messageBroadcaster.broadcastMessageToSubscribers(stub.getRoomId(),
                     "SYSTEM", stub.getNickname() + "가 퇴장합니다.");
             subscriptionManager.removeSubscription(stub.getRoomId(), session);

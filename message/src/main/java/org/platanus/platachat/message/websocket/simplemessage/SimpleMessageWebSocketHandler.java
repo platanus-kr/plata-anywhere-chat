@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.platanus.platachat.message.chat.dto.ChannelSubscribeDto;
-import org.platanus.platachat.message.chat.dto.CommandType;
-import org.platanus.platachat.message.chat.dto.IdentifierDto;
-import org.platanus.platachat.message.chat.dto.MessageRequestDto;
+import org.platanus.platachat.message.websocket.dto.WebSocketSubscribeDto;
+import org.platanus.platachat.message.websocket.dto.CommandType;
+import org.platanus.platachat.message.websocket.dto.IdentifierDto;
+import org.platanus.platachat.message.websocket.dto.WebSocketRequestDto;
 import org.platanus.platachat.message.utils.XSSFilter;
 import org.platanus.platachat.message.websocket.broadcaster.MessageBroadcaster;
 import org.platanus.platachat.message.websocket.subscription.SubscriptionManager;
@@ -42,14 +42,9 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
      */
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-        AtomicReference<ChannelSubscribeDto> channelSub = new AtomicReference<>();
+        AtomicReference<WebSocketSubscribeDto> channelSub = new AtomicReference<>();
         log.info(session.getAttributes().toString());
-        return session.receive()
-                .map(WebSocketMessage::getPayloadAsText)
-                .publishOn(Schedulers.boundedElastic())
-                .flatMap(payload -> handleMessage(payload, session, channelSub))
-                .doFinally(signalType -> handleDisconnection(signalType, channelSub, session))
-                .then();
+        return session.receive().map(WebSocketMessage::getPayloadAsText).publishOn(Schedulers.boundedElastic()).flatMap(payload -> handleMessage(payload, session, channelSub)).doFinally(signalType -> handleDisconnection(signalType, channelSub, session)).then();
     }
 
     /**
@@ -63,23 +58,21 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
      * @param channelSub 구독 정보
      * @return
      */
-    private Mono<Void> handleMessage(String payload,
-                                     WebSocketSession session,
-                                     AtomicReference<ChannelSubscribeDto> channelSub) {
+    private Mono<Void> handleMessage(String payload, WebSocketSession session, AtomicReference<WebSocketSubscribeDto> channelSub) {
         try {
-            MessageRequestDto messageRequestDto = objectMapper.readValue(payload, MessageRequestDto.class);
-            CommandType command = messageRequestDto.getCommand();
-            IdentifierDto identifier = messageRequestDto.getIdentifier();
-            ChannelSubscribeDto stub = ChannelSubscribeDto.builder()
-                    .roomId(identifier.getChannel())
-                    .nickname(identifier.getNickname())
-                    .build();
+            WebSocketRequestDto webSocketRequestDto = objectMapper.readValue(payload, WebSocketRequestDto.class);
+            CommandType command = webSocketRequestDto.getCommand();
+            IdentifierDto identifier = webSocketRequestDto.getIdentifier();
+            WebSocketSubscribeDto stub = WebSocketSubscribeDto.builder().roomId(identifier.getChannel()).nickname(identifier.getNickname()).build();
             channelSub.set(stub);
 
             if (command.equals(CommandType.SUBSCRIBE)) {
                 return processSubscribeCommand(stub, session);
             } else if (command.equals(CommandType.MESSAGE)) {
-                return processMessageCommand(stub, messageRequestDto.getMessage());
+                if (webSocketRequestDto.getMessage().length() < 1){
+                    return Mono.empty();
+                }
+                return processMessageCommand(stub, webSocketRequestDto.getMessage());
             }
         } catch (IOException e) {
             log.error("Error parsing WebSocket message", e);
@@ -94,7 +87,7 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
      * @param session 세션
      * @return 구독 추가 후 Mono.empty()
      */
-    private Mono<Void> processSubscribeCommand(ChannelSubscribeDto stub, WebSocketSession session) {
+    private Mono<Void> processSubscribeCommand(WebSocketSubscribeDto stub, WebSocketSession session) {
         subscriptionManager.addSubscription(stub.getRoomId(), session);
         log.info(stub.getRoomId() + " 채널에 " + stub.getNickname() + " 님이 입장하셨습니다.");
         messageBroadcaster.broadcastMessageToSubscribers(stub.getRoomId(), "SYSTEM", stub.getNickname() + "님이 채팅방에 입장 했습니다.");
@@ -108,7 +101,7 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
      * @param messageText 메시지
      * @return 메시지 브로드캐스트 후 Mono.empty()
      */
-    private Mono<Void> processMessageCommand(ChannelSubscribeDto stub, String messageText) {
+    private Mono<Void> processMessageCommand(WebSocketSubscribeDto stub, String messageText) {
         String message = XSSFilter.filterXSS(messageText);
 //        try {
 //            message = objectMapper.writeValueAsString(messageText);
@@ -134,13 +127,10 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
      * @param channelSub 구독 정보
      * @param session    웹소켓 세션
      */
-    private void handleDisconnection(SignalType signalType,
-                                     AtomicReference<ChannelSubscribeDto> channelSub,
-                                     WebSocketSession session) {
+    private void handleDisconnection(SignalType signalType, AtomicReference<WebSocketSubscribeDto> channelSub, WebSocketSession session) {
         if (SignalType.ON_COMPLETE.equals(signalType) || SignalType.ON_ERROR.equals(signalType)) {
-            ChannelSubscribeDto stub = channelSub.get();
-            messageBroadcaster.broadcastMessageToSubscribers(stub.getRoomId(),
-                    "SYSTEM", stub.getNickname() + "가 퇴장합니다.");
+            WebSocketSubscribeDto stub = channelSub.get();
+            messageBroadcaster.broadcastMessageToSubscribers(stub.getRoomId(), "SYSTEM", stub.getNickname() + "가 퇴장합니다.");
             subscriptionManager.removeSubscription(stub.getRoomId(), session);
         }
     }

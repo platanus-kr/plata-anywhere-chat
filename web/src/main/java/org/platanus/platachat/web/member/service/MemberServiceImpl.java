@@ -74,13 +74,13 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("없는 회원 입니다."));
     }
-    
+
     @Override
     public Member findById(String id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("없는 회원 입니다."));
     }
-    
+
     @Override
     public List<Member> findAll() {
         return memberRepository.findAll();

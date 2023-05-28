@@ -18,6 +18,7 @@ public class SecurityFilterChainConfig {
 
     /**
      * 커스텀 컨트롤러나 REST로 인증하려면 Bean 주입 필요.
+     *
      * @param authConfig
      * @return
      * @throws Exception
@@ -81,8 +82,8 @@ public class SecurityFilterChainConfig {
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("SESSION");
         http.formLogin()
                 .successHandler(customAuthenticationSuccessHandler);
-                //.defaultSuccessUrl("/", true);
-                //.successHandler(new CustomAuthenticationSuccessHandler());
+        //.defaultSuccessUrl("/", true);
+        //.successHandler(new CustomAuthenticationSuccessHandler());
         http.cors().and().csrf().disable();
         return http.build();
     }

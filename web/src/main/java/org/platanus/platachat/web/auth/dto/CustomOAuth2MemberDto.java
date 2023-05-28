@@ -2,7 +2,6 @@ package org.platanus.platachat.web.auth.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-
 import org.apache.commons.lang3.ObjectUtils;
 import org.platanus.platachat.web.constants.AuthConstant;
 import org.platanus.platachat.web.member.model.Member;

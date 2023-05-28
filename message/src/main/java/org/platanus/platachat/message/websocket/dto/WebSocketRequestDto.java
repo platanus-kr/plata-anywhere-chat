@@ -1,4 +1,4 @@
-package org.platanus.platachat.message.chat.dto;
+package org.platanus.platachat.message.websocket.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageRequestDto {
+public class WebSocketRequestDto {
 
     private CommandType command;
     private String message;

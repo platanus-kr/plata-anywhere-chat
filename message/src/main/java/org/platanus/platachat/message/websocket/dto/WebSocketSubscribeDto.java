@@ -1,4 +1,4 @@
-package org.platanus.platachat.message.chat.dto;
+package org.platanus.platachat.message.websocket.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +11,9 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class ChannelSubscribeDto {
+public class WebSocketSubscribeDto {
     /**
-     * 구독하고자 하는 채널명
+     * 구독하고자 하는 채팅방 식별자
      */
     private final String roomId;
 

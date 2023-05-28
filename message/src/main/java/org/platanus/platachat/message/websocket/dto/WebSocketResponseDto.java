@@ -1,4 +1,4 @@
-package org.platanus.platachat.message.chat.dto;
+package org.platanus.platachat.message.websocket.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageResponseDto {
+public class WebSocketResponseDto {
 
     private String command;
     private String message;

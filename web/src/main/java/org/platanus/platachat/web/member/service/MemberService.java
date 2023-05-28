@@ -1,9 +1,9 @@
 package org.platanus.platachat.web.member.service;
 
-import java.util.List;
-
 import org.platanus.platachat.web.member.dto.MemberJoinRequestDto;
 import org.platanus.platachat.web.member.model.Member;
+
+import java.util.List;
 
 public interface MemberService {
 
@@ -39,11 +39,11 @@ public interface MemberService {
      * @return 검색완료 회원
      */
     Member findByEmail(String email);
-    
+
     Member findById(String id);
-    
+
     List<Member> findAll();
-    
+
     /**
      * 회원 탈퇴
      *

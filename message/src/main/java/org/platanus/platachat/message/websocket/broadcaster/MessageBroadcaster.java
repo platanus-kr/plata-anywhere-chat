@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.platanus.platachat.message.chat.dto.IdentifierDto;
-import org.platanus.platachat.message.chat.dto.MessageResponseDto;
+import org.platanus.platachat.message.websocket.dto.IdentifierDto;
+import org.platanus.platachat.message.websocket.dto.WebSocketResponseDto;
 import org.platanus.platachat.message.websocket.subscription.SubscriptionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketMessage;
@@ -47,7 +47,7 @@ public class MessageBroadcaster {
                 String uniqueKey = channel + "-" + session.getId();
                 FluxSink<WebSocketMessage> sink = messageFlux.getSink(uniqueKey);
                 if (sink != null) {
-                    MessageResponseDto messageResponseDto = MessageResponseDto.builder()
+                    WebSocketResponseDto webSocketResponseDto = WebSocketResponseDto.builder()
                             .command("broadcast")
                             .message(message)
                             .timestamp(formatHHMMSS(LocalDateTime.now()))
@@ -57,7 +57,7 @@ public class MessageBroadcaster {
                                     .build())
                             .build();
                     try {
-                        String payload = objectMapper.writeValueAsString(messageResponseDto);
+                        String payload = objectMapper.writeValueAsString(webSocketResponseDto);
                         //brokerService.sendChatMessage(channel, message);
                         sink.next(session.textMessage(payload));
                     } catch (JsonProcessingException e) {

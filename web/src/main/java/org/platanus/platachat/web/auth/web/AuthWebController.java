@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/member")
 public class AuthWebController {
-    
+
     @GetMapping("/join")
     public String join() {
         return "member_join";

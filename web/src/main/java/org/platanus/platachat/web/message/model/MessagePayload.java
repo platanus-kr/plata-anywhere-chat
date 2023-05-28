@@ -1,16 +1,11 @@
 package org.platanus.platachat.web.message.model;
 
-import java.time.LocalDateTime;
-
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -20,13 +15,13 @@ import lombok.ToString;
 @Document(collection = "Messages")
 @TypeAlias("MessagePayload")
 public class MessagePayload {
-	@Id
-	private String id;
-	private String roomId;
-	private String userId;
-	private String nickname;
-	private String message;
-	private LocalDateTime timestamp;
-	private MessageType type;
-	
+    @Id
+    private String id;
+    private String roomId;
+    private String userId;
+    private String nickname;
+    private String message;
+    private LocalDateTime timestamp;
+    private MessageType type;
+
 }

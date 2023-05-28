@@ -1,4 +1,4 @@
-package org.platanus.platachat.message.chat.model;
+package org.platanus.platachat.message.message.model;
 
 
 import lombok.Getter;

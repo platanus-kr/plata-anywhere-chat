@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class KafkaBrokerAdaptor implements BrokerService {
-	private final KafkaTemplate<String, String> kafkaTemplate;
+//	private final KafkaTemplate<String, String> kafkaTemplate;
 	private final SubscriptionManager subscriptionManager;
 	private final MessageBroadcaster messageBroadcaster;
 	
@@ -24,7 +24,7 @@ public class KafkaBrokerAdaptor implements BrokerService {
 	
 	@Override
 	public void sendChatMessage(String topic, String message) {
-		kafkaTemplate.send(topic, message);
+//		kafkaTemplate.send(topic, message);
 	}
 	
 	@Override

@@ -2,14 +2,12 @@ package org.platanus.platachat.web.auth.oauth2;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.platanus.platachat.web.auth.dto.CustomOAuth2MemberDto;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.constants.AuthConstant;
 import org.platanus.platachat.web.member.model.AppRole;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.repository.MemberRepository;
-import org.springframework.boot.rsocket.context.LocalRSocketServerPort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -33,7 +31,6 @@ import java.util.Optional;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final MemberRepository memberRepository;
     private final HttpSession session;
-
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {

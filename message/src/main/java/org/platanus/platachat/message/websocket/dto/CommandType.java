@@ -1,4 +1,4 @@
-package org.platanus.platachat.message.chat.dto;
+package org.platanus.platachat.message.websocket.dto;
 
 
 import lombok.Getter;
