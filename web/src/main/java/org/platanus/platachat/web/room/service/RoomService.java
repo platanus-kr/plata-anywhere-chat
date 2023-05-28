@@ -23,7 +23,7 @@ public interface RoomService {
 
     Room getRoomById(String id, SessionMemberDto sessionMemberDto);
 
-    Room changeRoomInformation(RoomStatusRequestDto roomReqDto, SessionMemberDto sessionMemberDto);
+    Room changeRoomInformation(String roomId, RoomStatusRequestDto roomReqDto, SessionMemberDto sessionMemberDto);
 
     Room changeRoomOwner(RoomStatusRequestDto requestDto);
 
@@ -34,4 +34,8 @@ public interface RoomService {
     Page<Room> getRoomsByMemberIdAsPaging(String memberId, int page);
 
     Page<Room> getRoomsByMemberIdAsPaging(String memberId, int page, int size);
+
+    void exitRoom(String roomId, SessionMemberDto sessionMemberDto);
+
+    void joinRoom(String roomId, SessionMemberDto sessionMemberDto);
 }

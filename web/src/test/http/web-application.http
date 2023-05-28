@@ -1,3 +1,6 @@
+############### auth
+
+
 ### member join test
 POST {{pac-web}}/api/v1/auth
 Content-Type: application/json
@@ -25,33 +28,7 @@ Content-Type: application/json
         client.assert(response.body.token.trim().length > 0);
     });
 
-
     // https://youtrack.jetbrains.com/issue/IDEA-239263/Response-handler-add-API-to-get-set-cookies
-    all_headers = response.headers.headers;
-    for (i = 0; i < all_headers.length; i++) {
-        client.log(all_headers[i].name + ": " + all_headers[i].value)
-    }
-    // for (i = 0; i < all_headers.length; i++) {
-    //   if ( all_headers[i].name === "Set-Cookie") {
-    //     client.log(all_headers[i].value);
-    //     // cookieStr=all_headers[i].value.split(";")[0];
-    //     // client.log(cookieStr);
-    //     // cookieName=cookieStr.split("=")[0];
-    //     // cookieValue=cookieStr.split("=")[1];
-    //     // client.global.set( cookieName, cookieValue );
-    //     // client.log(cookieName, cookieValue);
-    //   }
-    // }
-
-    // client.global.set("PAC_SESSIONID", response.headers.valueOf("Set-Cookie").split(";")[0].split("=")[1]);
-    // client.log("쿠키: "+client.global.get("PAC_SESSIONID"));
-
-    // client.log(response.headers.valuesOf("Set-Cookie")[0]);
-    //client.global.set("my_cookie", response.headers.valuesOf("Set-Cookie")[0]);
-
-
-    // client.log(response.cookie("PAC_SESSIONID"));
-    // client.global.set("spring_sessionid", response.cookie("PAC_SESSIONID"));
     client.log(response.body.token);
     client.global.set("access_token", response.body.token);
     client.global.set("room_owner", response.body.id);
@@ -76,7 +53,7 @@ Content-Type: application/json
 }
 
 
-
+############## chat room
 
 ### chat public room list
 GET {{pac-web}}/api/v1/room/list?page=2
@@ -86,18 +63,14 @@ Content-Type: application/json
   "sessionId" : "{{access_token}}"
 }
 
+> {%
+    client.global.set("public_room", response.body.content[0].roomId);
+    client.log(response.body.content[0].roomId);
+%}
+
 ### chat public room list
 GET {{pac-web}}/api/v1/room/list
 Content-Type: application/json
-
-
-### chat own room list
-GET {{pac-web}}/api/v1/room/own/list
-Content-Type: application/json
-
-{
-  "sessionId" : "{{access_token}}"
-}
 
 ### chat own room list (paging)
 GET {{pac-web}}/api/v1/room/own/list?page=2
@@ -108,15 +81,15 @@ Content-Type: application/json
 }
 
 ### retrieve chat room info
-GET {{pac-web}}/api/v1/room/d40bcb42-e737-4e81-89b3-746e33947ad2
+GET {{pac-web}}/api/v1/room/{{public_room}}
 
 ### change chat room info
-PUT {{pac-web}}/api/v1/room
+PUT {{pac-web}}/api/v1/room/{{public_room}}
 Content-Type: application/json
 
 {
-  "roomId": "10bc6f40-f1c8-4bd1-973c-f2eb2ae338b3",
-  "name": "변경된 채팅방 이름,",
+  "roomId": "{{public_room}}",
+  "name": "변경된 채팅방 이름",
   "roomStatus": "ALIVE",
   "roomPublic": "AVAILABLE",
   "description": "변경된 채팅방 설명",
@@ -125,6 +98,15 @@ Content-Type: application/json
   "ownerMemberId" : "{{room_owner}}"
 }
 
+### exit chat room
+POST {{pac-web}}/api/v1/room/{{public_room}}/exit
+
+### join chat room
+POST {{pac-web}}/api/v1/room/{{public_room}}/join
+
+
+
+######### chat message
 
 ### chat logs
 GET {{pac-web}}/api/v1/chat/log/simple/7394e567-daab-4d48-81f8-ecc0c482e94e?page=2

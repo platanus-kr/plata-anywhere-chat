@@ -12,8 +12,6 @@ import org.platanus.platachat.web.room.model.RoomStatus;
 @ToString
 public class RoomStatusRequestDto {
 
-    private String roomId;
-
     private String name;
 
     @JsonProperty("status")

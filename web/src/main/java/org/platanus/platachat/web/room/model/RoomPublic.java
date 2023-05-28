@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum RoomPublic {
-    // 제한없는 입장이 가능한 방
+    // 제한없이 입장이 가능한 방
     AVAILABLE("AVAILABLE", "입장 가능"),
 
     // 채팅은 불가능하지만 볼수는 있는 방

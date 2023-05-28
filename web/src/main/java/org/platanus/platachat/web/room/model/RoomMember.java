@@ -5,11 +5,10 @@ import org.platanus.platachat.web.member.model.Member;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Builder
-@ToString
+@ToString(exclude = {"member", "room"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ROOMS_MEMBER", indexes = {

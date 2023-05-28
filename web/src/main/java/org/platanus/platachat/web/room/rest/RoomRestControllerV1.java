@@ -11,6 +11,7 @@ import org.platanus.platachat.web.room.model.Room;
 import org.platanus.platachat.web.room.repository.exception.RoomException;
 import org.platanus.platachat.web.room.service.RoomService;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ public class RoomRestControllerV1 {
 
     /**
      * 채팅방 생성
+     * POST /api/v1/room
      *
      * @param dto 채팅방 생성 요청 DTO
      * @param sessionMemberDto 인증
@@ -60,24 +62,27 @@ public class RoomRestControllerV1 {
     /**
      * 방의 상태를 변경 <br />
      * 공개여부, 종료여부, 채팅방 메타정보.
+     * PUT /api/v1/room/{roomId}
      *
      * @param dto 변경할 방의 정보
      * @param sessionMemberDto 인증
      * @return 변경 응답 DTO
      */
-    @PutMapping
-    public RoomStatusResponseDto modify(@RequestBody RoomStatusRequestDto dto,
+    @PutMapping("/{roomId}")
+    public RoomStatusResponseDto modify(@PathVariable("roomId") String roomId,
+                                        @RequestBody RoomStatusRequestDto dto,
                                         @HasMember SessionMemberDto sessionMemberDto) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
             throw new IllegalArgumentException("회원이 아닙니다");
         }
-        return modifyChatRoom(dto, sessionMemberDto);
+        return modifyChatRoom(roomId, dto, sessionMemberDto);
     }
 
-    private RoomStatusResponseDto modifyChatRoom(RoomStatusRequestDto romReqDto,
+    private RoomStatusResponseDto modifyChatRoom(String roomId,
+                                                 RoomStatusRequestDto requestDto,
                                                  SessionMemberDto smDto) {
         try {
-            roomService.changeRoomInformation(romReqDto, smDto);
+            roomService.changeRoomInformation(roomId, requestDto, smDto);
         } catch (IllegalArgumentException e){
             throw new RoomException(e.getMessage());
         }
@@ -87,12 +92,14 @@ public class RoomRestControllerV1 {
                 .build();
     }
 
-//    @PutMapping("/owner")
-//    public RoomStatusResponseDto modifyOwner(@RequestBody RoomStatusRequestDto dto,
-//                                        @HasMember SessionMemberDto sessionMemberDto) {
-//
-//    }
-
+    /**
+     * 채팅방 정보 조회
+     * GET /api/v1/room/{roomId}
+     *
+     * @param roomId
+     * @param sessionMemberDto
+     * @return
+     */
     @GetMapping("/{roomId}")
     public RoomRetrieveResponseDto retrieve(@PathVariable("roomId") String roomId,
                                             @HasMember SessionMemberDto sessionMemberDto) {
@@ -110,6 +117,7 @@ public class RoomRestControllerV1 {
 
     /**
      * 공개된 채팅방 목록
+     * GET /api/v1/room/list
      *
      * @param sessionMemberDto 인증
      * @param page 페이지
@@ -130,7 +138,8 @@ public class RoomRestControllerV1 {
 
     /**
      * 내가 방장인 채팅방 목록
-     * 
+     * GET /api/v1/room/own/list
+     *
      * @param sessionMemberDto 인증
      * @param page 페이지
      * @return 내가 방장인 채팅방 페이징 목록
@@ -147,5 +156,83 @@ public class RoomRestControllerV1 {
         Page<Room> roomsByMemberId = roomService.getRoomsByMemberIdAsPaging(sessionMemberDto.getId(), page);
         return RoomRetrieveResponseDto.from(roomsByMemberId);
     }
+
+
+//    @DeleteMapping("/{roomId}")
+//    public RoomStatusResponseDto delete(@PathVariable("roomId") String roomId,
+//                                        @HasMember SessionMemberDto sessionMemberDto) {
+//        if (ObjectUtils.isEmpty(sessionMemberDto)) {
+//            throw new IllegalArgumentException("회원이 아닙니다");
+//        }
+//        try {
+//            roomService.changeRoomLiveStatus(roomId, sessionMemberDto);
+//        } catch (IllegalArgumentException e) {
+//            throw new RoomException(e.getMessage());
+//        }
+//        return RoomStatusResponseDto.builder()
+//                .key("ok")
+//                .message(CHANGE_OK_MESSAGE)
+//                .build();
+//    }
+
+    /**
+     * 채팅방 입장
+     * POST /api/v1/room/{roomId}/join
+     *
+     * @param roomId 채팅방 식별자
+     * @param sessionMemberDto 인증
+     * @return 응답
+     */
+    @PostMapping("/{roomId}/join")
+    public ResponseEntity<Void> joinRoom(@PathVariable("roomId") String roomId,
+                                         @HasMember SessionMemberDto sessionMemberDto) {
+        if (ObjectUtils.isEmpty(sessionMemberDto)) {
+            throw new IllegalArgumentException("회원이 아닙니다");
+        }
+        try {
+            roomService.joinRoom(roomId, sessionMemberDto);
+        } catch (IllegalArgumentException e) {
+            throw new RoomException(e.getMessage());
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 채팅방 나가기
+     * POST /api/v1/room/{roomId}/exit
+     *
+     * @param roomId 채팅방 식별자
+     * @param sessionMemberDto 인증
+     * @return 응답
+     */
+    @PostMapping("/{roomId}/exit")
+    public ResponseEntity<Void> exitRoom(@PathVariable("roomId") String roomId,
+                                          @HasMember SessionMemberDto sessionMemberDto) {
+        if (ObjectUtils.isEmpty(sessionMemberDto)) {
+            throw new IllegalArgumentException("회원이 아닙니다");
+        }
+        try {
+            roomService.exitRoom(roomId, sessionMemberDto);
+        } catch (IllegalArgumentException e) {
+            throw new RoomException(e.getMessage());
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    //    @PutMapping("/owner")
+//    public RoomStatusResponseDto modifyOwner(@RequestBody RoomStatusRequestDto dto,
+//                                        @HasMember SessionMemberDto sessionMemberDto) {
+//
+//    }
+
+//    @GetMapping("/{roomId}/members")
+//    public List<MemberResponseDto> getMembers(@PathVariable("roomId") String roomId,
+//                                              @HasMember SessionMemberDto sessionMemberDto) {
+//        if (ObjectUtils.isEmpty(sessionMemberDto)) {
+//            throw new IllegalArgumentException("회원이 아닙니다");
+//        }
+//        List<Member> members = roomService.getMembers(roomId, sessionMemberDto);
+//        return MemberResponseDto.from(members);
+//    }
 
 }
