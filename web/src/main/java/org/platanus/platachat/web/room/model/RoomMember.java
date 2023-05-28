@@ -12,13 +12,15 @@ import java.util.UUID;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ROOMS_MEMBER")
+@Table(name = "ROOMS_MEMBER", indexes = {
+        @Index(name = "idx_room_id", columnList = "ROOM_ID")
+})
 @Entity
 public class RoomMember {
 
     @Id
-    @Column(length = 36)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
@@ -39,9 +41,4 @@ public class RoomMember {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ROOM_ID")
     private Room room;
-
-    @PrePersist
-    public void generateId() {
-        this.id = UUID.randomUUID().toString();
-    }
 }

@@ -13,7 +13,9 @@ import java.util.UUID;
 @ToString(exclude = {"participates"}, callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ROOMS")
+@Table(name = "ROOMS", indexes = {
+        @Index(name = "idx_room_public", columnList = "roomPublic, roomStatus")
+})
 @Entity
 public class Room extends BaseTime {
 
