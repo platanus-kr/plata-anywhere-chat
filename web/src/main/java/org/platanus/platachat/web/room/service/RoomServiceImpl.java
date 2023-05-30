@@ -120,7 +120,8 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Page<Room> getRoomsByVisibleAsPaging(int page) {
-        final int PAGE_SIZE = 10;
+//        final int PAGE_SIZE = 10;
+        final int PAGE_SIZE = 100;
         return getRoomsByVisibleAsPaging(page, PAGE_SIZE);
     }
 

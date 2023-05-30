@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,8 @@ public class RoomRetrieveResponseDto {
     private List<RoomMemberResponseDto> participates;
 
     private RoomMemberResponseDto owner;
+
+    private LocalDateTime createdAt;
 
     public static List<RoomRetrieveResponseDto> from(List<Room> list) {
         List<RoomRetrieveResponseDto> dtos = new ArrayList<>();
@@ -65,6 +68,7 @@ public class RoomRetrieveResponseDto {
                 .roomPublic(rm.getRoomPublic())
                 .participates(null)
                 .owner(RoomMemberResponseDto.from(rm.getOwner())) // select 발생 지점
+                .createdAt(rm.getCreated())
                 .build();
     }
 }
