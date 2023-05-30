@@ -197,6 +197,24 @@ public class RoomServiceImpl implements RoomService {
         addRoomMember(rm);
     }
 
+    @Override
+    public void validateChatSessionAsPublic(String roomId, SessionMemberDto sessionMemberDto) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+        if (room.getRoomPublic().equals(RoomPublic.INVISIBLE)) {
+            throw new IllegalArgumentException("존재하지 않는 채팅방입니다.");
+        }
+        if (room.getRoomPublic().equals(RoomPublic.PRIVATE)) {
+            throw new IllegalArgumentException("비공개 채팅방입니다.");
+        }
+        if (room.getRoomStatus() == RoomStatus.ENDED) {
+            throw new IllegalArgumentException("종료된 채팅방입니다.");
+        }
+        if (room.getCapacity() <= room.getParticipates().size()) {
+            throw new IllegalArgumentException("채팅방 인원이 가득 찼습니다.");
+        }
+    }
+
     private void validateDto(String roomId, RoomStatusRequestDto dto) {
         if (StringUtils.isBlank(roomId)) {
             throw new IllegalArgumentException("채팅방 아이디는 필수입니다.");

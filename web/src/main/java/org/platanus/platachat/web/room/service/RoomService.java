@@ -38,4 +38,6 @@ public interface RoomService {
     void exitRoom(String roomId, SessionMemberDto sessionMemberDto);
 
     void joinRoom(String roomId, SessionMemberDto sessionMemberDto);
+
+    void validateChatSessionAsPublic(String roomId, SessionMemberDto sessionMemberDto);
 }

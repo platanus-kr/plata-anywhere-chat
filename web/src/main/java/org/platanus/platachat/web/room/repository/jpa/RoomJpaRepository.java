@@ -24,5 +24,7 @@ public interface RoomJpaRepository extends JpaRepository<Room, String> {
     Room findWithOwnerById(String id);
 
     Page<Room> findAllByRoomPublic(RoomPublic status, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"owner", "participates"})
     Page<Room> findAllByRoomStatusAndRoomPublicNot(RoomStatus roomStatus, RoomPublic roomPublic, Pageable pageable);
 }
