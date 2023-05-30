@@ -8,12 +8,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
-    <title>Plata Anywhere Chat :: chat</title>
+    <title>Plata Anywhere Chat</title>
 </head>
 <body>
 <main>
     <div class="wrap flex flex-col item-center sm:w-[42rem] mx-auto bg-white">
+        <div th:replace="~{layout/web/common_component :: gnb}"></div>
         <div th:replace="${content}"></div>
+        <div th:replace="~{layout/web/common_component :: footer}"></div>
     </div>
 </main>
 </body>

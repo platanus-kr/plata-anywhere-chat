@@ -93,7 +93,7 @@ public class RoomRestControllerV1 {
     }
 
     /**
-     * 채팅방 정보 조회
+     * 개별 채팅방 정보 조회
      * GET /api/v1/room/{roomId}
      *
      * @param roomId

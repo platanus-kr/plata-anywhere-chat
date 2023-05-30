@@ -24,16 +24,16 @@ public class ChatWebController {
      *
      * @return thymeleaf template
      */
-    @GetMapping("/simple")
-    public String chatTest(Model model) {
+    @GetMapping("/room/random")
+    public String chatRandomFront(Model model) {
         model.addAttribute("messageServer", messageAppServer);
-        return "simple_room";
+        return "chat/simple_room";
     }
 
-    @GetMapping("/simple_haslogin")
-    public String chatTestHasLogin(Model model,
-                                   @HasMember SessionMemberDto member,
-                                   HttpServletRequest request) {
+    @GetMapping
+    public String chatFront(Model model,
+                            @HasMember SessionMemberDto member,
+                            HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         String sessionId = null;
         if (session != null) {
@@ -46,7 +46,7 @@ public class ChatWebController {
         }
         model.addAttribute("member", member);
         model.addAttribute("messageServer", messageAppServer);
-        return "simple_room_haslogin";
+        return "chat/room";
     }
 
     @GetMapping("/store/simple")
