@@ -1,3 +1,3 @@
-rootProject.name = 'platachat'
+rootProject.name = 'plata-chat'
 include 'web'
 include 'message'
