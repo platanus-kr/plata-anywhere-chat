@@ -20,11 +20,14 @@ public interface RoomJpaRepository extends JpaRepository<Room, String> {
 
 
     // with는 메서드 이름을 더 이해하기 쉽게 만들기 위한 도구일 뿐, JPA 쿼리 메서드의 연산자나 키워드가 아님.
-    @EntityGraph(attributePaths = {"owner"})
+    @EntityGraph(attributePaths = {"owner", "participates"})
     Room findWithOwnerById(String id);
+
+    @EntityGraph(attributePaths = {"owner", "participates"})
+    Optional<Room> findWithRoomById(String id);
 
     Page<Room> findAllByRoomPublic(RoomPublic status, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"owner", "participates"})
+//    @EntityGraph(attributePaths = {"owner", "participates"})
     Page<Room> findAllByRoomStatusAndRoomPublicNot(RoomStatus roomStatus, RoomPublic roomPublic, Pageable pageable);
 }

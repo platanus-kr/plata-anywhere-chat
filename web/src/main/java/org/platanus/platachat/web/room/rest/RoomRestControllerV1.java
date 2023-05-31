@@ -112,7 +112,7 @@ public class RoomRestControllerV1 {
         } catch (IllegalArgumentException e) {
             throw new RoomException(e.getMessage());
         }
-        return RoomRetrieveResponseDto.from(room);
+        return RoomRetrieveResponseDto.withEntityGraphFrom(room);
     }
 
     /**

@@ -122,7 +122,7 @@
             const roomList = getRoomList();
 
             // $(".chat-input-id").val(nickname);
-            document.querySelector(".chat-input-id").value = nickname;
+            // document.querySelector(".chat-input-id").value = nickname;
 
         })
 
@@ -210,11 +210,11 @@
                     '        <div class="min-w-0 flex-auto">\n' +
                     '            <p class="text-sm font-semibold leading-6 text-gray-900">' + room.name + '</p>\n' +
                     '            <p class="mt-1 truncate text-xs leading-5 text-gray-500">\n' +
-                    '            ' + appendRoomStatus(room) + ' <span>' + room.roomMembersCount + '/' + room.capacity + '</span></p>\n' +
+                    '            ' + appendRoomStatus(room) + '\n' +
                     '        </div>\n' +
                     '    </div>\n' +
                     '    <div class="hidden sm:flex sm:flex-col sm:items-end">\n' +
-                    '        <p class="text-sm leading-6 text-gray-900">' + room.owner.nickname + '</p>\n' +
+                    // '        <p class="text-sm leading-6 text-gray-900">' + room.owner.nickname + '</p>\n' +
                     '        <p class="mt-1 text-xs leading-5 text-gray-500">방 생성 시간\n' +
                     '            <time datetime="2023-01-23T13:23Z">' + room.createdAt + '</time>\n' +
                     '        </p>\n' +
@@ -238,7 +238,47 @@
 
         }
 
+        /**
+         * {
+         *     "roomId": "20dde8f5-f490-4551-857b-347d9043c3c0",
+         *     "name": "테스트방",
+         *     "description": "테스트 채팅방",
+         *     "imageUrl": "#",
+         *     "capacity": 100,
+         *     "roomMembersCount": 1,
+         *     "roomStatus": "ALIVE",
+         *     "roomPublic": "AVAILABLE",
+         *     "participates": [
+         *         {
+         *             "id": "7df85bd4-71b9-47c8-8c00-cf18fec5d9a6",
+         *             "nickname": "테스트1",
+         *             "status": "ALIVE",
+         *             "role": "SYSOP",
+         *             "joinDateTime": null
+         *         }
+         *     ],
+         *     "owner": {
+         *         "id": "7df85bd4-71b9-47c8-8c00-cf18fec5d9a6",
+         *         "nickname": "테스트1",
+         *         "status": null,
+         *         "role": null,
+         *         "joinDateTime": null
+         *     },
+         *     "createdAt": "2023-05-31T22:35:12.538611"
+         * }
+         *
+         */
         function getRoomInformation(roomId) {
+            $.ajax({
+                url: '/api/v1/room/' + roomId,
+                type: 'GET'
+            }).done(function (data) {
+                console.log(data);
+                // appendRoomInformation(data);
+            }).fail(function (error) {
+                console.log(error);
+                alert("채팅방 정보를 불러오는데 문제가 발생했습니다.");
+            });
             // 개별 채팅방 정보 오버레이
             $('.room-list ul li').removeClass('h-[30rem]', 1000, 'linear');
             $('.' + roomId).addClass('h-[30rem]', 1000, 'linear');

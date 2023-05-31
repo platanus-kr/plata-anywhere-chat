@@ -36,4 +36,14 @@ public class RoomMemberResponseDto {
                 .nickname(rm.getNickname())
                 .build();
     }
+
+    public static RoomMemberResponseDto from(RoomMember rm) {
+        return RoomMemberResponseDto.builder()
+                .id(rm.getMember().getId())
+                .nickname(rm.getMember().getNickname())
+                .role(rm.getRole())
+                .joinDateTime(rm.getJoinDateTime())
+                .status(rm.getStatus())
+                .build();
+    }
 }

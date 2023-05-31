@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import org.platanus.platachat.web.room.model.Room;
+import org.platanus.platachat.web.room.model.RoomMember;
 import org.platanus.platachat.web.room.model.RoomPublic;
 import org.platanus.platachat.web.room.model.RoomStatus;
 import org.springframework.data.domain.Page;
@@ -63,11 +64,31 @@ public class RoomRetrieveResponseDto {
                 .description(rm.getDescription())
                 .imageUrl(rm.getImageUrl())
                 .capacity(rm.getCapacity())
+//                .roomMembersCount(rm.getParticipates().size())
+                .roomStatus(rm.getRoomStatus())
+                .roomPublic(rm.getRoomPublic())
+//                .participates(null)
+//                .owner(RoomMemberResponseDto.from(rm.getOwner())) // select 발생 지점
+                .createdAt(rm.getCreated())
+                .build();
+    }
+
+    public static RoomRetrieveResponseDto withEntityGraphFrom(Room rm) {
+        List<RoomMemberResponseDto> participates = new ArrayList<>();
+        for (RoomMember participate : rm.getParticipates()) {
+            participates.add(RoomMemberResponseDto.from(participate));
+        }
+        return RoomRetrieveResponseDto.builder()
+                .roomId(rm.getId())
+                .name(rm.getName())
+                .description(rm.getDescription())
+                .imageUrl(rm.getImageUrl())
+                .capacity(rm.getCapacity())
                 .roomMembersCount(rm.getParticipates().size())
                 .roomStatus(rm.getRoomStatus())
                 .roomPublic(rm.getRoomPublic())
-                .participates(null)
-                .owner(RoomMemberResponseDto.from(rm.getOwner())) // select 발생 지점
+                .participates(participates)
+                .owner(RoomMemberResponseDto.from(rm.getOwner()))
                 .createdAt(rm.getCreated())
                 .build();
     }

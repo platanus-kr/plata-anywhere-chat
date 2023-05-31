@@ -65,7 +65,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Room getRoomById(String id, SessionMemberDto sessionMemberDto) {
-        Room room = roomRepository.findById(id)
+        Room room = roomRepository.findWithRoomById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
         if (room.getRoomPublic() == RoomPublic.PRIVATE) {
             throw new IllegalArgumentException("비공개 방 입니다.");

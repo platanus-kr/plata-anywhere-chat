@@ -12,7 +12,7 @@
         <module name="plata-chat.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="11">
+    <bytecodeTargetLevel target="17">
       <module name="org.platanus.platachat.platachat.message.main" target="17" />
       <module name="org.platanus.platachat.platachat.web.main" target="17" />
       <module name="platachat" target="17" />
@@ -21,6 +21,7 @@
       <module name="platachat.message.test" target="17" />
       <module name="platachat.test" target="17" />
       <module name="platachat.web" target="17" />
+      <module name="platachat.web.main" target="17" />
       <module name="platachat.web.test" target="17" />
     </bytecodeTargetLevel>
   </component>
