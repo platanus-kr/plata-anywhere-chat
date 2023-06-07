@@ -36,12 +36,11 @@ Content-Type: application/json
 %}
 
 
-### test suthorize
-GET {{pac-web}}/test/endpoint
+### validate web authorization
+GET {{pac-web}}/auth/endpoint/check
 
 ### logout suthorize
 GET {{pac-web}}/logout
-
 
 ### validate session
 POST {{pac-web}}/api/v1/auth/validate

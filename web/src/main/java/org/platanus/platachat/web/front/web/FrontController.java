@@ -8,6 +8,6 @@ public class FrontController {
 
     @GetMapping
     public String front() {
-        return "front";
+        return "front/front";
     }
 }

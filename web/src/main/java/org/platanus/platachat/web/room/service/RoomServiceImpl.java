@@ -199,7 +199,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void validateChatSessionAsPublic(String roomId, SessionMemberDto sessionMemberDto) {
+    public Room validateChatSessionAsPublic(String roomId, SessionMemberDto sessionMemberDto) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
         if (room.getRoomPublic().equals(RoomPublic.INVISIBLE)) {
@@ -214,6 +214,7 @@ public class RoomServiceImpl implements RoomService {
         if (room.getCapacity() <= room.getParticipates().size()) {
             throw new IllegalArgumentException("채팅방 인원이 가득 찼습니다.");
         }
+        return room;
     }
 
     private void validateDto(String roomId, RoomStatusRequestDto dto) {

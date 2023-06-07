@@ -39,5 +39,5 @@ public interface RoomService {
 
     void joinRoom(String roomId, SessionMemberDto sessionMemberDto);
 
-    void validateChatSessionAsPublic(String roomId, SessionMemberDto sessionMemberDto);
+    Room validateChatSessionAsPublic(String roomId, SessionMemberDto sessionMemberDto);
 }
