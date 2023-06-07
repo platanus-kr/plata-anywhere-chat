@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.platanus.platachat.web.auth.argumentresolver.HasMember;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
+import org.platanus.platachat.web.constants.RoomConstant;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.service.MemberService;
 import org.platanus.platachat.web.room.dto.*;
@@ -25,8 +26,6 @@ public class RoomRestControllerV1 {
 
     private final MemberService memberService;
     private final RoomService roomService;
-
-    final String CHANGE_OK_MESSAGE = "변경이 완료 되었습니다.";
 
     /**
      * <h3>채팅방 생성</h3>
@@ -88,7 +87,7 @@ public class RoomRestControllerV1 {
         }
         return RoomStatusResponseDto.builder()
                 .key("ok")
-                .message(CHANGE_OK_MESSAGE)
+                .message(RoomConstant.ROOM_INFORMATION_CHANGE_OK_MESSAGE)
                 .build();
     }
 
@@ -106,7 +105,7 @@ public class RoomRestControllerV1 {
                                              @RequestBody RoomStatusRequestDto dto,
                                              @HasMember SessionMemberDto sessionMemberDto) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
-            throw new IllegalArgumentException("회원이 아닙니다");
+            throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
         }
         return modifyChatRoomOwner(roomId, dto, sessionMemberDto);
     }
@@ -121,7 +120,7 @@ public class RoomRestControllerV1 {
         }
         return RoomStatusResponseDto.builder()
                 .key("ok")
-                .message(CHANGE_OK_MESSAGE)
+                .message(RoomConstant.ROOM_INFORMATION_CHANGE_OK_MESSAGE)
                 .build();
     }
 
@@ -246,7 +245,7 @@ public class RoomRestControllerV1 {
     public ResponseEntity<Void> endChat(@PathVariable("roomId") String roomId,
                                         @HasMember SessionMemberDto sessionMemberDto) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
-            throw new IllegalArgumentException("회원이 아닙니다");
+            throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
         }
         try {
             roomService.endChat(roomId, sessionMemberDto);

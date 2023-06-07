@@ -18,4 +18,7 @@ public record RoomConstant() {
 	public static final String ROOM_VALIDATE_STATUS_IS_BLANK_MESSAGE = "채팅방 상태는 필수입니다.";
 	public static final String ROOM_VALIDATE_OWNER_IS_BLANK_MESSAGE = "채팅방 주인은 필수입니다.";
 	public static final String ROOM_VALIDATE_ROOM_NAME_IS_BLANK_MESSAGE = "채팅방 이름은 필수입니다.";
+    public static final String ROOM_INFORMATION_CHANGE_OK_MESSAGE = "변경이 완료 되었습니다.";
+	public static final String ROOM_ALREADY_ROOM_OWNER_MESSAGE = "이미 방장입니다.";
+	public static final String ROOM_END_CHAT_VALIDATE_OWNER_MESSAGE = "방장만 채팅방을 종료할 수 있습니다.";
 }

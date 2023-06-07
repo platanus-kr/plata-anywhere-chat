@@ -21,7 +21,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
-    
+
     private final RoomMemberRepository roomMemberRepository;
     private final RoomRepository roomRepository;
     private final MemberService memberService;
@@ -126,12 +126,12 @@ public class RoomServiceImpl implements RoomService {
 
         // 채팅방 소유자만 변경 가능
         if (!StringUtils.equals(requestMember.getId(), roomOwner.getId())) {
-            throw new IllegalArgumentException("채팅방의 소유자만 변경할 수 있습니다.");
+            throw new IllegalArgumentException(RoomConstant.ROOM_NOT_OWNER_VALIDATE_FAILED_MESSAGE);
         }
 
         // 현재 방장을 방장으로 교체할 수 없음.
         if (StringUtils.equals(roomOwner.getId(), ownerMemberId)) {
-            throw new IllegalArgumentException("이미 방장입니다.");
+            throw new IllegalArgumentException(RoomConstant.ROOM_ALREADY_ROOM_OWNER_MESSAGE);
         }
 
         Member changedOwner = memberService.findById(ownerMemberId);
@@ -251,9 +251,9 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public void endChat(String roomId, SessionMemberDto sessionMemberDto) {
         Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(RoomConstant.ROOM_NOT_FOUND_ROOM_MESSAGE));
         if (!room.getOwner().getId().equals(sessionMemberDto.getId())) {
-            throw new IllegalArgumentException("방장만 채팅방을 종료할 수 있습니다.");
+            throw new IllegalArgumentException(RoomConstant.ROOM_END_CHAT_VALIDATE_OWNER_MESSAGE);
         }
         room.setRoomStatus(RoomStatus.ENDED);
 
