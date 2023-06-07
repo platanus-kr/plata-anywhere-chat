@@ -313,6 +313,7 @@
         }
 
         function entranceRoom(roomId) {
+            socket.close(); // 채팅방용 소켓은 별도 취급
             location.href = '/chat/' + roomId;
         }
 

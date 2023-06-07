@@ -24,11 +24,7 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.session.Session;
 import org.springframework.session.data.redis.RedisSessionRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -42,12 +38,12 @@ public class AuthRestControllerV1 {
     private final AuthenticationManager authenticationManager;
     private final MemberService memberService;
     private final RedisSessionRepository sessionRepository;
-    
+
     @GetMapping("/endpoint/check")
     public SessionMemberDto endpointTest(@HasMember SessionMemberDto member) {
         return member;
     }
-    
+
     /**
      * 회원가입
      *

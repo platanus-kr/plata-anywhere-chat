@@ -8,8 +8,14 @@
 <body>
 <section>
     <div class="chat-service p-4 h-[calc(100vh-1vh)]">
+        <input type="hidden" id="pacSessionId" th:value="${pacsessionid}"/>
+        <input type="hidden" id="pacUserId" th:value="${member.id}"/>
+        <input type="hidden" id="pacNickname" th:value="${member.nickname}"/>
+        <input type="hidden" id="messageServer" th:value="${messageServer}"/>
+        <input type="hidden" id="isChatSessionValid" th:value="${isChatSessionValid}"/>
+        <input type="hidden" id="sessionValidErrorMessage" th:value="${sessionValidErrorMessage}"/>
 
-        <div th:replace="~{layout/chat/chat_component :: gnb}"></div>름
+        <div th:replace="~{layout/chat/chat_component :: gnb}"></div>
 
         <div class="stream-box h-[calc(100vh-10rem)] pb-1">
             <div id="inner-box" class="inner-box overflow-y-auto h-[calc(100vh-10rem)]">
@@ -42,14 +48,13 @@
     </div>
 
 
-
     <script>
 
         let socket = '';
         let socketOnErrorStatus = false;
-        const nickname = document.getElementById('pacNickname').value;
         const pacSessionId = document.getElementById('pacSessionId').value;
         const pacUserId = document.getElementById('pacUserId').value;
+        const nickname = document.getElementById('pacNickname').value;
         const messageServer = document.getElementById('messageServer').value;
         const isChatSessionValid = document.getElementById('isChatSessionValid').value;
         const sessionValidErrorMessage = document.getElementById('sessionValidErrorMessage').value;
@@ -88,7 +93,7 @@
 
             // document.querySelector(".chat-input-nickname-init").value = nickname;
 
-            socket = new WebSocket('ws://' + messageServer + '/simplemessage');
+            socket = new WebSocket('ws://' + messageServer + '/message');
             socket.onopen = function (event) {
                 // 연결이 열리면 실행되는 코드
                 console.log('WebSocket 연결이 열렸습니다.');
@@ -106,15 +111,14 @@
                 if (event.wasClean) {
                     console.log('WebSocket 연결이 정상적으로 닫혔습니다.');
                     alert("서버와의 연결이 끊어졌습니다.");
-                    location.reload();
+                    location.href = '/chat/lobby';
                 } else {
                     console.error('WebSocket 연결이 비정상적으로 닫혔습니다.');
                     if (socketOnErrorStatus === false) {
                         alert("서버와의 연결이 끊어졌습니다.");
-                        location.reload();
+                        location.href = '/chat/lobby';
                     }
-                    $(".server-status .ok").addClass("hidden");
-                    $(".server-status .error").removeClass("hidden");
+
                 }
             };
 
@@ -201,7 +205,7 @@
                 return;
             }
 
-            chatRoomName = document.querySelector(".chat-input-room").value;
+            chatRoomName = $(".chat-input-room").val();
             if (chatRoomName.length < 1) {
                 alert("채팅방 명을 입력해야 합니다");
                 return;
