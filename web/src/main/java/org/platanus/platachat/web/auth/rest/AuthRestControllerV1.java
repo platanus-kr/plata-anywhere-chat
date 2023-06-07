@@ -45,14 +45,15 @@ public class AuthRestControllerV1 {
     }
 
     /**
-     * 회원가입
+     * <h3>회원 가입</h3>
+     * POST /api/v1/auth/join
      *
      * @param joinRequest
      * @param request
      * @return
      */
-    @PostMapping
-    public MemberJoinResponseDto join(@RequestBody(required = true) MemberJoinRequestDto joinRequest, HttpServletRequest request) {
+    @PostMapping("/join")
+    public MemberJoinResponseDto join(@RequestBody MemberJoinRequestDto joinRequest, HttpServletRequest request) {
         Member member;
         try {
             member = memberService.join(joinRequest);
@@ -68,7 +69,8 @@ public class AuthRestControllerV1 {
     }
 
     /**
-     * 앱 자체 로그인
+     * <h3>앱 자체 로그인</h3>
+     * POST /api/v1/auth/login
      *
      * @param dto
      * @param request
@@ -98,7 +100,8 @@ public class AuthRestControllerV1 {
     }
 
     /**
-     * 채팅방 입장시 세션 유효성 검증
+     * <h3>채팅방 입장시 세션 유효성 검증</h3>
+     * POST /api/v1/auth/validate
      *
      * @param retrieveRequestDto 유효성 검증 요청 DTO
      * @return 유효성 검증 응답 DTO
@@ -141,7 +144,7 @@ public class AuthRestControllerV1 {
     }
 
     /**
-     * 로그인 상태이고 채팅방 입장이 가능한지 여부 확인
+     * <h3>로그인 상태이고 채팅방 입장이 가능한지 여부 확인</h3>
      *
      * @param retrieveRequestDto 유효성 검증 요청 DTO
      * @param sessionMemberDto   세션 멤버 DTO
@@ -186,7 +189,7 @@ public class AuthRestControllerV1 {
     }
 
     /**
-     * 채팅방 입장이 가능한지 여부 확인
+     * <h3>채팅방 입장이 가능한지 여부 확인</h3>
      *
      * @param retrieveRequestDto 유효성 검증 요청 DTO
      * @return 채팅방 입장 가능 여부
@@ -196,7 +199,7 @@ public class AuthRestControllerV1 {
     }
 
     /**
-     * 요청과 세션 조회 결과의 유효성 검증
+     * <h3>요청과 세션 조회 결과의 유효성 검증</h3>
      *
      * @param retrieveRequestDto 유효성 검증 요청 DTO
      * @param sessionMemberDto   세션 멤버 DTO

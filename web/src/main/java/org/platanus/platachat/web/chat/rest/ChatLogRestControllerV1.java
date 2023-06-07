@@ -17,6 +17,15 @@ public class ChatLogRestControllerV1 {
 
     private final MessageService chatService;
 
+    /**
+     * <h3>채팅방 로그 조회</h3>
+     * GET /api/v1/chat/log/{roomId}
+     *
+     * @param roomId 채팅방 ID
+     * @param member 인증
+     * @param page   페이지
+     * @return 채팅방 로그
+     */
     @GetMapping("/simple/{roomId}")
     public Page<MessagePayload> getChatLogSimple(@PathVariable(value = "roomId") String roomId,
                                                  @HasMember SessionMemberDto member,

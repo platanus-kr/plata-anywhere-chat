@@ -48,5 +48,9 @@ public class Room extends BaseTime {
     public void generateId() {
         this.id = UUID.randomUUID().toString();
     }
+
+    public void setRoomStatus(RoomStatus roomStatus) {
+        this.roomStatus = roomStatus;
+    }
 }
 
