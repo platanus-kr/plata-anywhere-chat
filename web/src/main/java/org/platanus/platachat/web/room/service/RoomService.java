@@ -25,7 +25,7 @@ public interface RoomService {
 
     Room changeRoomInformation(String roomId, RoomStatusRequestDto roomReqDto, SessionMemberDto sessionMemberDto);
 
-    Room changeRoomOwner(RoomStatusRequestDto requestDto);
+    Room changeRoomOwner(String roomId, RoomStatusRequestDto requestDto, SessionMemberDto sessionMemberDto);
 
     Page<Room> getRoomsByVisibleAsPaging(int page);
 
@@ -38,6 +38,8 @@ public interface RoomService {
     void exitRoom(String roomId, SessionMemberDto sessionMemberDto);
 
     void joinRoom(String roomId, SessionMemberDto sessionMemberDto);
+
+    void endChat(String roomId, SessionMemberDto sessionMemberDto);
 
     Room validateChatSessionAsPublic(String roomId, SessionMemberDto sessionMemberDto);
 }
