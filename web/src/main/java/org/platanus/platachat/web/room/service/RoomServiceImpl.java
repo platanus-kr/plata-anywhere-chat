@@ -66,6 +66,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Room getRoomById(String id, SessionMemberDto sessionMemberDto) {
+        // owner, participates
         Room room = roomRepository.findWithRoomById(id)
                 .orElseThrow(() -> new IllegalArgumentException(RoomConstant.ROOM_NOT_FOUND_ROOM_MESSAGE));
         if (room.getRoomPublic() == RoomPublic.PRIVATE) {
@@ -114,8 +115,38 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room changeRoomOwner(RoomStatusRequestDto requestDto) {
-        return null;
+    public Room changeRoomOwner(String roomId,
+                                RoomStatusRequestDto requestDto,
+                                SessionMemberDto sessionMemberDto) {
+        validateDto(roomId, requestDto);
+
+        Member requestMember = memberService.findById(sessionMemberDto.getId());
+        Member roomOwner = roomRepository.findWithOwnerById(roomId).getOwner();
+        String ownerMemberId = requestDto.getOwnerMemberId();
+
+        // 채팅방 소유자만 변경 가능
+        if (!StringUtils.equals(requestMember.getId(), roomOwner.getId())) {
+            throw new IllegalArgumentException("채팅방의 소유자만 변경할 수 있습니다.");
+        }
+
+        // 현재 방장을 방장으로 교체할 수 없음.
+        if (StringUtils.equals(roomOwner.getId(), ownerMemberId)) {
+            throw new IllegalArgumentException("이미 방장입니다.");
+        }
+
+        Member changedOwner = memberService.findById(ownerMemberId);
+
+        Room build = Room.builder()
+                .id(roomId)
+                .name(requestDto.getName())
+                .roomStatus(requestDto.getRoomStatus())
+                .roomPublic(requestDto.getRoomPublic())
+                .description(requestDto.getDescription())
+                .imageUrl(requestDto.getImageUrl())
+                .capacity(requestDto.getCapacity())
+                .owner(changedOwner)
+                .build();
+        return roomRepository.save(build);
     }
 
     @Override
@@ -215,6 +246,20 @@ public class RoomServiceImpl implements RoomService {
             throw new IllegalArgumentException(RoomConstant.ROOM_PARTICIPATES_OVER_MESSAGE);
         }
         return room;
+    }
+
+    @Override
+    public void endChat(String roomId, SessionMemberDto sessionMemberDto) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+        if (!room.getOwner().getId().equals(sessionMemberDto.getId())) {
+            throw new IllegalArgumentException("방장만 채팅방을 종료할 수 있습니다.");
+        }
+        room.setRoomStatus(RoomStatus.ENDED);
+
+        // 여기 채팅 종료 시그널 보내서 종료시키는 webclient 넣어야됨.
+
+        roomRepository.save(room);
     }
 
     private void validateDto(String roomId, RoomStatusRequestDto dto) {
