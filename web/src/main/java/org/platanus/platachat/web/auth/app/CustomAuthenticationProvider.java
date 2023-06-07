@@ -1,6 +1,8 @@
 package org.platanus.platachat.web.auth.app;
 
 import lombok.RequiredArgsConstructor;
+
+import org.platanus.platachat.web.constants.MemberConstant;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,7 +31,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String passwordInDb = memberContext.getMember().getPassword();
 
         if (!passwordEncoder.matches(password, passwordInDb)) {
-            throw new BadCredentialsException("비밀번호가 틀립니다.");
+            throw new BadCredentialsException(MemberConstant.MEMBER_NOT_MATCH_PASSWORD_MESSAGE);
         }
         return new UsernamePasswordAuthenticationToken(memberContext.getMember(), null, memberContext.getAuthorities());
     }

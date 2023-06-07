@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.platanus.platachat.web.auth.dto.CustomOAuth2MemberDto;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.constants.AuthConstant;
+import org.platanus.platachat.web.constants.MemberConstant;
 import org.platanus.platachat.web.member.model.AppRole;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.repository.MemberRepository;
@@ -43,7 +44,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         CustomOAuth2MemberDto attributes = CustomOAuth2MemberDto.ofGitHub(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
         if (isDeletedUser(attributes)) {
-            throw new OAuth2AuthenticationException("이미 탈퇴된 회원 입니다.");
+            throw new OAuth2AuthenticationException(MemberConstant.MEMBER_ALREADY_REVOKE_USER_MESSAGE);
         }
         Member m = upsert(attributes);
 

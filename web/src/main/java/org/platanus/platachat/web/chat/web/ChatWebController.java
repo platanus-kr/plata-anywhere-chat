@@ -53,6 +53,21 @@ public class ChatWebController {
 		return "chat/lobby";
 	}
 	
+	@GetMapping("/room/create")
+	public String createRoom(Model model,
+							 @HasMember SessionMemberDto sessionMemberDto,
+							 HttpServletRequest request) {
+		return null;
+	}
+	
+	@GetMapping("/room/modify/{roomId}")
+	public String modifyRoom(Model model,
+							 @PathVariable(required = true) String roomId,
+							 @HasMember SessionMemberDto sessionMemberDto,
+							 HttpServletRequest request) {
+		return null;
+	}
+	
 	@GetMapping("/room/{roomId}")
 	public String chatInRoom(Model model,
 							 @PathVariable(required = true) String roomId,

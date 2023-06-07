@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.platanus.platachat.web.auth.argumentresolver.HasMember;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
+import org.platanus.platachat.web.constants.RoomConstant;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.service.MemberService;
 import org.platanus.platachat.web.room.dto.*;
@@ -22,7 +23,7 @@ import java.util.List;
 @RequestMapping("/api/v1/room")
 @RequiredArgsConstructor
 public class RoomRestControllerV1 {
-
+    
     private final MemberService memberService;
     private final RoomService roomService;
 
@@ -40,7 +41,7 @@ public class RoomRestControllerV1 {
     public RoomCreateResponseDto create(@RequestBody RoomCreateRequestDto dto,
                                         @HasMember SessionMemberDto sessionMemberDto) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
-            throw new IllegalArgumentException("회원이 아닙니다");
+            throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
         }
 
         return createChatRoom(dto, sessionMemberDto);
@@ -73,7 +74,7 @@ public class RoomRestControllerV1 {
                                         @RequestBody RoomStatusRequestDto dto,
                                         @HasMember SessionMemberDto sessionMemberDto) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
-            throw new IllegalArgumentException("회원이 아닙니다");
+            throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
         }
         return modifyChatRoom(roomId, dto, sessionMemberDto);
     }
@@ -104,7 +105,7 @@ public class RoomRestControllerV1 {
     public RoomRetrieveResponseDto retrieve(@PathVariable("roomId") String roomId,
                                             @HasMember SessionMemberDto sessionMemberDto) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
-            throw new IllegalArgumentException("회원이 아닙니다");
+            throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
         }
         Room room;
         try {
@@ -127,7 +128,7 @@ public class RoomRestControllerV1 {
     public Page<RoomRetrieveResponseDto> retrievePublicRooms(@HasMember SessionMemberDto sessionMemberDto,
                                                              @RequestParam(value = "page", defaultValue = "1") int page) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
-            throw new IllegalArgumentException("회원이 아닙니다");
+            throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
         }
         if (page > 0) {
             page -= 1;
@@ -148,7 +149,7 @@ public class RoomRestControllerV1 {
     public Page<RoomRetrieveResponseDto> retrieveMyRooms(@HasMember SessionMemberDto sessionMemberDto,
                                                          @RequestParam(value = "page", defaultValue = "1") int page) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
-            throw new IllegalArgumentException("회원이 아닙니다");
+            throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
         }
         if (page > 0) {
             page -= 1;
@@ -162,7 +163,7 @@ public class RoomRestControllerV1 {
 //    public RoomStatusResponseDto delete(@PathVariable("roomId") String roomId,
 //                                        @HasMember SessionMemberDto sessionMemberDto) {
 //        if (ObjectUtils.isEmpty(sessionMemberDto)) {
-//            throw new IllegalArgumentException("회원이 아닙니다");
+//            throw new IllegalArgumentException(ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
 //        }
 //        try {
 //            roomService.changeRoomLiveStatus(roomId, sessionMemberDto);
@@ -187,7 +188,7 @@ public class RoomRestControllerV1 {
     public ResponseEntity<Void> joinRoom(@PathVariable("roomId") String roomId,
                                          @HasMember SessionMemberDto sessionMemberDto) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
-            throw new IllegalArgumentException("회원이 아닙니다");
+            throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
         }
         try {
             roomService.joinRoom(roomId, sessionMemberDto);
@@ -209,7 +210,7 @@ public class RoomRestControllerV1 {
     public ResponseEntity<Void> exitRoom(@PathVariable("roomId") String roomId,
                                           @HasMember SessionMemberDto sessionMemberDto) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
-            throw new IllegalArgumentException("회원이 아닙니다");
+            throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
         }
         try {
             roomService.exitRoom(roomId, sessionMemberDto);

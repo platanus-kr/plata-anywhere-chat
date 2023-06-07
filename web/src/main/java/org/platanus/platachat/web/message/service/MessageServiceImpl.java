@@ -3,7 +3,9 @@ package org.platanus.platachat.web.message.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.platanus.platachat.web.constants.CommonConstant;
 import org.platanus.platachat.web.constants.ConfigConstant;
+import org.platanus.platachat.web.constants.MessageConstant;
 import org.platanus.platachat.web.message.model.MessagePayload;
 import org.platanus.platachat.web.message.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +19,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
-
+    
     private final MessageRepository messageRepository;
 
     @Value("${plataanywherechat.environment.profile}")
@@ -26,7 +28,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<MessagePayload> getChatLogs(String roomId) {
         if (StringUtils.isBlank(roomId)) {
-            throw new IllegalArgumentException("방 정보가 비어 있습니다.");
+            throw new IllegalArgumentException(MessageConstant.MESSAGE_ROOM_ID_IS_BLANK_MESSAGE);
         }
         return messageRepository.findByRoomId(roomId);
     }
@@ -51,7 +53,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void deleteAll() {
         if (!profile.equals(ConfigConstant.PROPERTY_ENV_PROFILE_LOCAL)) {
-            throw new IllegalArgumentException("알맞지 않은 환경에서 접근 했습니다.");
+            throw new IllegalArgumentException(CommonConstant.ENVIRONMENT_CHECK_FAILED_MESSAGE);
         }
         messageRepository.deleteAll();
     }

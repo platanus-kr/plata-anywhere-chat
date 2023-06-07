@@ -1,6 +1,8 @@
 package org.platanus.platachat.web.member.service;
 
 import lombok.RequiredArgsConstructor;
+
+import org.platanus.platachat.web.constants.MemberConstant;
 import org.platanus.platachat.web.member.dto.MemberJoinRequestDto;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.repository.MemberRepository;
@@ -13,7 +15,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
-
+    
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -32,16 +34,16 @@ public class MemberServiceImpl implements MemberService {
         if (findUserOpt.isPresent()) {
             Member findUser = findUserOpt.get();
             if (dto.getEmail().equals(findUser.getEmail())) {
-                throw new IllegalArgumentException("중복된 이메일 입니다.");
+                throw new IllegalArgumentException(MemberConstant.MEMBER_DUPLICATED_EMAIL_MESSAGE);
             }
             if (dto.getUsername().equals(findUser.getUsername())) {
-                throw new IllegalArgumentException("중복된 아이디 입니다.");
+                throw new IllegalArgumentException(MemberConstant.MEMBER_DUPLICATED_USERID_MESSAGE);
             }
             if (dto.getNickname().equals(findUser.getNickname())) {
-                throw new IllegalArgumentException("중복된 닉네임 입니다.");
+                throw new IllegalArgumentException(MemberConstant.MEMBER_DUPLICATED_NICKNAME_MESSAGE);
             }
             if (findUser.getDeleted()) {
-                throw new IllegalArgumentException("이미 탈퇴한 회원입니다.");
+                throw new IllegalArgumentException(MemberConstant.MEMBER_ALREADY_REVOKE_USER_MESSAGE);
             }
         }
         return joinRequest;
@@ -50,9 +52,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member login(String username, String password) throws IllegalArgumentException {
         Member findMember = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("없는 회원 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(MemberConstant.MEMBER_NOT_FOUND_MESSAGE));
         if (!passwordEncoder.matches(password, findMember.getPassword())) {
-            throw new IllegalArgumentException("패스워드가 일치하지 않습니다");
+            throw new IllegalArgumentException(MemberConstant.MEMBER_NOT_MATCH_PASSWORD_MESSAGE);
         }
         return findMember;
     }
@@ -60,25 +62,25 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member findByUsername(String username) {
         return memberRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("없는 회원 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(MemberConstant.MEMBER_NOT_FOUND_MESSAGE));
     }
 
     @Override
     public Member findByProviderId(String providerId) {
         return memberRepository.findByProviderId(providerId)
-                .orElseThrow(() -> new IllegalArgumentException("없는 회원 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(MemberConstant.MEMBER_NOT_FOUND_MESSAGE));
     }
 
     @Override
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("없는 회원 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(MemberConstant.MEMBER_NOT_FOUND_MESSAGE));
     }
 
     @Override
     public Member findById(String id) {
         return memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("없는 회원 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(MemberConstant.MEMBER_NOT_FOUND_MESSAGE));
     }
 
     @Override
