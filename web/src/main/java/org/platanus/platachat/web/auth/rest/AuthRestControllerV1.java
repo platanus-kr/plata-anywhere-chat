@@ -101,7 +101,8 @@ public class AuthRestControllerV1 {
 
     /**
      * <h3>채팅방 입장시 세션 유효성 검증</h3>
-     * POST /api/v1/auth/validate
+     * POST /api/v1/auth/validate <br/>
+     * message 에서 호출.
      *
      * @param retrieveRequestDto 유효성 검증 요청 DTO
      * @return 유효성 검증 응답 DTO

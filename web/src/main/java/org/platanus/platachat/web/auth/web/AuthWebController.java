@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthWebController {
 
+    /**
+     * 미구현
+     * @return
+     */
     @GetMapping("/join")
     public String join() {
         return "member_join";

@@ -33,7 +33,16 @@ public class ChatWebController {
 	private final MemberService memberService;
 	@Value("${plataanywherechat.message.application.location}")
 	private String messageAppServer;
-	
+
+	/**
+	 * <h3>채팅방 목록 </h3>
+	 * GET /chat/lobby
+	 *
+	 * @param model
+	 * @param member
+	 * @param request
+	 * @return
+	 */
 	@GetMapping("/lobby")
 	public String chatFront(Model model,
 							@HasMember SessionMemberDto member,
