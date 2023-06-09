@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.platanus.platachat.web.auth.argumentresolver.HasMember;
 import org.platanus.platachat.web.auth.dto.LoginProvider;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
+import org.platanus.platachat.web.constants.RoomConstant;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.service.MemberService;
 import org.platanus.platachat.web.room.model.Room;
@@ -14,6 +15,7 @@ import org.platanus.platachat.web.room.service.RoomService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -101,20 +103,22 @@ public class ChatWebController {
                              @PathVariable(required = true) String roomId,
                              @HasMember SessionMemberDto sessionMemberDto,
                              HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        String sessionId = null;
-        if (session != null) {
-            sessionId = session.getId();
+
+        if (ObjectUtils.isEmpty(sessionMemberDto)) {
+            model.addAttribute("isChatSessionValid", false);
+            model.addAttribute("sessionValidErrorMessage", RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
+            return "chat/lobby";
         }
 
         // 세션 분기
-        if (!sessionMemberDto.getProvider().equals(LoginProvider.WEB)) {
-            model.addAttribute("pacsessionid", sessionId);
-        } else {
-            model.addAttribute("pacsessionid", sessionMemberDto.getToken());
+        String sessionId = null;
+        if (sessionMemberDto.getProvider().equals(LoginProvider.WEB)) {
+            sessionId = sessionMemberDto.getToken();
         }
-        model.addAttribute("member", sessionMemberDto);
-        model.addAttribute("messageServer", messageAppServer);
+        if (!sessionMemberDto.getProvider().equals(LoginProvider.WEB)) {
+            HttpSession session = request.getSession(false);
+            sessionId = session.getId();
+        }
 
         // 방 상태 확인
         Room roomById;
@@ -146,6 +150,10 @@ public class ChatWebController {
                 .build();
         roomService.addRoomMember(roomMember);
 
+        model.addAttribute("pacSessionId", sessionId);
+        model.addAttribute("pacSessionMember", sessionMemberDto);
+        model.addAttribute("pacMessageServer", messageAppServer);
+        model.addAttribute("pacRoomId", roomById.getId());
         model.addAttribute("isChatSessionValid", true);
         model.addAttribute("sessionValidErrorMessage", "none");
         return "chat/room";

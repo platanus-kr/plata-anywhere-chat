@@ -8,10 +8,11 @@
 <body>
 <section>
     <div class="chat-service p-4 h-[calc(100vh-1vh)]">
-        <input type="hidden" id="pacSessionId" th:value="${pacsessionid}"/>
-        <input type="hidden" id="pacUserId" th:value="${member.id}"/>
-        <input type="hidden" id="pacNickname" th:value="${member.nickname}"/>
-        <input type="hidden" id="messageServer" th:value="${messageServer}"/>
+        <input type="hidden" id="pacSessionId" th:value="${pacSessionId}"/>
+        <input type="hidden" id="pacUserId" th:value="${pacSessionMember.id}"/>
+        <input type="hidden" id="pacNickname" th:value="${pacSessionMember.nickname}"/>
+        <input type="hidden" id="pacMessageServer" th:value="${pacMessageServer}"/>
+        <input type="hidden" id="pacRoomId" th:value="${pacRoomId}"/>
         <input type="hidden" id="isChatSessionValid" th:value="${isChatSessionValid}"/>
         <input type="hidden" id="sessionValidErrorMessage" th:value="${sessionValidErrorMessage}"/>
 
@@ -50,15 +51,15 @@
 
     <script>
 
-        let socket = '';
+        let socket;
         let socketOnErrorStatus = false;
         const pacSessionId = document.getElementById('pacSessionId').value;
         const pacUserId = document.getElementById('pacUserId').value;
-        const nickname = document.getElementById('pacNickname').value;
-        const messageServer = document.getElementById('messageServer').value;
+        const pacNickname = document.getElementById('pacNickname').value;
+        const pacMessageServer = document.getElementById('pacMessageServer').value;
         const isChatSessionValid = document.getElementById('isChatSessionValid').value;
         const sessionValidErrorMessage = document.getElementById('sessionValidErrorMessage').value;
-        let chatRoomName = '';
+        const pacRoomId = document.getElementById('pacRoomId').value;
         $(document).ready(function () {
 
             if (isChatSessionValid === 'false') {
@@ -93,18 +94,17 @@
 
             // document.querySelector(".chat-input-nickname-init").value = nickname;
 
-            socket = new WebSocket('ws://' + messageServer + '/message');
+            socket = new WebSocket('ws://' + pacMessageServer + '/message');
             socket.onopen = function (event) {
                 // 연결이 열리면 실행되는 코드
                 console.log('WebSocket 연결이 열렸습니다.');
-                $(".server-status .ok").removeClass("hidden");
+                sendSubscribe();
             };
 
             socket.onerror = function (error) {
                 console.error('WebSocket 연결 에러:', error);
                 // 에러 처리 로직을 추가하세요
                 socketOnErrorStatus = true;
-                $(".server-status .error").removeClass("hidden");
             };
 
             socket.onclose = function (event) {
@@ -123,7 +123,7 @@
             };
 
             // $(".chat-input-id").val(nickname);
-            document.querySelector(".chat-input-id").value = nickname;
+            document.querySelector(".chat-input-id").value = pacNickname;
 
 
             socket.addEventListener('message', function (data) {
@@ -139,31 +139,28 @@
                     sendMessageWrap();
                 }
             });
-
-            // 문자 완성 안됐을 때 마지막 문자만 반복 실행되는 문제가 있음.
-
-            // document.getElementById('chat-text').addEventListener('keydown', function (e) {
-            //     if (e.key === 'Enter') {
-            //         e.preventDefault();
-            //         sendMessageWrap();
-            //     }
-            // });
-
-            // auto generator
-
-            // const what = {
-            //     identifier: {
-            //         nickname: "asdfa",
-            //     },
-            //     message: "asdfqagquialwngvuilfbngval",
-            //     timestamp: "00:00"
-            // }
-            // setInterval(function () {
-            //     $('.stream-box .inner-box').append(messageGenerator(what));
-            //     var chatScreen = document.getElementById("inner-box");
-            //     $('#inner-box').animate({ scrollTop: chatScreen.scrollHeight - chatScreen.clientHeight }, 'fast');
-            // }, 300);
         })
+
+        function sendSubscribe() {
+            if (socketOnErrorStatus === true) {
+                alert("서버에 접속 할 수 없습니다.");
+                return;
+            }
+
+            console.log("입장");
+            let identifier = {
+                channel: pacRoomId,
+                memberId: pacUserId,
+                nickname: pacNickname,
+                token: pacSessionId
+            }
+            let message = {
+                command: "SUBSCRIBE",
+                identifier: identifier
+            }
+            console.log(message);
+            socket.send(JSON.stringify(message));
+        }
 
         function messageGenerator(response) {
             return '<div class="chat-line flex justify-between items-start mb-2">\n' +
@@ -199,41 +196,13 @@
                 '    </div>'
         }
 
-        function sendSubscribe() {
-            if (socketOnErrorStatus === true) {
-                alert("서버에 접속 할 수 없습니다.");
-                return;
-            }
-
-            chatRoomName = $(".chat-input-room").val();
-            if (chatRoomName.length < 1) {
-                alert("채팅방 명을 입력해야 합니다");
-                return;
-            }
-
-            console.log("입장");
-            let identifier = {
-                channel: chatRoomName,
-                memberId: pacUserId,
-                nickname: nickname,
-                token: pacSessionId
-            }
-            let message = {
-                command: "SUBSCRIBE",
-                identifier: identifier
-            }
-            console.log(message);
-            socket.send(JSON.stringify(message));
-            document.querySelector(".enter-room").classList.add("hidden");
-            document.querySelector(".chat-service").classList.remove("hidden");
-        }
 
         function sendMessageWrap() {
             const chatText = document.querySelector("#chat-text").value;
             let identifier = {
-                channel: chatRoomName,
+                channel: pacRoomId,
                 memberId: pacUserId,
-                nickname: nickname,
+                nickname: pacNickname,
                 token: pacSessionId
             }
             let message = {
