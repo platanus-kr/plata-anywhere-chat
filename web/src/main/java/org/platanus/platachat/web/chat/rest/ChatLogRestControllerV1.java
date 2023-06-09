@@ -21,10 +21,10 @@ public class ChatLogRestControllerV1 {
      * <h3>채팅방 로그 조회</h3>
      * GET /api/v1/chat/log/{roomId}
      *
-     * @param roomId 채팅방 ID
-     * @param member 인증
+     * @param roomId 채팅방 식별자
+     * @param member {@link SessionMemberDto}
      * @param page   페이지
-     * @return 채팅방 로그
+     * @return {@link MessagePayload} 목록
      */
     @GetMapping("/simple/{roomId}")
     public Page<MessagePayload> getChatLogSimple(@PathVariable(value = "roomId") String roomId,

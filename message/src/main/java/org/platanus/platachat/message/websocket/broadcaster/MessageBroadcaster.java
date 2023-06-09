@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * 채널 내 모든 구독자에게 메시지 송신
+ * 채팅방 내 모든 구독자에게 메시지 송신
  */
 @Slf4j
 @Component
@@ -34,17 +34,17 @@ public class MessageBroadcaster {
     }
 
     /**
-     * <h4>구독자에게 메시지 전송하기</h4>
-     * 특정 채널에 있는 모든 구독자에게 메시지를 전송한다. <br />
+     * <h3>구독자에게 메시지 전송하기</h3>
+     * 특정 채팅방에 있는 모든 구독자에게 메시지를 전송한다. <br />
      *
-     * @param channel  메시지를 전송할 채널명
+     * @param channel  메시지를 전송할 채팅방 식별자
      * @param nickname 메시지를 전송하는 사용자의 닉네임
      * @param message  전송할 메시지
      */
     public void broadcastMessageToSubscribers(String channel, String nickname, String message) {
         subscriptionManager.getSubscriptions(channel).forEach(session -> {
             if (session.isOpen()) {
-                String uniqueKey = channel + "-" + session.getId();
+                String uniqueKey = messageFlux.getChannelUniqueKey(channel, session);
                 FluxSink<WebSocketMessage> sink = messageFlux.getSink(uniqueKey);
                 if (sink != null) {
                     WebSocketResponseDto webSocketResponseDto = WebSocketResponseDto.builder()

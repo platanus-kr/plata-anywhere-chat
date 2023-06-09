@@ -31,26 +31,33 @@ public class RoomRestControllerV1 {
      * <h3>채팅방 생성</h3>
      * POST /api/v1/room
      *
-     * @param dto              채팅방 생성 요청 DTO
-     * @param sessionMemberDto 인증
-     * @return 채팅방 생성 응답 DTO
+     * @param requestDto       {@link RoomCreateRequestDto}
+     * @param sessionMemberDto {@link SessionMemberDto}
+     * @return {@link RoomCreateResponseDto}
      */
     @PostMapping
-    public RoomCreateResponseDto create(@RequestBody RoomCreateRequestDto dto,
+    public RoomCreateResponseDto create(@RequestBody RoomCreateRequestDto requestDto,
                                         @HasMember SessionMemberDto sessionMemberDto) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
             throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
         }
 
-        return createChatRoom(dto, sessionMemberDto);
+        return createChatRoom(requestDto, sessionMemberDto);
     }
 
-    private RoomCreateResponseDto createChatRoom(RoomCreateRequestDto roomReqDto, SessionMemberDto smDto) {
+    /**
+     * <h3>채팅방 생성 : 서비스 호출부</h3>
+     *
+     * @param requestDto       {@link RoomCreateRequestDto}
+     * @param sessionMemberDto {@link SessionMemberDto}
+     * @return {@link RoomCreateResponseDto}
+     */
+    private RoomCreateResponseDto createChatRoom(RoomCreateRequestDto requestDto, SessionMemberDto sessionMemberDto) {
         // 세션에서 회원 추출
-        Member m = memberService.findById(smDto.getId());
+        Member m = memberService.findById(sessionMemberDto.getId());
 
         // 채팅방 생성
-        Room r = roomService.createRoom(roomReqDto, m);
+        Room r = roomService.createRoom(requestDto, m);
 
         return RoomCreateResponseDto.builder()
                 .roomId(r.getId())
@@ -59,29 +66,39 @@ public class RoomRestControllerV1 {
     }
 
     /**
-     * <h3>방의 정보를 변경</h3>
+     * <h3>채팅방 정보 수정</h3>
      * 공개여부, 종료여부, 채팅방 메타정보.<br/>
      * PUT /api/v1/room/{roomId}
      *
-     * @param dto              변경할 방의 정보
-     * @param sessionMemberDto 인증
-     * @return 변경 응답 DTO
+     * @param roomId           변경할 채팅방 식별자
+     * @param requestDto       {@link RoomStatusRequestDto}
+     * @param sessionMemberDto {@link SessionMemberDto}
+     * @return {@link RoomStatusResponseDto}
      */
     @PutMapping("/{roomId}")
     public RoomStatusResponseDto modify(@PathVariable("roomId") String roomId,
-                                        @RequestBody RoomStatusRequestDto dto,
+                                        @RequestBody RoomStatusRequestDto requestDto,
                                         @HasMember SessionMemberDto sessionMemberDto) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
             throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
         }
-        return modifyChatRoom(roomId, dto, sessionMemberDto);
+        return modifyChatRoom(roomId, requestDto, sessionMemberDto);
     }
+
+    /**
+     * <h3>채팅방 정보 수정 : 서비스 호출부</h3>
+     *
+     * @param roomId           변경할 채팅방 식별자
+     * @param requestDto       {@link RoomStatusRequestDto}
+     * @param sessionMemberDto {@link SessionMemberDto}
+     * @return {@link RoomStatusResponseDto}
+     */
 
     private RoomStatusResponseDto modifyChatRoom(String roomId,
                                                  RoomStatusRequestDto requestDto,
-                                                 SessionMemberDto smDto) {
+                                                 SessionMemberDto sessionMemberDto) {
         try {
-            roomService.changeRoomInformation(roomId, requestDto, smDto);
+            roomService.changeRoomInformation(roomId, requestDto, sessionMemberDto);
         } catch (IllegalArgumentException e) {
             throw new RoomException(e.getMessage());
         }
@@ -95,26 +112,34 @@ public class RoomRestControllerV1 {
      * <h3>채팅방 방장 변경</h3>
      * PUT /api/v1/room/{roomId}/owner
      *
-     * @param roomId           변경할 채팅방 ID
-     * @param dto              변경할 방장 정보
-     * @param sessionMemberDto 인증
-     * @return 변경 응답 DTO
+     * @param roomId           변경할 채팅방 식별자
+     * @param requestDto       {@link RoomStatusRequestDto}
+     * @param sessionMemberDto {@link SessionMemberDto}
+     * @return {@link RoomStatusResponseDto}
      */
     @PutMapping("/{roomId}/owner")
     public RoomStatusResponseDto modifyOwner(@PathVariable("roomId") String roomId,
-                                             @RequestBody RoomStatusRequestDto dto,
+                                             @RequestBody RoomStatusRequestDto requestDto,
                                              @HasMember SessionMemberDto sessionMemberDto) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
             throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
         }
-        return modifyChatRoomOwner(roomId, dto, sessionMemberDto);
+        return modifyChatRoomOwner(roomId, requestDto, sessionMemberDto);
     }
 
+    /**
+     * <h3>채팅방 방장 변경 : 서비스 호출부</h3>
+     *
+     * @param roomId           변경할 채팅방 식별자
+     * @param requestDto       {@link RoomStatusRequestDto}
+     * @param sessionMemberDto {@link SessionMemberDto}
+     * @return {@link RoomStatusResponseDto}
+     */
     private RoomStatusResponseDto modifyChatRoomOwner(String roomId,
                                                       RoomStatusRequestDto requestDto,
-                                                      SessionMemberDto smDto) {
+                                                      SessionMemberDto sessionMemberDto) {
         try {
-            roomService.changeRoomOwner(roomId, requestDto, smDto);
+            roomService.changeRoomOwner(roomId, requestDto, sessionMemberDto);
         } catch (IllegalArgumentException e) {
             throw new RoomException(e.getMessage());
         }
@@ -128,9 +153,9 @@ public class RoomRestControllerV1 {
      * <h3>개별 채팅방 정보 조회</h3>
      * GET /api/v1/room/{roomId}
      *
-     * @param roomId
-     * @param sessionMemberDto
-     * @return
+     * @param roomId           조회할 채팅방 식별자
+     * @param sessionMemberDto {@link SessionMemberDto}
+     * @return {@link RoomRetrieveResponseDto}
      */
     @GetMapping("/{roomId}")
     public RoomRetrieveResponseDto retrieve(@PathVariable("roomId") String roomId,
@@ -151,9 +176,9 @@ public class RoomRestControllerV1 {
      * <h3>공개된 채팅방 목록</h3>
      * GET /api/v1/room/list
      *
-     * @param sessionMemberDto 인증
+     * @param sessionMemberDto {@link SessionMemberDto}
      * @param page             페이지
-     * @return 공개된 채팅방 페이징 목록
+     * @return {@link Page}<{@link RoomRetrieveResponseDto}>
      */
     @GetMapping("/list")
     public Page<RoomRetrieveResponseDto> retrievePublicRooms(@HasMember SessionMemberDto sessionMemberDto,
@@ -172,9 +197,9 @@ public class RoomRestControllerV1 {
      * <h3>내가 방장인 채팅방 목록</h3>
      * GET /api/v1/room/own/list
      *
-     * @param sessionMemberDto 인증
+     * @param sessionMemberDto {@link SessionMemberDto}
      * @param page             페이지
-     * @return 내가 방장인 채팅방 페이징 목록
+     * @return {@link Page}<{@link RoomRetrieveResponseDto}>
      */
     @GetMapping("/own/list")
     public Page<RoomRetrieveResponseDto> retrieveMyRooms(@HasMember SessionMemberDto sessionMemberDto,
@@ -193,9 +218,9 @@ public class RoomRestControllerV1 {
      * <h3>채팅방 입장</h3>
      * POST /api/v1/room/{roomId}/join
      *
-     * @param roomId           채팅방 식별자
-     * @param sessionMemberDto 인증
-     * @return 응답
+     * @param roomId           입장하는 채팅방 식별자
+     * @param sessionMemberDto {@link SessionMemberDto}
+     * @return {@link ResponseEntity}
      */
     @PostMapping("/{roomId}/join")
     public ResponseEntity<Void> joinRoom(@PathVariable("roomId") String roomId,
@@ -215,9 +240,9 @@ public class RoomRestControllerV1 {
      * <h3>채팅방 나가기</h3>
      * POST /api/v1/room/{roomId}/exit
      *
-     * @param roomId           채팅방 식별자
-     * @param sessionMemberDto 인증
-     * @return 응답
+     * @param roomId           나가는 채팅방 식별자
+     * @param sessionMemberDto {@link SessionMemberDto}
+     * @return {@link ResponseEntity}
      */
     @PostMapping("/{roomId}/exit")
     public ResponseEntity<Void> exitRoom(@PathVariable("roomId") String roomId,
@@ -237,9 +262,9 @@ public class RoomRestControllerV1 {
      * <h3>채팅방 종료</h3>
      * DELETE /api/v1/room/{roomId}
      *
-     * @param roomId           채팅방 식별자
-     * @param sessionMemberDto 인증
-     * @return 응답
+     * @param roomId           종료하는 채팅방 식별자
+     * @param sessionMemberDto {@link SessionMemberDto}
+     * @return {@link ResponseEntity}
      */
     @DeleteMapping("/{roomId}")
     public ResponseEntity<Void> endChat(@PathVariable("roomId") String roomId,
@@ -254,5 +279,4 @@ public class RoomRestControllerV1 {
         }
         return ResponseEntity.ok().build();
     }
-
 }

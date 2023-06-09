@@ -7,6 +7,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
+/**
+ * <h3>채팅 메시지 Entity</h3>
+ * MongoDB
+ */
 @Getter
 @Builder
 @ToString

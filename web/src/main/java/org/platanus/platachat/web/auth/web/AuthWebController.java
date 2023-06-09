@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthWebController {
 
     /**
-     * 미구현
-     * @return
+     * TODO: 회원가입 페이지 구현
+     * @return 회원 가입 페이지
      */
     @GetMapping("/join")
     public String join() {

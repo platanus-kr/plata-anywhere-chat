@@ -72,10 +72,10 @@ public class AuthRestControllerV1 {
      * <h3>앱 자체 로그인</h3>
      * POST /api/v1/auth/login
      *
-     * @param dto
-     * @param request
-     * @param session
-     * @return
+     * @param dto     {@link MemberLoginRequestDto}
+     * @param request {@link HttpServletRequest}
+     * @param session {@link HttpSession}
+     * @return {@link SessionMemberDto}
      */
     @PostMapping("/login")
     public SessionMemberDto appLogin(@RequestBody MemberLoginRequestDto dto,
@@ -104,8 +104,8 @@ public class AuthRestControllerV1 {
      * POST /api/v1/auth/validate <br/>
      * message 에서 호출.
      *
-     * @param retrieveRequestDto 유효성 검증 요청 DTO
-     * @return 유효성 검증 응답 DTO
+     * @param retrieveRequestDto {@link AuthValidRetrieveRequestDto}
+     * @return {@link AuthValidRetrieveResponseDto}
      */
     @PostMapping("/validate")
     public AuthValidRetrieveResponseDto validate(@RequestBody AuthValidRetrieveRequestDto retrieveRequestDto) {
@@ -147,11 +147,11 @@ public class AuthRestControllerV1 {
     /**
      * <h3>로그인 상태이고 채팅방 입장이 가능한지 여부 확인</h3>
      *
-     * @param retrieveRequestDto 유효성 검증 요청 DTO
-     * @param sessionMemberDto   세션 멤버 DTO
-     * @param authentication     인증 객체
-     * @param responseDto        유효성 검증 응답 DTO
-     * @return 유효성 검증 응답 DTO
+     * @param retrieveRequestDto {@link AuthValidRetrieveRequestDto}
+     * @param sessionMemberDto   {@link SessionMemberDto}
+     * @param authentication     {@link Authentication}
+     * @param responseDto        {@link AuthValidRetrieveResponseDto}
+     * @return {@link AuthValidRetrieveResponseDto}
      */
     private AuthValidRetrieveResponseDto getAuthRetrieveResponseDto(AuthValidRetrieveRequestDto retrieveRequestDto,
                                                                     SessionMemberDto sessionMemberDto,
@@ -192,7 +192,7 @@ public class AuthRestControllerV1 {
     /**
      * <h3>채팅방 입장이 가능한지 여부 확인</h3>
      *
-     * @param retrieveRequestDto 유효성 검증 요청 DTO
+     * @param retrieveRequestDto {@link AuthValidRetrieveRequestDto}
      * @return 채팅방 입장 가능 여부
      */
     private boolean isAdmission(AuthValidRetrieveRequestDto retrieveRequestDto) {
@@ -202,9 +202,9 @@ public class AuthRestControllerV1 {
     /**
      * <h3>요청과 세션 조회 결과의 유효성 검증</h3>
      *
-     * @param retrieveRequestDto 유효성 검증 요청 DTO
-     * @param sessionMemberDto   세션 멤버 DTO
-     * @param authentication     인증 객체
+     * @param retrieveRequestDto {@link AuthValidRetrieveRequestDto}
+     * @param sessionMemberDto   {@link SessionMemberDto}
+     * @param authentication     {@link Authentication}
      * @return 유효성 검증 여부
      */
     private boolean isValidate(AuthValidRetrieveRequestDto retrieveRequestDto,
