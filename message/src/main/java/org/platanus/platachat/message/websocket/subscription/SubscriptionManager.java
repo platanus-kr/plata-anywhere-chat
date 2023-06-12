@@ -81,4 +81,9 @@ public class SubscriptionManager {
             }
         }
     }
+
+    public void removeSession(WebSocketSession session) {
+        if (subscriptions.containsValue(session)) {
+        }
+    }
 }

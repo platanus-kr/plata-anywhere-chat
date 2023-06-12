@@ -164,17 +164,18 @@ public class MessageWebSocketHandler implements WebSocketHandler {
      * </ul>
      *
      * @param signalType {@link SignalType} 리엑티브 스트림의 시그널 타입
-     * @param channelSub {@link AtomicReference} 된 {@link WebSocketSubscribeDto}
+     * @param channelSubRef {@link AtomicReference} 된 {@link WebSocketSubscribeDto}
      * @param session    {@link WebSocketSession} 웹 소켓 세션
      */
     private void handleDisconnection(SignalType signalType,
-                                     AtomicReference<WebSocketSubscribeDto> channelSub,
+                                     AtomicReference<WebSocketSubscribeDto> channelSubRef,
                                      WebSocketSession session) {
         if (SignalType.ON_COMPLETE.equals(signalType) || SignalType.ON_ERROR.equals(signalType)) {
-            WebSocketSubscribeDto stub = channelSub.get();
-            messageBroadcaster.broadcastMessageToSubscribers(stub.getRoomId(),
-                    "SYSTEM", stub.getNickname() + "가 퇴장합니다.");
-            subscriptionManager.removeSubscription(stub.getRoomId(), session);
+            WebSocketSubscribeDto channelSub = channelSubRef.get();
+            if (channelSub == null) return;
+            messageBroadcaster.broadcastMessageToSubscribers(channelSub.getRoomId(),
+                    "SYSTEM", channelSub.getNickname() + "가 퇴장합니다.");
+            subscriptionManager.removeSubscription(channelSub.getRoomId(), session);
         }
     }
 }
