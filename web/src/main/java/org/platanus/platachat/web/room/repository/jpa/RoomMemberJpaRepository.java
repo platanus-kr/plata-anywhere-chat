@@ -22,5 +22,6 @@ public interface RoomMemberJpaRepository extends JpaRepository<RoomMember, Strin
     Page<Room> findRoomsMemberIdAsPaging(@Param("memberId") String memberId, Pageable pageable);
 
     Optional<RoomMember> findByRoomAndMember(Room room, Member member);
+
     Optional<RoomMember> findByRoomIdAndMemberId(String roomId, String memberId);
 }

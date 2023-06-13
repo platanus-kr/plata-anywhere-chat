@@ -39,6 +39,8 @@ public interface RoomService {
 
     void joinRoom(String roomId, SessionMemberDto sessionMemberDto);
 
+    boolean validateRoomMemberInChat(String roomId, String memberId);
+
     void endChat(String roomId, SessionMemberDto sessionMemberDto);
 
     Room validateChatSessionAsPublic(String roomId, SessionMemberDto sessionMemberDto);

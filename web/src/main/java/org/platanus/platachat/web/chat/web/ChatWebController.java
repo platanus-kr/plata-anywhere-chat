@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequestMapping("/chat")
@@ -159,6 +160,40 @@ public class ChatWebController {
         return "chat/room";
     }
 
+    // TODO: 채팅 로그 목록
+    @GetMapping("/log")
+    public String chatLogList(@HasMember SessionMemberDto sessionMemberDto) {
+        return "chat/log_list";
+    }
+
+    /**
+     * <h3>채팅 로그 상세</h3>
+     * GET /chat/log/{roomId}
+     *
+     * @param model            {@link Model}
+     * @param roomId           채팅방 식별자
+     * @param sessionMemberDto {@link SessionMemberDto}
+     * @param request          {@link HttpServletRequest}
+     * @return
+     */
+    @GetMapping("/log/{roomId}")
+    public String retrieveChatLog(Model model,
+                                  @PathVariable String roomId,
+                                  @HasMember SessionMemberDto sessionMemberDto,
+                                  HttpServletRequest request) {
+
+        // roomMember 유효성 검증
+        try {
+            roomService.validateRoomMemberInChat(roomId, sessionMemberDto.getId());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(e); // TODO: ExceptionHandler 구축
+        }
+
+        model.addAttribute("pacRoomId", roomId);
+
+        return "chat/log_detail";
+    }
+
     /**
      * 채팅 테스트용 컨트롤러
      *
@@ -173,27 +208,11 @@ public class ChatWebController {
 
 
     // TODO: 채팅로그조회 구현하기
-    @GetMapping("/store/simple")
+    @GetMapping("/log/simple")
     public String chatLog() {
         return "simple_chatlog";
     }
 
-    @Deprecated
-    @GetMapping("/store/{roomId}}")
-    public String chatLogHasLogin(Model model,
-                                  @PathVariable String roomId,
-                                  @HasMember SessionMemberDto member,
-                                  HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        String sessionId = null;
-        if (session != null) {
-            sessionId = session.getId();
-        }
 
-        // roomMember 유효성 검증
 
-        // 땡겨오기
-
-        return "chat/store";
-    }
 }

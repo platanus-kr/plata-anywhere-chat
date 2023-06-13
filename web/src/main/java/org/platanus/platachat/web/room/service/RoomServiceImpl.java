@@ -249,6 +249,13 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public boolean validateRoomMemberInChat(String roomId, String memberId) {
+        RoomMember roomMember = roomMemberRepository.findByRoomIdAndMemberId(roomId, memberId)
+                .orElseThrow(() -> new IllegalArgumentException(RoomConstant.ROOM_NOT_FOUND_ROOM_MEMBER_MESSAGE));
+        return true;
+    }
+
+    @Override
     public void endChat(String roomId, SessionMemberDto sessionMemberDto) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException(RoomConstant.ROOM_NOT_FOUND_ROOM_MESSAGE));
