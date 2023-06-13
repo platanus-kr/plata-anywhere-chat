@@ -24,6 +24,9 @@ public class RoomCreateRequestDto {
      */
     private String description;
 
+    /**
+     * 채팅방 대표 이미지
+     */
     private String imageUrl;
 
     /**

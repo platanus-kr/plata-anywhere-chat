@@ -46,7 +46,7 @@ public class SubscriptionManager {
      * 세션 구독 정보를 <code>subscriptions</code>에 저장한다. <code>ConcurrentHashMap</code> 에 저장.<br />
      * 구독후 채널에 구독 메시지 브로드케스트.<br />
      *
-     * @param channel 구독 하고자 하는 채널명
+     * @param channel 구독 하고자 하는 채팅방 식별자
      * @param session 구독 하고자 하는 {@link WebSocketSession} 웹 소켓 세션
      */
     public void addSubscription(String channel, WebSocketSession session) {

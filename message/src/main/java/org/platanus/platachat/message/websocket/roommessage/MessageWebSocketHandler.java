@@ -70,26 +70,26 @@ public class MessageWebSocketHandler implements WebSocketHandler {
      *
      * @param payload    메시지 Payload
      * @param session    {@link WebSocketSession} 웹소켓 세션
-     * @param channelSub {@link AtomicReference} 된 {@link WebSocketSubscribeDto}
+     * @param atomicSubscribeDto {@link AtomicReference} 된 {@link WebSocketSubscribeDto}
      * @return 메시지 처리 후 Mono<Void>
      */
     private Mono<Void> handleMessage(String payload,
                                      WebSocketSession session,
-                                     AtomicReference<WebSocketSubscribeDto> channelSub) {
+                                     AtomicReference<WebSocketSubscribeDto> atomicSubscribeDto) {
         try {
             WebSocketRequestDto webSocketRequestDto = objectMapper.readValue(payload, WebSocketRequestDto.class);
             CommandType command = webSocketRequestDto.getCommand();
             IdentifierDto identifier = webSocketRequestDto.getIdentifier();
-            WebSocketSubscribeDto stub = WebSocketSubscribeDto.builder()
+            WebSocketSubscribeDto subscribeDto = WebSocketSubscribeDto.builder()
                     .roomId(identifier.getChannel())
                     .memberId(identifier.getMemberId())
                     .nickname(identifier.getNickname())
                     .sessionId(identifier.getToken())
                     .build();
-            channelSub.set(stub);
+            atomicSubscribeDto.set(subscribeDto);
 
             if (command.equals(CommandType.SUBSCRIBE)) { // 여기부터 작업바람
-                authService.getSessionHealth(stub.getSessionId(), stub.getRoomId())
+                authService.getSessionHealth(subscribeDto.getSessionId(), subscribeDto.getRoomId())
                         // 채팅방 구현하면서 다시 손볼것.
                         .onErrorResume(error -> {
                             throw new IllegalArgumentException(error.getMessage());
@@ -100,12 +100,12 @@ public class MessageWebSocketHandler implements WebSocketHandler {
                                 throw new IllegalArgumentException(response.getMessage());
                             }
                         });
-                return processSubscribeCommand(stub, session);
+                return processSubscribeCommand(subscribeDto, session);
             } else if (command.equals(CommandType.MESSAGE)) {
                 if (webSocketRequestDto.getMessage().length() < 1) {
                     return Mono.empty();
                 }
-                return processMessageCommand(stub, webSocketRequestDto.getMessage());
+                return processMessageCommand(subscribeDto, webSocketRequestDto.getMessage());
             }
         } catch (IOException e) {
             log.error("Error parsing WebSocket message", e);

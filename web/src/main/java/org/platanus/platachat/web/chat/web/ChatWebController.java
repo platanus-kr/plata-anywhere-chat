@@ -62,7 +62,7 @@ public class ChatWebController {
         return "chat/lobby";
     }
 
-    // TODO: 채팅방 생성 구현 필요
+    // TODO: 채팅방 생성 구현 필요 -> REST는 되어있다.
     @GetMapping("/room/create")
     public String createRoom(Model model,
                              @HasMember SessionMemberDto sessionMemberDto,
@@ -70,7 +70,7 @@ public class ChatWebController {
         return null;
     }
 
-    // TODO: 채팅방 수정 구현 필요
+    // TODO: 채팅방 수정 구현 필요 -> REST는 되어있다.
     @GetMapping("/room/modify/{roomId}")
     public String modifyRoom(Model model,
                              @PathVariable(required = true) String roomId,
@@ -179,8 +179,9 @@ public class ChatWebController {
     }
 
     @Deprecated
-    @GetMapping("/store/simple_haslogin")
+    @GetMapping("/store/{roomId}}")
     public String chatLogHasLogin(Model model,
+                                  @PathVariable String roomId,
                                   @HasMember SessionMemberDto member,
                                   HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -188,12 +189,11 @@ public class ChatWebController {
         if (session != null) {
             sessionId = session.getId();
         }
-        if (!member.getProvider().equals(LoginProvider.WEB)) {
-            model.addAttribute("pacsessionid", sessionId);
-        } else {
-            model.addAttribute("pacsessionid", member.getToken());
-        }
-        model.addAttribute("member", member);
-        return "simple_chatlog";
+
+        // roomMember 유효성 검증
+
+        // 땡겨오기
+
+        return "chat/store";
     }
 }
