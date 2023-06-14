@@ -7,6 +7,8 @@ import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.constants.RoomConstant;
 import org.platanus.platachat.web.message.model.MessagePayload;
 import org.platanus.platachat.web.message.service.MessageService;
+import org.platanus.platachat.web.room.model.Room;
+import org.platanus.platachat.web.room.service.RoomService;
 import org.springframework.data.domain.Page;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
@@ -17,21 +19,43 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ChatLogRestControllerV1 {
 
+    private final RoomService roomService;
     private final MessageService chatService;
 
+
     /**
-     * <h3>채팅방 로그 조회</h3>
+     * <h3>채팅방 목록 : 회원</h3>
+     * GET /api/v1/chat/log
+     *
+     * @param sessionMemberDto {@link SessionMemberDto}
+     * @param page             페이지
+     * @return {@link Room} 목록
+     */
+    @GetMapping
+    public Page<Room> getChatLogList(@HasMember SessionMemberDto sessionMemberDto,
+                                     @RequestParam(value = "page", defaultValue = "1") int page) {
+        if (ObjectUtils.isEmpty(sessionMemberDto)) {
+            throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
+        }
+        if (page > 0) {
+            page -= 1;
+        }
+        return roomService.getRoomsByMemberIdAsPaging(sessionMemberDto.getId(), page);
+    }
+
+    /**
+     * <h3>채팅방 로그 상세 조회</h3>
      * GET /api/v1/chat/log/{roomId}
      *
-     * @param roomId 채팅방 식별자
+     * @param roomId           채팅방 식별자
      * @param sessionMemberDto {@link SessionMemberDto}
-     * @param page   페이지
+     * @param page             페이지
      * @return {@link MessagePayload} 목록
      */
     @GetMapping("/{roomId}")
-    public Page<MessagePayload> getChatLogSimple(@PathVariable(value = "roomId") String roomId,
-                                                 @HasMember SessionMemberDto sessionMemberDto,
-                                                 @RequestParam(value = "page", defaultValue = "1") int page) {
+    public Page<MessagePayload> getChatLog(@PathVariable(value = "roomId") String roomId,
+                                           @HasMember SessionMemberDto sessionMemberDto,
+                                           @RequestParam(value = "page", defaultValue = "1") int page) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
             throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
         }

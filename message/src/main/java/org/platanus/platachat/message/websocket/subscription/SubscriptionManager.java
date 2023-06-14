@@ -82,6 +82,18 @@ public class SubscriptionManager {
         }
     }
 
+    /**
+     * <h3>채팅방 내 참여하고 있는 회원 수</h3>
+     *
+     * @param channel 채팅방 식별자
+     * @return 채팅방 내 참여하고 있는 회원 수
+     */
+    public long countRoomMemberInRoom(String channel) {
+        Set<WebSocketSession> webSocketSessions = subscriptions.get(channel);
+        if (webSocketSessions == null) return 0L;
+        return webSocketSessions.size();
+    }
+
     public void removeSession(WebSocketSession session) {
         if (subscriptions.containsValue(session)) {
         }

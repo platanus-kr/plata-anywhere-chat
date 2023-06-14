@@ -3,7 +3,7 @@
       th:replace="~{layout/chat/layout :: layout(~{::title}, ~{::section})}">
 <head>
     <meta charset="UTF-8">
-    <title>PAC : 채팅 기록</title>
+    <title>PAC : 채팅 기록 상세</title>
 </head>
 <body>
 <section>
@@ -132,12 +132,12 @@
             moveFocusAsInnerBox();
         })
 
-        function getRetrieveChatLog(roomId) {
+        function getRetrieveChatLog(roomId, pageNum) {
             $.ajax({
                 url: '/api/v1/chat/log/' + roomId,
                 type: 'GET',
                 data: {
-                    page: 1
+                    page: pageNum
                 }
             }).done(function (data) {
                 const messageAsPage = data.content;

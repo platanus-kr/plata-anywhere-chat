@@ -210,7 +210,7 @@
                     '        <div class="min-w-0 flex-auto">\n' +
                     '            <p class="text-sm font-semibold leading-6 text-gray-900">' + room.name + '</p>\n' +
                     '            <p class="mt-1 truncate text-xs leading-5 text-gray-500">\n' +
-                    '            ' + appendRoomStatus(room) + '\n' +
+                    '            ' + appendRoomStatus(room) + '\n</p>' +
                     '        </div>\n' +
                     '    </div>\n' +
                     '    <div class="hidden sm:flex sm:flex-col sm:items-end">\n' +
@@ -233,8 +233,8 @@
                     '                        <line x1="9" y1="2" x2="9" y2="7" stroke="#000000" stroke-width="2" stroke-linecap="round"\n' +
                     '                              stroke-linejoin="round"/>\n' +
                     '                    </svg>\n' +
-                    '                </button>'
-                '</li>'
+                    '                </button>' +
+                    '</li>';
                 $(".room-list ul").append(li);
             }
 

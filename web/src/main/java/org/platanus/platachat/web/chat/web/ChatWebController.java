@@ -160,9 +160,17 @@ public class ChatWebController {
         return "chat/room";
     }
 
-    // TODO: 채팅 로그 목록
+    /**
+     * <h3>채팅 로그 목록</h3>
+     * GET /chat/log
+     *
+     * @param sessionMemberDto {@link SessionMemberDto}     * @return
+     */
     @GetMapping("/log")
     public String chatLogList(@HasMember SessionMemberDto sessionMemberDto) {
+        if (ObjectUtils.isEmpty(sessionMemberDto)) {
+            return "/"; //TODO: ExceptionHandler
+        }
         return "chat/log_list";
     }
 

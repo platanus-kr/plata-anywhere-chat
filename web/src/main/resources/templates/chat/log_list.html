@@ -1,10 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko"
+      th:replace="~{layout/chat/layout :: layout(~{::title}, ~{::section})}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>PAC : 채팅 기록</title>
 </head>
 <body>
+<section>
 
+    <div class="enter-room sm:w-[42rem] p-4 pt-6 box-border">
+        <div class="flex flex-wrap">
+
+            <p class="text-sm font-medium mt-5 leading-6 text-gray-900">내가 참여한 채팅방 목록</p>
+
+            <div class="room-list block w-full">
+                <ul role="list" class="divide-y divide-gray-100">
+
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+
+        // let socket = '';
+        // let socketOnErrorStatus = false;
+        // const nickname = document.getElementById('pacNickname').value;
+        const pacSessionId = document.getElementById('pacSessionId').value;
+        const pacUserId = document.getElementById('pacUserId').value;
+        const messageServer = document.getElementById('messageServer').value;
+        // const isChatSessionValid = document.getElementById('isChatSessionValid').value;
+        // const sessionValidErrorMessage = document.getElementById('sessionValidErrorMessage').value;
+        let chatRoomName = '';
+        $(document).ready(function () {
+            getChatLogs(1);
+        })
+
+
+        function getChatLogs(pageNum) {
+            $.ajax({
+                url: '/api/v1/chat/log',
+                type: 'GET',
+                data: {
+                    page: pageNum
+                }
+            }).done(function (data) {
+                // console.log(data);
+                const roomListAsPage = data.content;
+                // console.log(roomListAsPage);
+                appendChatLogList(roomListAsPage);
+                let paging = {
+                    "totalPages": data.totalPages,
+                    "totalElements": data.totalElements,
+                    "nowPage": data.number
+                }
+                console.log(paging);
+            }).fail(function (error) {
+                console.log(error);
+                alert("채팅방 목록을 불러오는데 문제가 발생했습니다.");
+            });
+        }
+
+        function appendChatLogList(roomList) {
+            for (const room of roomList) {
+                const li = '<li class="' + room.roomId + ' border border-blue-300 shadow mb-2 rounded-md flex justify-between gap-x-6 p-3 hover:bg-slate-50 duration-100" onclick="getRoomInformation(\'' + room.roomId + '\')">\n' +
+                    '    <div class="flex gap-x-4">\n' +
+                    '        <img class="h-12 w-12 flex-none rounded-full bg-gray-50"\n' +
+                    '             src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"\n' +
+                    '             alt="">\n' +
+                    '        <div class="min-w-0 flex-auto">\n' +
+                    '            <p class="text-sm font-semibold leading-6 text-gray-900">' + room.name + '</p>\n' +
+                    '        </div>\n' +
+                    '    </div>\n' +
+                    '    <div class="hidden sm:flex sm:flex-col sm:items-end">\n' +
+                    // '        <p class="text-sm leading-6 text-gray-900">' + room.owner.nickname + '</p>\n' +
+                    '        <p class="mt-1 text-xs leading-5 text-gray-500">채팅 시작 시간\n' +
+                    '            <time datetime="2023-01-23T13:23Z">' + room.createdAt + '</time>\n' +
+                    '        </p>\n' +
+                    '    </div>\n' +
+                    '<button type="button"\n' +
+                    '                        class="chat-input-room-button text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm  my-3 px-3 py-2 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700"\n' +
+                    '                        onclick="entranceChatLog(\'' + room.roomId + '\')">\n' +
+                    '                    보기\n' +
+                    '                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">\n' +
+                    '                        <path d="M6 7H18V12C18 15.3137 15.3137 18 12 18V18C8.68629 18 6 15.3137 6 12V7Z"\n' +
+                    '                              stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>\n' +
+                    '                        <line x1="15" y1="2" x2="15" y2="7" stroke="#000000" stroke-width="2" stroke-linecap="round"\n' +
+                    '                              stroke-linejoin="round"/>\n' +
+                    '                        <path d="M12 18V22" stroke="#000000" stroke-width="2" stroke-linecap="round"\n' +
+                    '                              stroke-linejoin="round"/>\n' +
+                    '                        <line x1="9" y1="2" x2="9" y2="7" stroke="#000000" stroke-width="2" stroke-linecap="round"\n' +
+                    '                              stroke-linejoin="round"/>\n' +
+                    '                    </svg>\n' +
+                    '                </button>' +
+                    '</li>'
+                $(".room-list ul").append(li);
+            }
+
+        }
+
+        function getRoomInformation(roomId) {
+            $.ajax({
+                url: '/api/v1/room/' + roomId,
+                type: 'GET'
+            }).done(function (data) {
+                console.log(data);
+                // appendRoomInformation(data);
+            }).fail(function (error) {
+                console.log(error);
+                alert("채팅방 정보를 불러오는데 문제가 발생했습니다.");
+            });
+            // 개별 채팅방 정보 오버레이
+            $('.room-list ul li').removeClass('h-[30rem]', 1000, 'linear');
+            $('.' + roomId).addClass('h-[30rem]', 1000, 'linear');
+            // 입장 버튼 -> room으로 이동해서 바로 ws 연결
+        }
+
+        function entranceChatLog(roomId) {
+            // socket.close(); // 채팅방용 소켓은 별도 취급
+            location.href = '/chat/room/' + roomId;
+        }
+
+
+
+    </script>
+</section>
 </body>
 </html>
