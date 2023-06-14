@@ -4,6 +4,7 @@ package org.platanus.platachat.web.room.service;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.room.dto.RoomCreateRequestDto;
+import org.platanus.platachat.web.room.dto.RoomsRetrieveResponseDto;
 import org.platanus.platachat.web.room.dto.RoomStatusRequestDto;
 import org.platanus.platachat.web.room.model.Room;
 import org.platanus.platachat.web.room.model.RoomMember;
@@ -34,6 +35,10 @@ public interface RoomService {
     Page<Room> getRoomsByMemberIdAsPaging(String memberId, int page);
 
     Page<Room> getRoomsByMemberIdAsPaging(String memberId, int page, int size);
+
+    Page<RoomsRetrieveResponseDto> getRoomDtosByMemberIdAsPaging(String memberId, int page);
+
+    Page<RoomsRetrieveResponseDto> getRoomDtosByMemberIdAsPaging(String memberId, int page, int size);
 
     void exitRoom(String roomId, SessionMemberDto sessionMemberDto);
 

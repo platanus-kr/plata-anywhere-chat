@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Controller
 @RequestMapping("/chat")
@@ -164,7 +163,8 @@ public class ChatWebController {
      * <h3>채팅 로그 목록</h3>
      * GET /chat/log
      *
-     * @param sessionMemberDto {@link SessionMemberDto}     * @return
+     * @param sessionMemberDto {@link SessionMemberDto}
+     * @return 채팅 로그 목록 view
      */
     @GetMapping("/log")
     public String chatLogList(@HasMember SessionMemberDto sessionMemberDto) {
@@ -182,7 +182,7 @@ public class ChatWebController {
      * @param roomId           채팅방 식별자
      * @param sessionMemberDto {@link SessionMemberDto}
      * @param request          {@link HttpServletRequest}
-     * @return
+     * @return 채팅 로그 상세 view
      */
     @GetMapping("/log/{roomId}")
     public String retrieveChatLog(Model model,
@@ -220,7 +220,6 @@ public class ChatWebController {
     public String chatLog() {
         return "simple_chatlog";
     }
-
 
 
 }

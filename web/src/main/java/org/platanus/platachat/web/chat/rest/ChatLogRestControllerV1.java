@@ -7,6 +7,7 @@ import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.constants.RoomConstant;
 import org.platanus.platachat.web.message.model.MessagePayload;
 import org.platanus.platachat.web.message.service.MessageService;
+import org.platanus.platachat.web.room.dto.RoomsRetrieveResponseDto;
 import org.platanus.platachat.web.room.model.Room;
 import org.platanus.platachat.web.room.service.RoomService;
 import org.springframework.data.domain.Page;
@@ -32,15 +33,15 @@ public class ChatLogRestControllerV1 {
      * @return {@link Room} 목록
      */
     @GetMapping
-    public Page<Room> getChatLogList(@HasMember SessionMemberDto sessionMemberDto,
-                                     @RequestParam(value = "page", defaultValue = "1") int page) {
+    public Page<RoomsRetrieveResponseDto> getChatLogList(@HasMember SessionMemberDto sessionMemberDto,
+                                                         @RequestParam(value = "page", defaultValue = "1") int page) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
             throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
         }
         if (page > 0) {
             page -= 1;
         }
-        return roomService.getRoomsByMemberIdAsPaging(sessionMemberDto.getId(), page);
+        return roomService.getRoomDtosByMemberIdAsPaging(sessionMemberDto.getId(), page);
     }
 
     /**

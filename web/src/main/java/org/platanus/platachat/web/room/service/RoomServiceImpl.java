@@ -7,6 +7,7 @@ import org.platanus.platachat.web.constants.RoomConstant;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.service.MemberService;
 import org.platanus.platachat.web.room.dto.RoomCreateRequestDto;
+import org.platanus.platachat.web.room.dto.RoomsRetrieveResponseDto;
 import org.platanus.platachat.web.room.dto.RoomStatusRequestDto;
 import org.platanus.platachat.web.room.model.*;
 import org.platanus.platachat.web.room.repository.RoomMemberRepository;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,7 +62,14 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomMember addRoomMember(RoomMember roomMember) {
+    public RoomMember addRoomMember(RoomMember roomMember) {;
+        Optional<RoomMember> rm = roomMemberRepository.findByRoomAndMember(roomMember.getRoom(), roomMember.getMember());
+        // upsert를 지원하는게 아니라서 entity 검사를 해야함.
+        if (rm.isPresent()) {
+            RoomMember rmPersistence = rm.get();
+            rmPersistence.setJoinDateTime(LocalDateTime.now());
+            return roomMemberRepository.save(rmPersistence);
+        }
         return roomMemberRepository.save(roomMember);
     }
 
@@ -181,6 +190,17 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Page<Room> getRoomsByMemberIdAsPaging(String memberId, int page, int size) {
         return roomMemberRepository.findRoomsMemberIdAsPaging(memberId, PageRequest.of(page, size));
+    }
+
+    @Override
+    public Page<RoomsRetrieveResponseDto> getRoomDtosByMemberIdAsPaging(String memberId, int page) {
+        final int PAGE_SIZE = 10;
+        return getRoomDtosByMemberIdAsPaging(memberId, page, PAGE_SIZE);
+    }
+
+    @Override
+    public Page<RoomsRetrieveResponseDto> getRoomDtosByMemberIdAsPaging(String memberId, int page, int size) {
+        return roomMemberRepository.findRoomsByMemberIdWithPagination(memberId, PageRequest.of(page, size));
     }
 
     @Override

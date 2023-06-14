@@ -11,9 +11,14 @@ import java.time.LocalDateTime;
 @ToString(exclude = {"member", "room"})
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ROOMS_MEMBER", indexes = {
-        @Index(name = "idx_room_id", columnList = "ROOM_ID")
-})
+@Table(name = "ROOMS_MEMBER",
+        indexes = {
+                @Index(name = "idx_room_id", columnList = "ROOM_ID")
+        },
+        uniqueConstraints={
+                @UniqueConstraint( columnNames={"MEMBER_ID", "ROOM_ID"})
+        }
+)
 @Entity
 public class RoomMember {
 
@@ -40,4 +45,8 @@ public class RoomMember {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ROOM_ID")
     private Room room;
+
+    public void setJoinDateTime(LocalDateTime joinDateTime) {
+        this.joinDateTime = joinDateTime;
+    }
 }

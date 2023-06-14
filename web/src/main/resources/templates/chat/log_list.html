@@ -25,16 +25,8 @@
 
     <script>
 
-        // let socket = '';
-        // let socketOnErrorStatus = false;
-        // const nickname = document.getElementById('pacNickname').value;
-        const pacSessionId = document.getElementById('pacSessionId').value;
-        const pacUserId = document.getElementById('pacUserId').value;
-        const messageServer = document.getElementById('messageServer').value;
-        // const isChatSessionValid = document.getElementById('isChatSessionValid').value;
-        // const sessionValidErrorMessage = document.getElementById('sessionValidErrorMessage').value;
-        let chatRoomName = '';
         $(document).ready(function () {
+            // TODO: 페이징 추가조회 필요
             getChatLogs(1);
         })
 
@@ -65,7 +57,7 @@
 
         function appendChatLogList(roomList) {
             for (const room of roomList) {
-                const li = '<li class="' + room.roomId + ' border border-blue-300 shadow mb-2 rounded-md flex justify-between gap-x-6 p-3 hover:bg-slate-50 duration-100" onclick="getRoomInformation(\'' + room.roomId + '\')">\n' +
+                const li = '<li class="' + room.roomId + ' border border-blue-300 shadow mb-2 rounded-md flex justify-between gap-x-6 p-3 hover:bg-slate-50 duration-100">\n' +
                     '    <div class="flex gap-x-4">\n' +
                     '        <img class="h-12 w-12 flex-none rounded-full bg-gray-50"\n' +
                     '             src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"\n' +
@@ -101,26 +93,9 @@
 
         }
 
-        function getRoomInformation(roomId) {
-            $.ajax({
-                url: '/api/v1/room/' + roomId,
-                type: 'GET'
-            }).done(function (data) {
-                console.log(data);
-                // appendRoomInformation(data);
-            }).fail(function (error) {
-                console.log(error);
-                alert("채팅방 정보를 불러오는데 문제가 발생했습니다.");
-            });
-            // 개별 채팅방 정보 오버레이
-            $('.room-list ul li').removeClass('h-[30rem]', 1000, 'linear');
-            $('.' + roomId).addClass('h-[30rem]', 1000, 'linear');
-            // 입장 버튼 -> room으로 이동해서 바로 ws 연결
-        }
-
         function entranceChatLog(roomId) {
             // socket.close(); // 채팅방용 소켓은 별도 취급
-            location.href = '/chat/room/' + roomId;
+            location.href = '/chat/log/' + roomId;
         }
 
 
