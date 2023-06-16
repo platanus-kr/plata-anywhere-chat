@@ -67,7 +67,7 @@ public class ChatWebController {
     public String createRoom(Model model,
                              @HasMember SessionMemberDto sessionMemberDto,
                              HttpServletRequest request) {
-        return null;
+        return "chat/create";
     }
 
     // TODO: 채팅방 수정 구현 필요 -> REST는 되어있다.
@@ -76,7 +76,7 @@ public class ChatWebController {
                              @PathVariable(required = true) String roomId,
                              @HasMember SessionMemberDto sessionMemberDto,
                              HttpServletRequest request) {
-        return null;
+        return "chat/modify";
     }
 
     /**
@@ -213,13 +213,4 @@ public class ChatWebController {
         model.addAttribute("messageServer", messageAppServer);
         return "chat/simple_room";
     }
-
-
-    // TODO: 채팅로그조회 구현하기
-    @GetMapping("/log/simple")
-    public String chatLog() {
-        return "simple_chatlog";
-    }
-
-
 }

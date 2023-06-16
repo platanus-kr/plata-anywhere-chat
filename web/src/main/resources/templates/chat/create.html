@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko"
+      th:replace="~{layout/chat/layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>PAC : 채팅방 생성</title>
+</head>
+<body>
+<section>
+
+    <div class="chat-room-create p-4">
+        <h1 class="w-full block">채팅방 생성하기</h1>
+
+<!--        <input type="hidden" id="pacSessionId" th:value="${pacsessionid}"/>-->
+<!--        <input type="hidden" id="pacUserId" th:value="${member.id}"/>-->
+<!--        <input type="hidden" id="pacNickname" th:value="${member.nickname}"/>-->
+<!--        <input type="hidden" id="messageServer" th:value="${messageServer}"/>-->
+<!--        <input type="hidden" id="isChatSessionValid" th:value="${isChatSessionValid}"/>-->
+<!--        <input type="hidden" id="sessionValidErrorMessage" th:value="${sessionValidErrorMessage}"/>-->
+    </div>
+
+    <div class="enter-room sm:w-[42rem] p-4 pt-6 box-border">
+        <div class="flex flex-wrap">
+            <div class="member-information pb-10 hidden">
+                <p><b>🕵️‍♀️ 회원 정보</b></p>
+                <p><span th:text="${member}"></span></p>
+            </div>
+            <h1 class="w-full block">채팅방 생성하기</h1>
+
+            <label for="room-name"
+                   class="text-sm font-medium leading-6 text-gray-900">
+                채팅방 명
+            </label>
+            <input type="text"
+                   name="room-name"
+                   id="room-name"
+                   class="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                   />
+
+            <label for="room-description"
+                   class="text-sm font-medium leading-6 text-gray-900">
+                채팅방 설명
+            </label>
+            <input type="text"
+                   name="room-description"
+                   id="room-description"
+                   class="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                   />
+
+            <label for="room-image-url"
+                   class="text-sm font-medium leading-6 text-gray-900">
+                채팅방 대표 이미지
+            </label>
+            <input type="text"
+                   name="room-image-url"
+                   id="room-image-url"
+                   class="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                   />
+
+            <label for="room-capacity"
+                   class="text-sm font-medium leading-6 text-gray-900">
+                최대 참가 인원
+            </label>
+            <input type="text"
+                   name="room-capacity"
+                   id="room-capacity"
+                   class="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                   />
+
+            <label for="room-public"
+                   class="text-sm font-medium leading-6 text-gray-900">
+                채팅방 공개여부
+            </label>
+            <input type="text"
+                   name="room-public"
+                   id="room-public"
+                   class="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                   />
+
+
+            <button type="button"
+                    class="room-create-button text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm  my-3 px-3 py-2 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700"
+                    onclick="sendCreate()">
+                생성
+            </button>
+
+            <hr/>
+
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        let socket = '';
+        let socketOnErrorStatus = false;
+        const nickname = document.getElementById('pacNickname').value;
+        const pacSessionId = document.getElementById('pacSessionId').value;
+        const pacUserId = document.getElementById('pacUserId').value;
+        const messageServer = document.getElementById('messageServer').value;
+        const isChatSessionValid = document.getElementById('isChatSessionValid').value;
+        const sessionValidErrorMessage = document.getElementById('sessionValidErrorMessage').value;
+        let chatRoomName = '';
+        $(document).ready(function () {
+
+            if (isChatSessionValid === 'false') {
+                alert(sessionValidErrorMessage);
+                location.href = '/chat/create';
+            }
+
+        })
+
+        function sendCreate() {
+            const roomName = document.getElementById('room-name').value;
+            const roomDescription = document.getElementById('room-description').value;
+            const imageUrl = document.getElementById('room-image-url').value;
+            const roomCapacity = document.getElementById('room-capacity').value;
+            const roomPublic = document.getElementById('room-public').value;
+            createRoom(roomName, roomDescription, imageUrl, roomCapacity, roomPublic)
+        }
+        function createRoom(roomName, roomDescription, imageUrl, roomCapacity, roomPublic) {
+            $.ajax({
+                url: '/api/v1/room',
+                type: 'POST',
+                date: {
+                    roomName: roomName,
+                    description: roomDescription,
+                    imageUrl: imageUrl,
+                    capacity: roomCapacity,
+                    roomPublic: roomPublic
+                }
+            }).done(function (data) {
+                alert('채팅방이 생성 되었습니다.')
+                location.href = '/room/' + data.roomId;
+            }).fail(function (error) {
+                // sessionValidErrorMessage = error.
+                // isChatSessionValid
+                // TODO: Exception Handler
+            });
+
+        }
+
+
+    </script>
+</section>
+</body>
+</html>
