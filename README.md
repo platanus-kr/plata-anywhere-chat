@@ -1,5 +1,18 @@
 # Plata Anywhere Chat
 
+
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachekafka/apachekafka-original.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gradle/gradle-plain.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gitlab/gitlab-original.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"  style="width: 2.9rem; padding-right: 0.8rem"/>
+
+
 회원 기능을 가지는 웹 채팅 프로그램
 
 **💡 프로젝트 목표**
@@ -223,7 +236,7 @@
 <summary>
 <code>message: websocket</code> 🚪 채팅방 입장 ⇢ 웹소켓 세션 생명주기
 </summary>
-<img src="https://private-user-images.githubusercontent.com/6806008/246463211-108535df-4039-44d7-868d-af1dc4a88a91.jpg?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiJrZXkxIiwiZXhwIjoxNjg2OTMwNTA1LCJuYmYiOjE2ODY5MzAyMDUsInBhdGgiOiIvNjgwNjAwOC8yNDY0NjMyMTEtMTA4NTM1ZGYtNDAzOS00NGQ3LTg2OGQtYWYxZGM0YTg4YTkxLmpwZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFJV05KWUFYNENTVkVINTNBJTJGMjAyMzA2MTYlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjMwNjE2VDE1NDMyNVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTkxMTIxYWNkNTNmMzI0NDk5NjBmNDM2ZDY1NjYyMDRhZWI4NzQ0ZjE1YTkzNDIxNTg2NmJmYTAyNDI2YmU2MjQmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.jYpLvtwCZbbBKrp6hkKCpuUj0-TXTCMwE8Bd3ETSwqQ" alt="채팅방 입장 Flow" />
+<img src="https://user-images.githubusercontent.com/6806008/246463211-108535df-4039-44d7-868d-af1dc4a88a91.jpg" alt="채팅방 입장 Flow" />
 </details>
 
 <details>
