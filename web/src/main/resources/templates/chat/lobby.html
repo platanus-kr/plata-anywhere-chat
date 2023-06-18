@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko"
-      th:replace="~{layout/chat/layout :: layout(~{::title}, ~{::section})}">
+      th:replace="~{layout/web/layout :: layout(~{::title}, ~{::section})}">
 <head>
     <meta charset="UTF-8">
     <title>PAC : 로비</title>
 </head>
 <body>
-<section>
+<section class="enter-room p-4 pt-6 flex flex-col item-center mx-auto">
 
-    <div class="enter-room sm:w-[42rem] p-4 pt-6 box-border">
-        <div class="flex flex-wrap">
+<!--    <div class="enter-room p-4 pt-6 flex flex-col item-center mx-auto">-->
+<!--        <div class="flex flex-wrap">-->
             <div class="member-information pb-10 hidden">
                 <p><b>🕵️‍♀️ 회원 정보</b></p>
                 <p><span th:text="${member}"></span></p>
@@ -66,8 +66,8 @@
                 </button>
             </div>
 
-        </div>
-    </div>
+<!--        </div>-->
+<!--    </div>-->
 
 
     <script>

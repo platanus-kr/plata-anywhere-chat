@@ -15,37 +15,44 @@
 
 <!-- https://devicon.dev/ -->
 
-회원 기능을 가지는 웹 채팅 프로그램
+> Reactive WebSocket 기반의 웹 채팅 서비스 백엔드
 
-**💡 프로젝트 목표**
+**🔥 프로젝트 목표 및 특징**
 
-- [x] Spring Security를 사용한 OAuth, REST API, formLogin 3가지 로그인의 구현
-- [x] WebSocket과 HTTP의 차이와 이해
-- [x] (실패) ~~Redis를 사용한 세션 클러스터링 구축 및 어플리케이션 간 세션 공유~~
+- [x] WebSocket과 HTTP의 차이에 대한 경험
 - [x] Reactive WebSocket 백엔드 구현
+- [x] Spring Security를 사용한 OAuth, REST API, formLogin 3가지 로그인의 구현
 - [ ] MessageBroker를 통해 pub-sub 패턴의 기본적인 이해
 - [ ] 백프래셔, Rate Limit 이해 및 적용
-- [ ] 간소화된 MSA 구조에서 에그리거트간 메시지 전달과 인증의 이해
+- [x] (실패) ~~Redis를 사용한 세션 클러스터링 구축 및 어플리케이션 간 세션 공유~~
 
 🤫 **그 외 엄청 중요하거나 목표한 바는 아니지만 이 프로젝트에서 사용되는 개념**
 
-> JPA의 fetch 전략 (lazy, eager)   
-> Gradle 멀티모듈   
-> Thymeleaf의 레이아웃 사용, JavaScript WebSocket 사용   
-> Docker compose 사용, Docker 배포
+- RDB 모델링 및 JPA의 fetch 전략 (lazy, eager)
+- Gradle 멀티모듈
+- Docker compose 사용, Docker 배포
+- nginx dynamic reverse proxy (L4)
+- Thymeleaf의 레이아웃 사용, JavaScript WebSocket 사용
 
 ---
 
 ## 프로젝트 소개
+
+### 주요 기능
+
+- 채팅방 기본 기능   
+  채팅방 입장, 같은 채팅방 내 메시지 송수신 분리
+- 채팅 서비스 자체 회원 가입 기능
+- 채팅, 메시지 송수신, 채팅 퇴장 처리
 
 ### 프로젝트 구조 개요
 
 🌐 `web` : 회원, 채팅 저장, 채팅 기록 조회 등 영속성과 관련된 기능 담당   
 💬 `message` : 채팅방 구독, 메시지 발행, 메시지 소비 등 채팅과 관련된 주요 기능 담당
 
-### 프로젝트 구조 상세 - web
+**프로젝트 구조 상세 - web**
 
-> Spring Web MVC (5.3.24)  
+> Spring Boot, Spring Web MVC (5.3.24)  
 > Spring Data JPA, Spring Data MongoDB  
 > MariaDB, MongoDB  
 > Spring Security - OAuth2 client + app login  
@@ -177,10 +184,11 @@
 </pre>
 </details>
 
-### 프로젝트 구조 상세 - message
+**프로젝트 구조 상세 - message**
 
-> Spring WebFlux (5.3.24)   
-> Reactive WebSocket
+> Spring Boot, Spring WebFlux (5.3.24)   
+> Reactive WebSocket   
+> Spring Data MongoDB
 
 <details>
 <summary>
@@ -227,7 +235,7 @@
 </pre>
 </details>
 
-### 주요 기능 flow
+**메시지 전송 flow**
 
 <details>
 <summary>
@@ -243,19 +251,6 @@
 (작성중) 
 </details>
 
-### 버전 관리
-
-**v2 주요 기능**
-
-- 채팅방 기본 기능   
-  채팅방 입장, 같은 채팅방 내 메시지 송수신 분리
-- 세션 유효성 검증
-
-**v1 주요 기능**
-
-- GitHub 회원 가입 기능
-- 채팅 서비스 자체 회원 가입 기능
-- 채팅, 메시지 송수신, 채팅 퇴장 처리
 
 ### 로컬 실행
 
