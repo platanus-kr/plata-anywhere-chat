@@ -1,17 +1,19 @@
 # Plata Anywhere Chat
 
 
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachekafka/apachekafka-original.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gradle/gradle-plain.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gitlab/gitlab-original.svg" style="width: 2.9rem; padding-right: 0.8rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"  style="width: 2.9rem; padding-right: 0.8rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" width="32rem"/>
 
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachekafka/apachekafka-original.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gradle/gradle-plain.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gitlab/gitlab-original.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"  width="32rem"/>
+
+<!-- https://devicon.dev/ -->
 
 회원 기능을 가지는 웹 채팅 프로그램
 
@@ -38,13 +40,8 @@
 
 ### 프로젝트 구조 개요
 
-**🌐 web**
-
-- 회원, 채팅 저장, 채팅 기록 조회 등 영속성과 관련된 기능 담당
-
-**💬 message**
-
-- 채팅방 구독, 메시지 발행, 메시지 소비 등 채팅과 관련된 주요 기능 담당
+🌐 `web` : 회원, 채팅 저장, 채팅 기록 조회 등 영속성과 관련된 기능 담당   
+💬 `message` : 채팅방 구독, 메시지 발행, 메시지 소비 등 채팅과 관련된 주요 기능 담당
 
 ### 프로젝트 구조 상세 - web
 
