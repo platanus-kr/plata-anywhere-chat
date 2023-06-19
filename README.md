@@ -1,8 +1,7 @@
 # Plata Anywhere Chat
 
-
+<!--
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" width="32rem"/>
-
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" width="32rem"/>
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" width="32rem"/>
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" width="32rem"/>
@@ -12,7 +11,7 @@
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg" width="32rem"/>
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gitlab/gitlab-original.svg" width="32rem"/>
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"  width="32rem"/>
-
+-->
 <!-- https://devicon.dev/ -->
 
 > Reactive WebSocket 기반의 웹 채팅 서비스 백엔드
@@ -241,7 +240,7 @@
 <summary>
 <code>message: websocket</code> 🚪 채팅방 입장 ⇢ 웹소켓 세션 생명주기
 </summary>
-<img src="https://user-images.githubusercontent.com/6806008/246463211-108535df-4039-44d7-868d-af1dc4a88a91.jpg" alt="채팅방 입장 Flow" />
+(작성중)
 </details>
 
 <details>
