@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko"
-      th:replace="~{layout/chat/layout :: layout(~{::title}, ~{::section})}">
+      th:replace="~{layout/web/layout :: layout(~{::title}, ~{::section})}">
 <head>
     <meta charset="UTF-8">
     <title>PAC : 채팅 기록</title>
 </head>
 <body>
-<section>
-
-    <div class="enter-room sm:w-[42rem] p-4 pt-6 box-border">
+<section class="enter-room p-4 pt-6 flex flex-col item-center mx-auto">
+    <div class="enter-room">
         <div class="flex flex-wrap">
 
             <p class="text-sm font-medium mt-5 leading-6 text-gray-900">내가 참여한 채팅방 목록</p>

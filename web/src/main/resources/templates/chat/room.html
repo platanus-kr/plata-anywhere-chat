@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko"
-      th:replace="~{layout/chat/layout :: layout(~{::title}, ~{::section})}">
+      th:replace="~{layout/web/layout :: layout(~{::title}, ~{::section})}">
 <head>
     <meta charset="UTF-8">
     <title>PAC : 채팅</title>
 </head>
 <body>
-<section>
+<section class="enter-room p-4 pt-6 flex flex-col item-center mx-auto">
     <div class="chat-service p-4 h-[calc(100vh-1vh)]">
         <input type="hidden" id="pacSessionId" th:value="${pacSessionId}"/>
         <input type="hidden" id="pacUserId" th:value="${pacSessionMember.id}"/>
@@ -15,8 +15,6 @@
         <input type="hidden" id="pacRoomId" th:value="${pacRoomId}"/>
         <input type="hidden" id="isChatSessionValid" th:value="${isChatSessionValid}"/>
         <input type="hidden" id="sessionValidErrorMessage" th:value="${sessionValidErrorMessage}"/>
-
-        <div th:replace="~{layout/chat/chat_component :: gnb}"></div>
 
         <div class="stream-box h-[calc(100vh-10rem)] pb-1">
             <div id="inner-box" class="inner-box overflow-y-auto h-[calc(100vh-10rem)]">
