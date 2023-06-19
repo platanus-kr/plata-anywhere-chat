@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko"
-      th:replace="~{layout/web/layout :: layout(~{::title}, ~{::section})}">
+      th:replace="~{layout/chat/layout :: layout(~{::title}, ~{::section})}">
 <head>
     <meta charset="UTF-8">
     <title>PAC : 채팅</title>
@@ -210,6 +210,22 @@
             }
             socket.send(JSON.stringify(message));
             document.querySelector("#chat-text").value = "";
+        }
+
+        function roomExit() {
+            $.ajax({
+                url: '/api/v1/room/' + pacRoomId + '/exit',
+                type: 'POST',
+                date: {}
+            }).done(function (data) {
+                alert('채팅방에서 퇴장하였습니다.')
+                socket.close();
+                location.href = '/room/lobby'
+            }).fail(function (error) {
+                // sessionValidErrorMessage = error.
+                // isChatSessionValid
+                // TODO: Exception Handler
+            });
         }
 
         let callVirtualKeyboardShow = function () {

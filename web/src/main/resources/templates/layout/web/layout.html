@@ -9,13 +9,12 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
-    <title>Plata Anywhere Chat</title>
+    <title>Anywhere Chat</title>
 </head>
 <body>
 <div class="md:flex flex-col md:flex-row md:min-h-screen w-full">
     <div th:replace="~{layout/web/common_component :: sidebar}"></div>
     <div th:replace="${content}"></div>
-    <!--        <div th:replace="~{layout/web/common_component :: footer}"></div>-->
 </div>
 </body>
 </html>
