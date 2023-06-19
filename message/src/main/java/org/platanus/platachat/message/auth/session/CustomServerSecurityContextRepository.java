@@ -1,35 +1,13 @@
 package org.platanus.platachat.message.auth.session;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.data.redis.core.ReactiveRedisOperations;
-import org.springframework.http.HttpCookie;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.security.web.server.context.ServerSecurityContextRepository;
-import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
-
-import java.io.ByteArrayInputStream;
-import java.io.ObjectInputStream;
-import java.util.Base64;
-
-import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
-
 //@Component
 //@RequiredArgsConstructor
 @Deprecated
 public class CustomServerSecurityContextRepository {
 //public class CustomServerSecurityContextRepository implements ServerSecurityContextRepository {
-
-    private static final String SESSION_KEY_PREFIX = "spring:session:sessions:";
-    private static final String SESSION_ATTR_KEY_PREFIX = "sessionAttr:";
+	
+	private static final String SESSION_KEY_PREFIX = "spring:session:sessions:";
+	private static final String SESSION_ATTR_KEY_PREFIX = "sessionAttr:";
 
 //    private final ReactiveRedisOperations<String, String> redisOperations;
 //    private final SecurityProperties securityProperties;

@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="ko"
-      th:fragment="layout(title, content, user)"
+      th:fragment="layout(title, content)"
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/style-chatroom.css}"/>
-    <title>Plata Anywhere Chat</title>
+    <title>Anywhere Chat</title>
 </head>
 <body>
-    <div>
-        <div th:replace="~{layout/chat/user_view_gnb :: user_view_sidebar}"></div>
-
-    </div>
+<div class="md:flex flex-col md:flex-row md:min-h-screen w-full">
+    <div th:replace="~{layout/web/common_component :: sidebar_room}"></div>
+    <div th:replace="${content}"></div>
+    <!--        <div th:replace="~{layout/web/common_component :: footer}"></div>-->
+</div>
 </body>
 </html>

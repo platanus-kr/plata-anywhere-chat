@@ -10,12 +10,73 @@
 </head>
 
 <body>
-<div class="wrap flex flex-col item-center sm:w-[42rem] mx-auto bg-white h-screen">
+<!--
+                <p class="pb-10"><b>🕵️‍♀️ 회원 정보 - </b><span th:text="${member}"></span></p>
+                <input type="hidden" id="pacSessionId" th:value="${pacsessionid}"/>
+                <input type="hidden" id="pacUserId" th:value="${member.id}"/>
+                <input type="hidden" id="pacNickname" th:value="${member.nickname}"/>
+                <input type="hidden" id="messageServer" th:value="${messageServer}"/>
+                <hr/>
+                                <input type="text"
+                       name="chat-nickname-init"
+                       id="chat-nickname-init"
+                       class="chat-input-nickname-init block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                       th:value="${member.nickname}"
+                       disabled/>
+-->
 
-    <div class="enter-room p-4 box-border absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+<div class="wrap flex flex-col item-center sm:w-[42rem] mx-auto bg-white">
+    <div class="chat-service p-4 hidden h-[calc(100vh-1vh)]">
+        <div class="room-action-menu h-8 w-full sticky top-0 z-10 bg-white">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 viewBox="0 0 448 512"
+                 class="w-6 h-6">
+                <path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/>
+            </svg>
+        </div>
+
+        <div class="stream-box h-[calc(100vh-10rem)] pb-1">
+            <div id="inner-box" class="inner-box overflow-y-auto h-[calc(100vh-10rem)]">
+            </div>
+        </div>
+
+        <div class="chat-input w-full flex sticky bottom-0 z-11 bg-white">
+            <input type="text" id="chat-id"
+                   class="chat-input-id block w-16 rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 "
+                   disabled/>
+            <input type="text" id="chat-text"
+                   class="chat-input-text block w-full ml-2 mr-2 rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6"/>
+            <button type="button"
+                    class="chat-input-send-button w-[90px] tracking-tight text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-[0.8rem] pl-3 py-2 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700"
+                    onclick="sendMessageWrap()">
+                전송
+                <svg viewBox="0 0 24 24" id="send-icon"
+                     xmlns="http://www.w3.org/2000/svg" class="icon multi-color w-5 h-5">
+                    <path id="secondary-fill"
+                          d="M18.5,13.66,5.44,19.85A1,1,0,0,1,4.1,18.54l2.72-6.13a1.06,1.06,0,0,0,0-.82L4.71,6.84l13,6.16A1.93,1.93,0,0,1,18.5,13.66Z"
+                          style="fill: rgb(170,120,255); stroke-width: 2;"></path>
+                    <path id="primary-stroke"
+                          d="M20.09,12.9l-1.59.76L5.44,19.85A1,1,0,0,1,4.1,18.54l2.72-6.13a1.06,1.06,0,0,0,0-.82L4.71,6.84,4.1,5.46A1,1,0,0,1,5.44,4.15l14.65,7A1,1,0,0,1,20.09,12.9ZM7,12h4"
+                          style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 1;"></path>
+                </svg>
+            </button>
+        </div>
+
+
+    </div>
+
+
+    <div class="enter-room sm:w-[42rem] p-4 box-border absolute top-1/2 transform -translate-y-1/2">
         <div class="flex flex-wrap">
-            <p><b>🕵️‍♀️ 회원 정보 - </b><span th:text="${member}"></span></p>
+            <div class="member-information pb-10">
+                <p><b>🕵️‍♀️ 회원 정보 - </b></p>
+                <p><span th:text="${member}"></span></p>
+            </div>
+
             <input type="hidden" id="pacSessionId" th:value="${pacsessionid}"/>
+            <input type="hidden" id="pacUserId" th:value="${member.id}"/>
+            <input type="hidden" id="pacNickname" th:value="${member.nickname}"/>
+            <input type="hidden" id="messageServer" th:value="${messageServer}"/>
             <hr/>
             <label for="chat-nickname-init"
                    class="text-sm font-medium leading-6 text-gray-900">
@@ -37,77 +98,142 @@
                    id="chat-room"
                    class="chat-input-room-init chat-input-room block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6"
                    value="test"/>
-            <div class="ml-auto">
-                <input type="button"
-                       class="chat-input-room-button rounded-md bg-indigo-600 my-3 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                       value="입장" onclick="sendSubscribe()"/>
+            <div class="ml-auto flex flex-wrap justify-center">
+                <div class="server-status self-center">
+                    <p class="ok mr-5 hidden text-lime-500">서버 정상</p>
+                    <p class="error mr-5 hidden text-rose-400 underline decoration-rose-200"
+                       onclick="location.reload()">채팅 서버 접속 불가</p>
+                </div>
+                <button type="button"
+                        class="chat-input-room-button text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm  my-3 px-3 py-2 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700"
+                        onclick="sendSubscribe()">
+                    입장
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
+                        <path d="M6 7H18V12C18 15.3137 15.3137 18 12 18V18C8.68629 18 6 15.3137 6 12V7Z"
+                              stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="15" y1="2" x2="15" y2="7" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                              stroke-linejoin="round"/>
+                        <path d="M12 18V22" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                              stroke-linejoin="round"/>
+                        <line x1="9" y1="2" x2="9" y2="7" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                              stroke-linejoin="round"/>
+                    </svg>
+                </button>
             </div>
 
         </div>
     </div>
-
-    <div class="chat-service hidden box-border p-4 flex flex-col h-full">
-        <div class="room-action-menu h-8 w-full sticky top-0 z-10">
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 viewBox="0 0 448 512"
-                 class="w-6 h-6">
-                <path
-                        d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/>
-            </svg>
-        </div>
-
-        <div class="stream-box flex-shrink-0 overflow-hidden">
-            <div class="inner-box flex-shrink-0 overflow-y-auto h-screen hide-scrollbar">
-                <!-- chat message line-->
-            </div>
-        </div>
-
-        <div class="chat-input w-full flex h-8 sticky bottom-0 z-10">
-            <input type="text" id="chat-id"
-                   class="chat-input-id block w-16 rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 "
-                   disabled/>
-            <input type="text" id="chat-text"
-                   class="chat-input-text block w-full mr-2 rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6"/>
-            <input type="button"
-                   class="chat-input-send-button rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                   value="전송" onclick="sendMessageWrap()"/>
-        </div>
-    </div>
-
 </div>
 
 <script>
 
     let socket = '';
-    const nickname = makeId(5);
+    let socketOnErrorStatus = false;
+    const nickname = document.getElementById('pacNickname').value;
     const pacSessionId = document.getElementById('pacSessionId').value;
+    const pacUserId = document.getElementById('pacUserId').value;
+    const messageServer = document.getElementById('messageServer').value;
     let chatRoomName = '';
     $(document).ready(function () {
-        // $(".chat-input-nickname-init").val(nickname);
 
-        socket = new WebSocket('ws://localhost:3121/message');
+        // iOS virtual keyboard height fix
+        if (getUserAgent() === "ios") {
+            document.getElementById("chat-text").addEventListener("focus", function () {
+                document.querySelector(".stream-box").classList.add("h-[45vh]");
+                document.querySelector(".stream-box").classList.remove("h-[calc(100vh-10rem)]");
+                document.querySelector(".inner-box").classList.add("h-[45vh]");
+                document.querySelector(".inner-box").classList.remove("h-[calc(100vh-10rem)]");
+                document.querySelector(".chat-service").classList.add("h-[45vh]");
+                document.querySelector(".chat-service").classList.remove("h-[calc(100vh-1vh)]");
+                callVirtualKeyboardShow();
+                clearTimeout(callVirtualKeyboardHide);
+            });
+
+            document.getElementById("chat-text").addEventListener("focusout", function () {
+                document.querySelector(".stream-box").classList.add("h-[calc(100vh-10rem)]");
+                document.querySelector(".stream-box").classList.remove("h-[45vh]");
+                document.querySelector(".inner-box").classList.add("h-[calc(100vh-10rem)]");
+                document.querySelector(".inner-box").classList.remove("h-[45vh]");
+                document.querySelector(".chat-service").classList.add("h-[calc(100vh-1vh)]");
+                document.querySelector(".chat-service").classList.remove("h-[45vh]");
+                clearTimeout(callVirtualKeyboardShow);
+                callVirtualKeyboardHide();
+            });
+        }
+
+        // document.querySelector(".chat-input-nickname-init").value = nickname;
+
+        socket = new WebSocket('ws://' + messageServer + '/message');
         socket.onopen = function (event) {
             // 연결이 열리면 실행되는 코드
             console.log('WebSocket 연결이 열렸습니다.');
+            $(".server-status .ok").removeClass("hidden");
         };
 
+        socket.onerror = function (error) {
+            console.error('WebSocket 연결 에러:', error);
+            // 에러 처리 로직을 추가하세요
+            socketOnErrorStatus = true;
+            $(".server-status .error").removeClass("hidden");
+        };
+
+        socket.onclose = function (event) {
+            if (event.wasClean) {
+                console.log('WebSocket 연결이 정상적으로 닫혔습니다.');
+                alert("서버와의 연결이 끊어졌습니다.");
+                location.reload();
+            } else {
+                console.error('WebSocket 연결이 비정상적으로 닫혔습니다.');
+                if (socketOnErrorStatus === false) {
+                    alert("서버와의 연결이 끊어졌습니다.");
+                    location.reload();
+                }
+                $(".server-status .ok").addClass("hidden");
+                $(".server-status .error").removeClass("hidden");
+            }
+        };
 
         // $(".chat-input-id").val(nickname);
+        document.querySelector(".chat-input-id").value = nickname;
+
 
         socket.addEventListener('message', function (data) {
             let response = JSON.parse(data.data);
             console.log('Message from server: ', response);
             $('.stream-box .inner-box').append(messageGenerator(response));
-            $('.stream-box .inner-box').animate({scrollTop: $('.stream-box .inner-box')[0].scrollHeight}, 'fast');
-
+            moveFocusAsInnerBox();
         });
 
         $('#chat-text').on('keypress', function (e) {
-            if (e.which === 13) { // 13은 Enter 키의 keyCode입니다.
-                e.preventDefault(); // 기본 Enter 키 동작을 막습니다.
-                sendMessageWrap(); // 메소드 실행
+            if (e.which === 13) {
+                e.preventDefault();
+                sendMessageWrap();
             }
         });
+
+        // 문자 완성 안됐을 때 마지막 문자만 반복 실행되는 문제가 있음.
+
+        // document.getElementById('chat-text').addEventListener('keydown', function (e) {
+        //     if (e.key === 'Enter') {
+        //         e.preventDefault();
+        //         sendMessageWrap();
+        //     }
+        // });
+
+        // auto generator
+
+        // const what = {
+        //     identifier: {
+        //         nickname: "asdfa",
+        //     },
+        //     message: "asdfqagquialwngvuilfbngval",
+        //     timestamp: "00:00"
+        // }
+        // setInterval(function () {
+        //     $('.stream-box .inner-box').append(messageGenerator(what));
+        //     var chatScreen = document.getElementById("inner-box");
+        //     $('#inner-box').animate({ scrollTop: chatScreen.scrollHeight - chatScreen.clientHeight }, 'fast');
+        // }, 300);
     })
 
     function messageGenerator(response) {
@@ -146,6 +272,11 @@
     }
 
     function sendSubscribe() {
+        if (socketOnErrorStatus === true) {
+            alert("서버에 접속 할 수 없습니다.");
+            return;
+        }
+
         chatRoomName = $(".chat-input-room").val();
         if (chatRoomName.length < 1) {
             alert("채팅방 명을 입력해야 합니다");
@@ -155,59 +286,66 @@
         console.log("입장");
         let identifier = {
             channel: chatRoomName,
+            memberId: pacUserId,
             nickname: nickname,
             token: pacSessionId
         }
         let message = {
-            command: "subscribe",
+            command: "SUBSCRIBE",
             identifier: identifier
         }
         console.log(message);
         socket.send(JSON.stringify(message));
-        $(".enter-room").addClass("hidden");
-        $(".chat-service").removeClass("hidden");
-    }
-
-    function getPACSessionId() {
-        const sessionId = "PAC_SESSIONID"
-        const sessionValue = document.cookie.match(new RegExp('(^| )' + sessionId + '=([^;]+)'))
-        // var sessionValue;
-        // const value = `; ${document.cookie}`;
-        // const parts = value.split(`; ${sessionId}=`);
-        // if (parts.length === 2) sessionValue = parts.pop().split(';').shift();
-        console.log(sessionValue);
-        return sessionValue;
-
-    }
-
-    function makeId(length) {
-        let result = '';
-        const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-        const charactersLength = characters.length;
-        let counter = 0;
-        while (counter < length) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
-            counter += 1;
-        }
-        return result;
+        document.querySelector(".enter-room").classList.add("hidden");
+        document.querySelector(".chat-service").classList.remove("hidden");
     }
 
 
     function sendMessageWrap() {
-        const chatText = $("#chat-text").val();
+        const chatText = document.querySelector("#chat-text").value;
         let identifier = {
             channel: chatRoomName,
+            memberId: pacUserId,
             nickname: nickname,
             token: pacSessionId
         }
         let message = {
-            command: "message",
+            command: "MESSAGE",
             message: chatText,
             identifier: identifier
         }
         socket.send(JSON.stringify(message));
-        $("#chat-text").val("");
+        document.querySelector("#chat-text").value = "";
 
+    }
+
+    let callVirtualKeyboardShow = function () {
+        setTimeout(function () {
+            $('html body').scrollTop(0);
+            moveFocusAsInnerBox()
+        }, 0);
+    }
+
+    let callVirtualKeyboardHide = function () {
+        setTimeout(function () {
+            moveFocusAsInnerBox()
+        }, 0);
+    }
+
+    function moveFocusAsInnerBox() {
+        var chatScreen = document.getElementById("inner-box");
+        $('#inner-box').animate({scrollTop: chatScreen.scrollHeight - chatScreen.clientHeight}, 100);
+    }
+
+    function getUserAgent() {
+        var varUA = navigator.userAgent.toLowerCase(); //userAgent 값 얻기
+        if (varUA.indexOf('android') > -1) {
+            return "android";
+        } else if (varUA.indexOf("iphone") > -1 || varUA.indexOf("ipad") > -1 || varUA.indexOf("ipod") > -1) {
+            return "ios";
+        } else {
+            return "other";
+        }
     }
 
 </script>

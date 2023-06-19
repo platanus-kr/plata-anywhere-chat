@@ -24,7 +24,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseTime {
     @CreatedDate
-    @Column(name = "created")
+    @Column(name = "created", updatable=false)
     @JsonSerialize(using= LocalDateTimeSerializer.class)
     @JsonDeserialize(using= LocalDateTimeDeserializer.class)
     private LocalDateTime created;

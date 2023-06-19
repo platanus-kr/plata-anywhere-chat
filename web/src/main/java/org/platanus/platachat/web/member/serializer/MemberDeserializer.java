@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import org.platanus.platachat.web.auth.dto.LoginProvider;
 import org.platanus.platachat.web.member.model.AppRole;
 import org.platanus.platachat.web.member.model.Member;
 
@@ -16,9 +18,9 @@ public class MemberDeserializer extends JsonDeserializer<Member> {
     public Member deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
-        long id = node.get("id").longValue();
+        String id = node.get("id").asText();
         String providerId = node.get("providerId").asText();
-        String provider = node.get("provider").asText();
+        LoginProvider provider = LoginProvider.valueOf(node.get("provider").asText());
         String username = node.get("username").asText();
         String password = node.get("password").asText();
         String nickname = node.get("nickname").asText();

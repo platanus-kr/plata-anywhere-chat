@@ -3,8 +3,10 @@ package org.platanus.platachat.web.auth.rest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.platanus.platachat.web.auth.argumentresolver.HasMember;
 import org.platanus.platachat.web.auth.dto.AuthValidRetrieveRequestDto;
 import org.platanus.platachat.web.auth.dto.AuthValidRetrieveResponseDto;
+import org.platanus.platachat.web.auth.dto.LoginProvider;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.auth.exception.CustomAuthException;
 import org.platanus.platachat.web.constants.AuthConstant;
@@ -22,10 +24,7 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.session.Session;
 import org.springframework.session.data.redis.RedisSessionRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -40,15 +39,21 @@ public class AuthRestControllerV1 {
     private final MemberService memberService;
     private final RedisSessionRepository sessionRepository;
 
+    @GetMapping("/endpoint/check")
+    public SessionMemberDto endpointTest(@HasMember SessionMemberDto member) {
+        return member;
+    }
+
     /**
-     * 회원가입
+     * <h3>회원 가입</h3>
+     * POST /api/v1/auth/join
      *
      * @param joinRequest
      * @param request
      * @return
      */
-    @PostMapping
-    public MemberJoinResponseDto join(@RequestBody(required = true) MemberJoinRequestDto joinRequest, HttpServletRequest request) {
+    @PostMapping("/join")
+    public MemberJoinResponseDto join(@RequestBody MemberJoinRequestDto joinRequest, HttpServletRequest request) {
         Member member;
         try {
             member = memberService.join(joinRequest);
@@ -64,12 +69,13 @@ public class AuthRestControllerV1 {
     }
 
     /**
-     * 앱 자체 로그인
+     * <h3>앱 자체 로그인</h3>
+     * POST /api/v1/auth/login
      *
-     * @param dto
-     * @param request
-     * @param session
-     * @return
+     * @param dto     {@link MemberLoginRequestDto}
+     * @param request {@link HttpServletRequest}
+     * @param session {@link HttpSession}
+     * @return {@link SessionMemberDto}
      */
     @PostMapping("/login")
     public SessionMemberDto appLogin(@RequestBody MemberLoginRequestDto dto,
@@ -94,10 +100,12 @@ public class AuthRestControllerV1 {
     }
 
     /**
-     * 채팅방 입장시 세션 유효성 검증
+     * <h3>채팅방 입장시 세션 유효성 검증</h3>
+     * POST /api/v1/auth/validate <br/>
+     * message 에서 호출.
      *
-     * @param retrieveRequestDto 유효성 검증 요청 DTO
-     * @return 유효성 검증 응답 DTO
+     * @param retrieveRequestDto {@link AuthValidRetrieveRequestDto}
+     * @return {@link AuthValidRetrieveResponseDto}
      */
     @PostMapping("/validate")
     public AuthValidRetrieveResponseDto validate(@RequestBody AuthValidRetrieveRequestDto retrieveRequestDto) {
@@ -137,13 +145,13 @@ public class AuthRestControllerV1 {
     }
 
     /**
-     * 로그인 상태이고 채팅방 입장이 가능한지 여부 확인
+     * <h3>로그인 상태이고 채팅방 입장이 가능한지 여부 확인</h3>
      *
-     * @param retrieveRequestDto 유효성 검증 요청 DTO
-     * @param sessionMemberDto   세션 멤버 DTO
-     * @param authentication     인증 객체
-     * @param responseDto        유효성 검증 응답 DTO
-     * @return 유효성 검증 응답 DTO
+     * @param retrieveRequestDto {@link AuthValidRetrieveRequestDto}
+     * @param sessionMemberDto   {@link SessionMemberDto}
+     * @param authentication     {@link Authentication}
+     * @param responseDto        {@link AuthValidRetrieveResponseDto}
+     * @return {@link AuthValidRetrieveResponseDto}
      */
     private AuthValidRetrieveResponseDto getAuthRetrieveResponseDto(AuthValidRetrieveRequestDto retrieveRequestDto,
                                                                     SessionMemberDto sessionMemberDto,
@@ -182,9 +190,9 @@ public class AuthRestControllerV1 {
     }
 
     /**
-     * 채팅방 입장이 가능한지 여부 확인
+     * <h3>채팅방 입장이 가능한지 여부 확인</h3>
      *
-     * @param retrieveRequestDto 유효성 검증 요청 DTO
+     * @param retrieveRequestDto {@link AuthValidRetrieveRequestDto}
      * @return 채팅방 입장 가능 여부
      */
     private boolean isAdmission(AuthValidRetrieveRequestDto retrieveRequestDto) {
@@ -192,11 +200,11 @@ public class AuthRestControllerV1 {
     }
 
     /**
-     * 요청과 세션 조회 결과의 유효성 검증
+     * <h3>요청과 세션 조회 결과의 유효성 검증</h3>
      *
-     * @param retrieveRequestDto 유효성 검증 요청 DTO
-     * @param sessionMemberDto   세션 멤버 DTO
-     * @param authentication     인증 객체
+     * @param retrieveRequestDto {@link AuthValidRetrieveRequestDto}
+     * @param sessionMemberDto   {@link SessionMemberDto}
+     * @param authentication     {@link Authentication}
      * @return 유효성 검증 여부
      */
     private boolean isValidate(AuthValidRetrieveRequestDto retrieveRequestDto,
@@ -205,7 +213,9 @@ public class AuthRestControllerV1 {
         if (sessionMemberDto == null || authentication == null) {
             return false;
         }
-        if (!StringUtils.equals(retrieveRequestDto.getSessionId(), sessionMemberDto.getToken())) {
+        // OAuth 벤더의 토큰 유효성 검증은 하지 않는다. 어짜피 벤더에서 물림.
+        if (sessionMemberDto.getProvider().equals(LoginProvider.WEB) &&
+                !StringUtils.equals(retrieveRequestDto.getSessionId(), sessionMemberDto.getToken())) {
             return false;
         }
         if (!authentication.isAuthenticated()) {

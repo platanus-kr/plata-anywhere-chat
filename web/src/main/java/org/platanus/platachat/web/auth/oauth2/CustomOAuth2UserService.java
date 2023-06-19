@@ -2,14 +2,13 @@ package org.platanus.platachat.web.auth.oauth2;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.platanus.platachat.web.auth.dto.CustomOAuth2MemberDto;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.constants.AuthConstant;
+import org.platanus.platachat.web.constants.MemberConstant;
 import org.platanus.platachat.web.member.model.AppRole;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.repository.MemberRepository;
-import org.springframework.boot.rsocket.context.LocalRSocketServerPort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -34,7 +33,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private final MemberRepository memberRepository;
     private final HttpSession session;
 
-
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         DefaultOAuth2UserService service = new DefaultOAuth2UserService();
@@ -46,12 +44,14 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         CustomOAuth2MemberDto attributes = CustomOAuth2MemberDto.ofGitHub(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
         if (isDeletedUser(attributes)) {
-            throw new OAuth2AuthenticationException("이미 탈퇴된 회원 입니다.");
+            throw new OAuth2AuthenticationException(MemberConstant.MEMBER_ALREADY_REVOKE_USER_MESSAGE);
         }
         Member m = upsert(attributes);
 
         session.setAttribute("oAuthToken", userRequest.getAccessToken().getTokenValue());
         session.setAttribute("member", new SessionMemberDto(m, userRequest.getAccessToken().getTokenValue()));
+        //System.out.println("CustomOAuth2UserService ::"  + session.getId());
+        //session.setAttribute("member", new SessionMemberDto(m, session.getId()));
 
         return new DefaultOAuth2User(Collections.singleton(
                 new SimpleGrantedAuthority(m.getAppRole().getKey())),
@@ -72,7 +72,16 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     private Member upsert(CustomOAuth2MemberDto m) {
-        Member buildMember = Member.builder().username(m.getUsername()).password(AuthConstant.DUMMY_PASSWORD).nickname(m.getName()).providerId(m.getProviderId()).provider(m.getProvider()).profileImage(m.getProfileImage()).email(m.getEmail()).htmlUrl(m.getBlog()).deleted(false)
+        Member buildMember = Member.builder()
+                .username(m.getUsername())
+                .password(AuthConstant.DUMMY_PASSWORD)
+                .nickname(m.getName())
+                .providerId(m.getProviderId())
+                .provider(m.getProvider())
+                .profileImage(m.getProfileImage())
+                .email(m.getEmail())
+                .htmlUrl(m.getBlog())
+                .deleted(false)
                 .appRole(AppRole.ROLE_USER)
                 .build();
 

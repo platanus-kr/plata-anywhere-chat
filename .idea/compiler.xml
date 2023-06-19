@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.24/13a394eed5c4f9efb2a6d956e2086f1d81e857d9/lombok-1.18.24.jar" />
+        </processorPath>
+        <module name="plata-chat.message.main" />
+        <module name="plata-chat.web.main" />
+        <module name="plata-chat.main" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="17">
+      <module name="org.platanus.platachat.platachat.message.main" target="17" />
+      <module name="org.platanus.platachat.platachat.web.main" target="17" />
+      <module name="platachat" target="17" />
+      <module name="platachat.main" target="17" />
+      <module name="platachat.message" target="17" />
+      <module name="platachat.message.test" target="17" />
+      <module name="platachat.test" target="17" />
+      <module name="platachat.web" target="17" />
+      <module name="platachat.web.main" target="17" />
+      <module name="platachat.web.test" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

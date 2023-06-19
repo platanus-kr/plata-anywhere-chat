@@ -2,14 +2,8 @@ package org.platanus.platachat.web.auth.session;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
-import org.platanus.platachat.web.auth.session.serialize.AuthenticationDeserializer;
-import org.platanus.platachat.web.auth.session.serialize.AuthenticationSerializer;
-import org.platanus.platachat.web.auth.session.serialize.SecurityContextImplDeserializer;
-import org.platanus.platachat.web.auth.session.serialize.SecurityContextImplSerializer;
-import org.platanus.platachat.web.auth.session.serialize.SessionMemberDtoDeserializer;
-import org.platanus.platachat.web.auth.session.serialize.SessionMemberDtoSerializer;
+import org.platanus.platachat.web.auth.session.serialize.*;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
@@ -45,7 +39,7 @@ public class RedisHttpSessionClusterConfig {
         //test1
         objectMapper.registerModule(module);
 //        objectMapper.registerModule(new JavaTimeModule());
-    
+
         /**
          *  이부분은 위의 직렬화기/역직렬화기와 양자택일임.
          *  다만 SecurityContextImpl 과 같이 @JsonTypeInfo 명시가 불가능한경우
@@ -84,7 +78,7 @@ public class RedisHttpSessionClusterConfig {
 
     //@Bean
     public RedisIndexedSessionRepository sessionRepository(RedisTemplate<Object, Object> customSecurityContextRedisTemplate) {
-        RedisIndexedSessionRepository sessionMemberRepository = new RedisIndexedSessionRepository( customSecurityContextRedisTemplate);
+        RedisIndexedSessionRepository sessionMemberRepository = new RedisIndexedSessionRepository(customSecurityContextRedisTemplate);
         return sessionMemberRepository;
     }
 //    @Bean

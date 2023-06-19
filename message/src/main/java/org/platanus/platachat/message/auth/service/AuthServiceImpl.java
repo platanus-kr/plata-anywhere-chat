@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.platanus.platachat.message.auth.dto.AuthValidRetrieveRequestDto;
 import org.platanus.platachat.message.auth.dto.AuthValidRetrieveResponseDto;
 import org.platanus.platachat.message.contants.AuthConstant;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +19,9 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
+    @Value("${plataanywherechat.web.application.location}")
+    private String webAppServer;
+
     /**
      * 세션의 유효성 검사를 WEB WAS에 요청한다.
      * 조회 결과에는 실제 닉네임을 포함한다.
@@ -30,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
     public Mono<AuthValidRetrieveResponseDto> getSessionHealth(final String sessionId,
                                                                final String roomId) {
         WebClient webClient = WebClient.builder()
-                .baseUrl(AuthConstant.WAS_WEB_BASE_URL)
+                .baseUrl("http://" + webAppServer)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
 

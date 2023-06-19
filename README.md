@@ -1,32 +1,57 @@
 # Plata Anywhere Chat
 
-회원 기능을 가지는 웹 채팅 프로그램
+<!--
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachekafka/apachekafka-original.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gradle/gradle-plain.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gitlab/gitlab-original.svg" width="32rem"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"  width="32rem"/>
+-->
+<!-- https://devicon.dev/ -->
 
-**프로젝트 목표**
+> Reactive WebSocket 기반의 웹 채팅 서비스 백엔드
 
-- Spring Security를 사용한 OAuth, REST API, formLogin 3가지 로그인의 구현
-- WebSocket과 HTTP의 차이와 이해
-- Redis를 사용한 세션 클러스터링 구축 및 어플리케이션 간 세션 공유
-- MessageBroker를 통해 pub-sub 패턴의 기본적인 이해
-- 백프래셔, Rate Limit 이해 및 적용
-- 간소화된 MSA 구조에서 에그리거트간 메시지 전달과 인증의 이해
+**🔥 프로젝트 목표 및 특징**
+
+- [x] WebSocket과 HTTP의 차이에 대한 경험
+- [x] Reactive WebSocket 백엔드 구현
+- [x] Spring Security를 사용한 OAuth, REST API, formLogin 3가지 로그인의 구현
+- [ ] MessageBroker를 통해 pub-sub 패턴의 기본적인 이해
+- [ ] 백프래셔, Rate Limit 이해 및 적용
+- [x] (실패) ~~Redis를 사용한 세션 클러스터링 구축 및 어플리케이션 간 세션 공유~~
+
+🤫 **그 외 엄청 중요하거나 목표한 바는 아니지만 이 프로젝트에서 사용되는 개념**
+
+- RDB 모델링 및 JPA의 fetch 전략 (lazy, eager)
+- Gradle 멀티모듈
+- Docker compose 사용, Docker 배포
+- nginx dynamic reverse proxy (L4)
+- Thymeleaf의 레이아웃 사용, JavaScript WebSocket 사용
 
 ---
 
 ## 프로젝트 소개
 
+### 주요 기능
+
+- 채팅방 기본 기능   
+  채팅방 입장, 같은 채팅방 내 메시지 송수신 분리
+- 채팅 서비스 자체 회원 가입 기능
+- 채팅, 메시지 송수신, 채팅 퇴장 처리
+
 ### 프로젝트 구조 개요
-**web**
-- 회원, 채팅 저장, 채팅 기록 조회 등 영속성과 관련된 기능 담당  
 
-**message**
-- 채팅방 구독, 메시지 발행, 메시지 소비 등 채팅과 관련된 주요 기능 담당
+🌐 `web` : 회원, 채팅 저장, 채팅 기록 조회 등 영속성과 관련된 기능 담당   
+💬 `message` : 채팅방 구독, 메시지 발행, 메시지 소비 등 채팅과 관련된 주요 기능 담당
 
-### 프로젝트 구조 상세
+**프로젝트 구조 상세 - web**
 
-#### web
-
-> Spring Web MVC (5.3.24)  
+> Spring Boot, Spring Web MVC (5.3.24)  
 > Spring Data JPA, Spring Data MongoDB  
 > MariaDB, MongoDB  
 > Spring Security - OAuth2 client + app login  
@@ -35,7 +60,7 @@
 
 <details>
 <summary>
-(web) 어플리케이션 인증
+<code>web</code> 🔐 어플리케이션 인증
 </summary>
 <pre>
 ├── auth : 어플리케이션 인증
@@ -69,9 +94,10 @@
 </pre>
 </details>
 
+
 <details>
 <summary>
-(web) 회원
+<code>web</code> 👤 회원
 </summary>
 <pre>
 └── member
@@ -84,7 +110,7 @@
     │   ├── AppRole.java
     │   ├── BaseTime.java
     │   ├── ChatRole.java
-    │   └── Member.java
+    │   └── Member.java : 회원 엔티티
     ├── repository
     │   ├── MemberRepository.java
     │   └── jpa
@@ -98,7 +124,74 @@
 
 <details>
 <summary>
-(message) 채팅
+<code>web</code> 🗣️ 채팅
+</summary>
+<pre>
+├── chat
+│   ├── dto
+│   │   └── ChatExceptionResponseDto.java
+│   ├── exception
+│   │   ├── CustomChatException.java
+│   │   ├── ExceptionChatRestControllerV1.java
+│   │   └── ExceptionChatWebController.java
+│   ├── rest
+│   │   └── ChatLogRestControllerV1.java : 채팅 로그 조회 REST API 컨트롤러
+│   └── web
+│       └── ChatWebController.java : 채팅, 채팅방, 채팅 로그 view 용도 컨트롤러
+├── message
+│   ├── model
+│   │   ├── MessagePayload.java : 채팅 메시지 엔티티
+│   │   └── MessageType.java
+│   ├── repository
+│   │   ├── MessageRepository.java
+│   │   └── mongodb
+│   │       └── MessageMongoRepository.java
+│   └── service
+│       ├── MessageService.java
+│       └── MessageServiceImpl.java
+└── room
+    ├── dto
+    │   ├── RoomCreateRequestDto.java
+    │   ├── RoomCreateResponseDto.java
+    │   ├── RoomMemberResponseDto.java
+    │   ├── RoomRetrieveResponseDto.java
+    │   ├── RoomStatusRequestDto.java
+    │   ├── RoomStatusResponseDto.java
+    │   └── RoomsRetrieveResponseDto.java
+    ├── model
+    │   ├── Room.java : 채팅방 엔티티
+    │   ├── RoomMember.java : 채팅방 사용자 엔티티 
+    │   ├── RoomMemberStatus.java
+    │   ├── RoomPublic.java
+    │   ├── RoomRole.java
+    │   └── RoomStatus.java
+    ├── repository
+    │   ├── RoomMemberRepository.java
+    │   ├── RoomRepository.java
+    │   ├── exception
+    │   │   ├── ExceptionRoomRestControllerV1.java
+    │   │   ├── RoomErrorDto.java
+    │   │   └── RoomException.java
+    │   └── jpa
+    │       ├── RoomJpaRepository.java
+    │       └── RoomMemberJpaRepository.java
+    ├── rest
+    │   └── RoomRestControllerV1.java : 채팅방 REST API 컨트롤러 
+    └── service
+        ├── RoomService.java
+        └── RoomServiceImpl.java
+</pre>
+</details>
+
+**프로젝트 구조 상세 - message**
+
+> Spring Boot, Spring WebFlux (5.3.24)   
+> Reactive WebSocket   
+> Spring Data MongoDB
+
+<details>
+<summary>
+<code>message</code> 🗣 채팅
 </summary>
 <pre>
 ├── auth : 채팅방 입장을 위한 회원 기본 인증 통신
@@ -125,27 +218,6 @@
 ├── contants
 │   ├── AuthConstant.java
 │   └── SimpleConfigConstant.java
-├── room : 구현 예정
-│   ├── RoomController.java
-│   ├── RoomService.java
-│   ├── dto
-│   │   ├── CreateRequestDto.java
-│   │   ├── CreateResponseDto.java
-│   │   ├── InviteRequestDto.java
-│   │   ├── InviteResponseDto.java
-│   │   ├── JoinRequestDto.java
-│   │   ├── JoinResponseDto.java
-│   │   ├── LeaveRequestDto.java
-│   │   ├── LeaveResponseDto.java
-│   │   ├── PermissionGrantRequestDto.java
-│   │   └── PermissionGrantResponseDto.java
-│   └── model
-│       ├── MemberStatus.java
-│       ├── Permission.java
-│       ├── Room.java
-│       ├── RoomMember.java
-│       ├── RoomRole.java
-│       └── RoomStatus.java
 ├── utils
 │   └── XSSFilter.java
 └── websocket
@@ -156,40 +228,28 @@
     │   ├── CustomWebFluxConfig.java
     │   └── CustomWebSocketConfig.java : WebSocketHandler 구현
     ├── roommessage
-    │   └── MessageWebSocketHandler.java : 채팅방을 구현한 메시지 처리
-    ├── simplemessage
-    │   └── SimpleMessageWebSocketHandler.java : 채팅방이 없는 간단한 메시지 처리
+    │   └── MessageWebSocketHandler.java : WebSocket 세션 생성과 메시지 처리
     └── subscription
-        └── SubscriptionManager.java : 채널 구독 관리
+        └── SubscriptionManager.java : 채팅방 구독 관리
 </pre>
 </details>
 
+**메시지 전송 flow**
 
+<details>
+<summary>
+<code>message: websocket</code> 🚪 채팅방 입장 ⇢ 웹소켓 세션 생명주기
+</summary>
+(작성중)
+</details>
 
+<details>
+<summary>
+<code>message: websocket</code> 🕊️ 채팅 메시지 전송 ⇢ 웹소켓 Flux 스트림 callback
+</summary>
+(작성중) 
+</details>
 
-
-#### message
-
-> Spring WebFlux (5.3.24)   
-> Kafka  
-> Spring Security - reactive  
-
-### v1 주요 기능
-
-- GitHub 회원 가입 기능
-- 어플리케이션 자체 회원 가입 기능
-- 채팅, 메시지 송수신, 채팅 퇴장
-
-### v2 주요 기능
-
-- 채팅방 기본 기능   
-채팅방 입장, 같은 채팅방 내 메시지 송수신 분리
-- 세션 유효성 검증
-
-
-### 주요 기능 flow
-
-(UML)
 
 ### 로컬 실행
 

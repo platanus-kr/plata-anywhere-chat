@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko"
+      th:replace="~{layout/chat/layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>PAC : 채팅</title>
+</head>
+<body>
+<section class="enter-room p-4 pt-6 flex flex-col item-center mx-auto">
+    <div class="chat-service p-4 h-[calc(100vh-1vh)]">
+        <input type="hidden" id="pacSessionId" th:value="${pacSessionId}"/>
+        <input type="hidden" id="pacUserId" th:value="${pacSessionMember.id}"/>
+        <input type="hidden" id="pacNickname" th:value="${pacSessionMember.nickname}"/>
+        <input type="hidden" id="pacMessageServer" th:value="${pacMessageServer}"/>
+        <input type="hidden" id="pacRoomId" th:value="${pacRoomId}"/>
+        <input type="hidden" id="isChatSessionValid" th:value="${isChatSessionValid}"/>
+        <input type="hidden" id="sessionValidErrorMessage" th:value="${sessionValidErrorMessage}"/>
+
+        <div class="stream-box h-[calc(100vh-10rem)] pb-1">
+            <div id="inner-box" class="inner-box overflow-y-auto h-[calc(100vh-10rem)]">
+            </div>
+        </div>
+
+        <div class="chat-input w-full flex sticky bottom-0 z-11 bg-white">
+            <input type="text" id="chat-id"
+                   class="chat-input-id block w-16 rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 "
+                   disabled/>
+            <input type="text" id="chat-text"
+                   class="chat-input-text block w-full ml-2 mr-2 rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6"/>
+            <button type="button"
+                    class="chat-input-send-button w-[90px] tracking-tight text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-[0.8rem] pl-3 py-2 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700"
+                    onclick="sendMessageWrap()">
+                전송
+                <svg viewBox="0 0 24 24" id="send-icon"
+                     xmlns="http://www.w3.org/2000/svg" class="icon multi-color w-5 h-5">
+                    <path id="secondary-fill"
+                          d="M18.5,13.66,5.44,19.85A1,1,0,0,1,4.1,18.54l2.72-6.13a1.06,1.06,0,0,0,0-.82L4.71,6.84l13,6.16A1.93,1.93,0,0,1,18.5,13.66Z"
+                          style="fill: rgb(170,120,255); stroke-width: 2;"></path>
+                    <path id="primary-stroke"
+                          d="M20.09,12.9l-1.59.76L5.44,19.85A1,1,0,0,1,4.1,18.54l2.72-6.13a1.06,1.06,0,0,0,0-.82L4.71,6.84,4.1,5.46A1,1,0,0,1,5.44,4.15l14.65,7A1,1,0,0,1,20.09,12.9ZM7,12h4"
+                          style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 1;"></path>
+                </svg>
+            </button>
+        </div>
+
+
+    </div>
+
+
+    <script>
+
+        let socket;
+        let socketOnErrorStatus = false;
+        const pacSessionId = document.getElementById('pacSessionId').value;
+        const pacUserId = document.getElementById('pacUserId').value;
+        const pacNickname = document.getElementById('pacNickname').value;
+        const pacMessageServer = document.getElementById('pacMessageServer').value;
+        const isChatSessionValid = document.getElementById('isChatSessionValid').value;
+        const sessionValidErrorMessage = document.getElementById('sessionValidErrorMessage').value;
+        const pacRoomId = document.getElementById('pacRoomId').value;
+        $(document).ready(function () {
+
+            if (isChatSessionValid === 'false') {
+                alert(sessionValidErrorMessage);
+                location.href = '/chat/lobby';
+            }
+
+            // iOS virtual keyboard height fix
+            if (getUserAgent() === "ios") {
+                document.getElementById("chat-text").addEventListener("focus", function () {
+                    document.querySelector(".stream-box").classList.add("h-[45vh]");
+                    document.querySelector(".stream-box").classList.remove("h-[calc(100vh-10rem)]");
+                    document.querySelector(".inner-box").classList.add("h-[45vh]");
+                    document.querySelector(".inner-box").classList.remove("h-[calc(100vh-10rem)]");
+                    document.querySelector(".chat-service").classList.add("h-[45vh]");
+                    document.querySelector(".chat-service").classList.remove("h-[calc(100vh-1vh)]");
+                    callVirtualKeyboardShow();
+                    clearTimeout(callVirtualKeyboardHide);
+                });
+
+                document.getElementById("chat-text").addEventListener("focusout", function () {
+                    document.querySelector(".stream-box").classList.add("h-[calc(100vh-10rem)]");
+                    document.querySelector(".stream-box").classList.remove("h-[45vh]");
+                    document.querySelector(".inner-box").classList.add("h-[calc(100vh-10rem)]");
+                    document.querySelector(".inner-box").classList.remove("h-[45vh]");
+                    document.querySelector(".chat-service").classList.add("h-[calc(100vh-1vh)]");
+                    document.querySelector(".chat-service").classList.remove("h-[45vh]");
+                    clearTimeout(callVirtualKeyboardShow);
+                    callVirtualKeyboardHide();
+                });
+            }
+
+            // document.querySelector(".chat-input-nickname-init").value = nickname;
+
+            socket = new WebSocket('ws://' + pacMessageServer + '/message');
+            socket.onopen = function (event) {
+                // 연결이 열리면 실행되는 코드
+                console.log('WebSocket 연결이 열렸습니다.');
+                sendSubscribe();
+            };
+
+            socket.onerror = function (error) {
+                console.error('WebSocket 연결 에러:', error);
+                // 에러 처리 로직을 추가하세요
+                socketOnErrorStatus = true;
+            };
+
+            socket.onclose = function (event) {
+                if (event.wasClean) {
+                    console.log('WebSocket 연결이 정상적으로 닫혔습니다.');
+                    alert("서버와의 연결이 끊어졌습니다.");
+                    location.href = '/chat/lobby';
+                } else {
+                    console.error('WebSocket 연결이 비정상적으로 닫혔습니다.');
+                    if (socketOnErrorStatus === false) {
+                        alert("서버와의 연결이 끊어졌습니다.");
+                        location.href = '/chat/lobby';
+                    }
+
+                }
+            };
+
+            // $(".chat-input-id").val(nickname);
+            document.querySelector(".chat-input-id").value = pacNickname;
+
+
+            socket.addEventListener('message', function (data) {
+                let response = JSON.parse(data.data);
+                console.log('Message from server: ', response);
+                $('.stream-box .inner-box').append(messageGenerator(response));
+                moveFocusAsInnerBox();
+            });
+
+            $('#chat-text').on('keypress', function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    sendMessageWrap();
+                }
+            });
+        })
+
+        function sendSubscribe() {
+            if (socketOnErrorStatus === true) {
+                alert("서버에 접속 할 수 없습니다.");
+                return;
+            }
+
+            console.log("입장");
+            let identifier = {
+                channel: pacRoomId,
+                memberId: pacUserId,
+                nickname: pacNickname,
+                token: pacSessionId
+            }
+            let message = {
+                command: "SUBSCRIBE",
+                identifier: identifier
+            }
+            console.log(message);
+            socket.send(JSON.stringify(message));
+        }
+
+        function messageGenerator(response) {
+            return '<div class="chat-line flex justify-between items-start mb-2">\n' +
+                '            <div class="part-left flex items-stretch text-left">\n' +
+                '                <div class="member-profile flex mr-2 self-start">\n' + // 16.666
+                '                    <div class="member-profile-image">\n' +
+                '                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"\n' +
+                '                             alt="profile image" class="w-4 h-4 rounded-full">\n' +
+                '                    </div>\n' +
+                '                    <div class="member-nickname ml-1">\n' +
+                '                        <span class="text-sm">' +
+                response.identifier.nickname + '</span>\n' +
+                '                    </div>\n' +
+                '                </div>\n' +
+                '                <div class="chat-message-text w-72 sm:w-[29rem] break-words">\n' +
+                '                    <span class="text-sm">' +
+                response.message + '</span>\n' +
+                '                </div>\n' +
+                '            </div>\n' +
+                '\n' +
+                '            <div class="part-right flex text-right items-stretch w-23">\n' +
+                '                <div class="chat-message-timestamp self-center">\n' +
+                '                    <span class="text-sm text-slate-400">' +
+                response.timestamp + '</span>\n' +
+                '                </div>\n' +
+                '                       <div class="chat-action-menu self-center ml-1">\n' +
+                '                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-4 h-4">\n' +
+                '                                <path class="fill-slate-600"\n' +
+                '                                        d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/></svg>\n' +
+                '                            </svg>\n' +
+                '                        </div>\n' +
+                '        </div>\n' +
+                '    </div>'
+        }
+
+
+        function sendMessageWrap() {
+            const chatText = document.querySelector("#chat-text").value;
+            let identifier = {
+                channel: pacRoomId,
+                memberId: pacUserId,
+                nickname: pacNickname,
+                token: pacSessionId
+            }
+            let message = {
+                command: "MESSAGE",
+                message: chatText,
+                identifier: identifier
+            }
+            socket.send(JSON.stringify(message));
+            document.querySelector("#chat-text").value = "";
+        }
+
+        function roomExit() {
+            $.ajax({
+                url: '/api/v1/room/' + pacRoomId + '/exit',
+                type: 'POST',
+                date: {}
+            }).done(function (data) {
+                alert('채팅방에서 퇴장하였습니다.')
+                socket.close();
+                location.href = '/room/lobby'
+            }).fail(function (error) {
+                // sessionValidErrorMessage = error.
+                // isChatSessionValid
+                // TODO: Exception Handler
+            });
+        }
+
+        let callVirtualKeyboardShow = function () {
+            setTimeout(function () {
+                $('html body').scrollTop(0);
+                moveFocusAsInnerBox()
+            }, 0);
+        }
+
+        let callVirtualKeyboardHide = function () {
+            setTimeout(function () {
+                moveFocusAsInnerBox()
+            }, 0);
+        }
+
+        function moveFocusAsInnerBox() {
+            var chatScreen = document.getElementById("inner-box");
+            $('#inner-box').animate({scrollTop: chatScreen.scrollHeight - chatScreen.clientHeight}, 100);
+        }
+
+        function getUserAgent() {
+            var varUA = navigator.userAgent.toLowerCase(); //userAgent 값 얻기
+            if (varUA.indexOf('android') > -1) {
+                return "android";
+            } else if (varUA.indexOf("iphone") > -1 || varUA.indexOf("ipad") > -1 || varUA.indexOf("ipod") > -1) {
+                return "ios";
+            } else {
+                return "other";
+            }
+        }
+
+    </script>
+</section>
+</body>
+</html>
