@@ -5,12 +5,13 @@ import org.platanus.platachat.web.member.model.BaseTime;
 import org.platanus.platachat.web.member.model.Member;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Builder
-@ToString(exclude = {"participates"}, callSuper = true)
+//@ToString(exclude = {"participates"}, callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ROOMS", indexes = {
@@ -51,6 +52,13 @@ public class Room extends BaseTime {
 
     public void setRoomStatus(RoomStatus roomStatus) {
         this.roomStatus = roomStatus;
+    }
+
+    public void addRoomMember(RoomMember rm) {
+        if (this.participates == null) {
+            this.participates = new ArrayList<>();
+        }
+        participates.add(rm);
     }
 }
 

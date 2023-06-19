@@ -49,4 +49,8 @@ public class RoomMember {
     public void setJoinDateTime(LocalDateTime joinDateTime) {
         this.joinDateTime = joinDateTime;
     }
+
+    public void setRoomMemberStatus(RoomMemberStatus rms) {
+        status = rms;
+    }
 }

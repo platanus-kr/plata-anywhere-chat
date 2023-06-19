@@ -55,17 +55,25 @@ Content-Type: application/json
 ############## chat room
 
 ### chat public room list
-GET {{pac-web}}/api/v1/room/list?page=2
+GET {{pac-web}}/api/v1/room/list?page=1
 Content-Type: application/json
-
-{
-  "sessionId" : "{{access_token}}"
-}
 
 > {%
     client.global.set("public_room", response.body.content[0].roomId);
     client.log(response.body.content[0].roomId);
 %}
+
+### room create
+POST {{pac-web}}/api/v1/room
+Content-Type: application/json
+
+{
+  "roomName": "만들어보기",
+  "description": "잘될까",
+  "imageUrl": "#",
+  "capacity": 10,
+  "roomPublic": "AVAILABLE"
+}
 
 ### chat public room list
 GET {{pac-web}}/api/v1/room/list

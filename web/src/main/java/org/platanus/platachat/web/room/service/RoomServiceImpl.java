@@ -51,6 +51,7 @@ public class RoomServiceImpl implements RoomService {
                 .room(toRoom)
                 .build();
         addRoomMember(rm);
+        toRoom.addRoomMember(rm);
 
         return toRoom;
     }
@@ -211,7 +212,8 @@ public class RoomServiceImpl implements RoomService {
             throw new IllegalArgumentException(RoomConstant.ROOM_NOT_EXIT_OWNER_MESSAGE);
         }
         try {
-            roomMemberRepository.delete(roomMember);
+            roomMember.setRoomMemberStatus(RoomMemberStatus.EXITED);
+//            roomMemberRepository.delete(roomMember);
         } catch (Exception e) {
             throw new IllegalArgumentException(RoomConstant.ROOM_EXIT_FAILED_MESSAGE);
         }

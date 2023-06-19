@@ -9,6 +9,7 @@ import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.service.MemberService;
 import org.platanus.platachat.web.room.dto.*;
 import org.platanus.platachat.web.room.model.Room;
+import org.platanus.platachat.web.room.model.RoomMember;
 import org.platanus.platachat.web.room.repository.exception.RoomException;
 import org.platanus.platachat.web.room.service.RoomService;
 import org.springframework.data.domain.Page;
@@ -58,10 +59,12 @@ public class RoomRestControllerV1 {
 
         // 채팅방 생성
         Room r = roomService.createRoom(requestDto, m);
+//        Room findByR = roomService.getRoomById(r.getId(), sessionMemberDto);
+        List<RoomMember> participates = r.getParticipates();
 
         return RoomCreateResponseDto.builder()
                 .roomId(r.getId())
-                .participates(List.of(RoomMemberResponseDto.from(m, r.getParticipates().stream().findAny().orElseThrow())))
+                .participates(List.of(RoomMemberResponseDto.from(m, participates.stream().findAny().orElseThrow())))
                 .build();
     }
 
