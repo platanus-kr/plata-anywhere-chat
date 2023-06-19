@@ -25,5 +25,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             Member m = (Member) principal;
             session.setAttribute("member", new SessionMemberDto(m, session.getId()));
         }
+        response.sendRedirect("/");
     }
 }

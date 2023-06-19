@@ -75,13 +75,13 @@ public class SecurityFilterChainConfig {
                 .and()
                 .headers().frameOptions().sameOrigin();
         http.oauth2Login()
+//                .defaultSuccessUrl("/", true)
                 .successHandler(customAuthenticationSuccessHandler)
-                .defaultSuccessUrl("/", true)
                 .and()
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("SESSION");
         http.formLogin()
+//                .defaultSuccessUrl("/", true)
                 .successHandler(customAuthenticationSuccessHandler)
-                .defaultSuccessUrl("/", true)
                 .and()
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("SESSION")
         ;
