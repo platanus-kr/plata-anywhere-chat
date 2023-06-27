@@ -2,7 +2,7 @@ version: "3"
 
 services:
   pac-zookeeper:
-    image: confluentinc/cp-zookeeper:7.3.1
+    image: confluentinc/cp-zookeeper:7.3.3
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -13,7 +13,9 @@ services:
       - "22181:2181"
 
   pac-kafka:
-    image: confluentinc/cp-kafka:7.3.1
+    image: confluentinc/cp-kafka:7.3.3
+    hostname: pac-kafka
+    container_name: pac-kafka
     depends_on:
       - pac-zookeeper
     ports:
@@ -26,6 +28,16 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+
+  pac-kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "38080:8080"
+    environment:
+      DYNAMIC_CONFIG_ENABLED: true
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: pac-kafka:29092
 
   pac-mongo:
     image: mongo:6.0
@@ -51,3 +63,8 @@ services:
     env_file: ./db/env
     volumes:
       - ./db/conf.d:/etc/mysql/conf.d
+
+volumes:
+  kafka1-data:
+  kafka2-data:
+  kafka3-data:
