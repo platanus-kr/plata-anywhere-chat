@@ -30,14 +30,15 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
 
   pac-kafka-ui:
-    container_name: kafka-ui
+    container_name: pac-kafka-ui
     image: provectuslabs/kafka-ui:latest
     ports:
       - "38080:8080"
     environment:
       DYNAMIC_CONFIG_ENABLED: true
       KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: pac-kafka:29092
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: pac-kafka:9092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: pac-zookeeper:2181
 
   pac-mongo:
     image: mongo:6.0
