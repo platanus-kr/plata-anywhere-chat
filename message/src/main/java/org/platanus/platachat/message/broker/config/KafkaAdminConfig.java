@@ -3,8 +3,8 @@ package org.platanus.platachat.message.broker.config;
 
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.platanus.platachat.message.broker.ListenerService;
-import org.platanus.platachat.message.broker.kafka.KafkaListenerAdaptor;
+import org.platanus.platachat.message.broker.ConsumerComponent;
+import org.platanus.platachat.message.broker.kafka.KafkaConsumerAdaptor;
 import org.platanus.platachat.message.contants.KafkaSimpleConfigConstant;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,8 +21,8 @@ public class KafkaAdminConfig {
     private String bootstrapAddress;
 
     @Bean
-    public ListenerService listenerService() {
-        return new KafkaListenerAdaptor();
+    public ConsumerComponent listenerService() {
+        return new KafkaConsumerAdaptor();
     }
 
     @Bean
