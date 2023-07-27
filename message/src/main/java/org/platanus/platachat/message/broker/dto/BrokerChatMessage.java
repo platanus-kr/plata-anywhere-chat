@@ -9,14 +9,14 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @AllArgsConstructor
-public class BrokerMessageDto {
+public class BrokerChatMessage {
     private String message;
     private String userId;
     private String nickname;
     private LocalDateTime created;
 
-    public static BrokerMessageDto from(BrokerSendRequestDto request) {
-        return BrokerMessageDto.builder()
+    public static BrokerChatMessage from(BrokerChatSendRequest request) {
+        return BrokerChatMessage.builder()
                 .message(request.getMessage())
                 .created(request.getCreated())
                 .nickname(request.getNickname())

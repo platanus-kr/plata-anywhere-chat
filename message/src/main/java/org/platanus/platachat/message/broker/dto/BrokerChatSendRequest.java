@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class BrokerSendRequestDto {
+public class BrokerChatSendRequest {
     private String channel;
     private String message;
     private String userId;

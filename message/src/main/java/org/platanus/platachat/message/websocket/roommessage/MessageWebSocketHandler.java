@@ -44,6 +44,7 @@ public class MessageWebSocketHandler implements WebSocketHandler {
 
     /**
      * <h3>메시지 처리를 위한 핸들러</h3>
+     *
      * HandlerMapping 으로 부터 전달된 세션을 처리한다. <br />
      * 크게 메시지 처리 부분과 연결 해제시 구독 해제 부분으로 나뉜다.
      *
@@ -63,7 +64,7 @@ public class MessageWebSocketHandler implements WebSocketHandler {
 
     /**
      * <h3>메시지 처리</h3>
-     * <p>
+     *
      * Stub 내 command로 분기하여 메시지를 처리한다. <br />
      * subscribe 는 {@link SubscriptionManager} 에 구독을 추가하고, <br />
      * message 는 {@link MessageBroadcaster} 로 메시지를 전달한다.
