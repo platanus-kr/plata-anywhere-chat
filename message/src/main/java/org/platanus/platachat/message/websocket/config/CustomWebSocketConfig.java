@@ -2,7 +2,7 @@ package org.platanus.platachat.message.websocket.config;
 
 
 import lombok.RequiredArgsConstructor;
-import org.platanus.platachat.message.websocket.roommessage.MessageWebSocketHandler;
+import org.platanus.platachat.message.websocket.MessageWebSocketHandler;
 import org.platanus.platachat.message.websocket.simplemessage.SimpleMessageWebSocketHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ public class CustomWebSocketConfig {
 
     private final SimpleMessageWebSocketHandler simpleMessageWebSocketHandler;
 
-    private final MessageWebSocketHandler messageWebSocketHandler;
+    private final MessageWebSocketHandler standaloneMessageWebSocketHandler;
 
     @Bean
     public HandlerMapping handlerMapping() {
@@ -33,7 +33,7 @@ public class CustomWebSocketConfig {
         SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
         mapping.setUrlMap(
                 Map.of("/simplemessage/**", simpleMessageWebSocketHandler,
-                        "/message/**", messageWebSocketHandler));
+                        "/message/**", standaloneMessageWebSocketHandler));
         mapping.setOrder(10);
 //        mapping.setCorsConfigurations(corsConfigurationMap);
         return mapping;

@@ -9,12 +9,14 @@ import org.platanus.platachat.message.auth.service.AuthService;
 import org.platanus.platachat.message.message.model.MessagePayload;
 import org.platanus.platachat.message.message.repository.MessageRepository;
 import org.platanus.platachat.message.utils.XSSFilter;
+import org.platanus.platachat.message.websocket.MessageWebSocketHandler;
 import org.platanus.platachat.message.websocket.broadcaster.MessageBroadcaster;
 import org.platanus.platachat.message.websocket.dto.CommandType;
 import org.platanus.platachat.message.websocket.dto.IdentifierDto;
 import org.platanus.platachat.message.websocket.dto.WebSocketRequestDto;
 import org.platanus.platachat.message.websocket.dto.WebSocketSubscribeDto;
 import org.platanus.platachat.message.websocket.subscription.SubscriptionManager;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
@@ -32,8 +34,9 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Slf4j
 @Component
+@Profile({"standalone", "test"})
 @RequiredArgsConstructor
-public class MessageWebSocketHandler implements WebSocketHandler {
+public class StandaloneMessageWebSocketHandler implements MessageWebSocketHandler {
 
     private final SubscriptionManager subscriptionManager;
     private final MessageBroadcaster messageBroadcaster;
