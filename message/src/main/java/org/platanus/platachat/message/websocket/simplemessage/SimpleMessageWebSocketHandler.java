@@ -11,6 +11,7 @@ import org.platanus.platachat.message.websocket.dto.CommandType;
 import org.platanus.platachat.message.websocket.dto.IdentifierDto;
 import org.platanus.platachat.message.websocket.dto.WebSocketRequestDto;
 import org.platanus.platachat.message.websocket.dto.WebSocketSubscribeDto;
+import org.platanus.platachat.message.websocket.subscription.StandaloneSubscriptionManager;
 import org.platanus.platachat.message.websocket.subscription.SubscriptionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
@@ -50,7 +51,7 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
     /**
      * <h3>메시지 처리</h3>
      * Stub 내 command로 분기하여 메시지를 처리한다. <br />
-     * subscribe 는 {@link SubscriptionManager} 에 구독을 추가하고, <br />
+     * subscribe 는 {@link StandaloneSubscriptionManager} 에 구독을 추가하고, <br />
      * message 는 {@link MessageBroadcaster} 로 메시지를 전달한다.
      *
      * @param payload    메시지 Payload

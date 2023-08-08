@@ -21,7 +21,7 @@ public class CustomWebSocketConfig {
 
     private final SimpleMessageWebSocketHandler simpleMessageWebSocketHandler;
 
-    private final MessageWebSocketHandler standaloneMessageWebSocketHandler;
+    private final MessageWebSocketHandler messageWebSocketHandler;
 
     @Bean
     public HandlerMapping handlerMapping() {
@@ -33,7 +33,7 @@ public class CustomWebSocketConfig {
         SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
         mapping.setUrlMap(
                 Map.of("/simplemessage/**", simpleMessageWebSocketHandler,
-                        "/message/**", standaloneMessageWebSocketHandler));
+                        "/message/**", messageWebSocketHandler));
         mapping.setOrder(10);
 //        mapping.setCorsConfigurations(corsConfigurationMap);
         return mapping;
