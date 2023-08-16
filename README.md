@@ -1,37 +1,27 @@
 # Plata Anywhere Chat
 
-<!--
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" width="32rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" width="32rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" width="32rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" width="32rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachekafka/apachekafka-original.svg" width="32rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gradle/gradle-plain.svg" width="32rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg" width="32rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg" width="32rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gitlab/gitlab-original.svg" width="32rem"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"  width="32rem"/>
--->
-<!-- https://devicon.dev/ -->
+[![Project use](https://skillicons.dev/icons?i=spring,java,gradle,mongodb,mysql,kafka,nginx,redis,gitlab,docker&theme=dark)](#)
 
-> Reactive WebSocket 기반의 웹 채팅 서비스 백엔드
 
-**🔥 프로젝트 목표 및 특징**
+> WebFlux를 사용해 Pub-sub 패턴 사이클을 구현한 채팅 백엔드 어플리케이션
+
+## 프로젝트 목표 및 특징
 
 - [x] WebSocket과 HTTP의 차이에 대한 경험
-- [x] Reactive WebSocket 백엔드 구현
+- [x] Reactive WebSocket 를 사용한 웹소켓 백엔드 서비스 구현
 - [x] Spring Security를 사용한 OAuth, REST API, formLogin 3가지 로그인의 구현
-- [ ] MessageBroker를 통해 pub-sub 패턴의 기본적인 이해
-- [ ] 백프래셔, Rate Limit 이해 및 적용
+- [ ] Message Broker를 이용한 어플리케이션 스케일아웃 ⇢ 진행중
+- [ ] Backpressure, Rate Limit/Backoff 적용
+- [ ] Docker Container 이미지 배포
 - [x] (실패) ~~Redis를 사용한 세션 클러스터링 구축 및 어플리케이션 간 세션 공유~~
 
 🤫 **그 외 엄청 중요하거나 목표한 바는 아니지만 이 프로젝트에서 사용되는 개념**
 
-- RDB 모델링 및 JPA의 fetch 전략 (lazy, eager)
+- RDB 모델링 및 JPA의 fetch 전략
 - Gradle 멀티모듈
-- Docker compose 사용, Docker 배포
-- nginx dynamic reverse proxy (L4)
 - Thymeleaf의 레이아웃 사용, JavaScript WebSocket 사용
+- nginx dynamic reverse proxy (L4)
+-  ✨ **완전한 1인 프로젝트** 
 
 ---
 
@@ -39,28 +29,36 @@
 
 ### 주요 기능
 
-- 채팅방 기본 기능   
+- 채팅방 기능 구현   
   채팅방 입장, 같은 채팅방 내 메시지 송수신 분리
 - 채팅 서비스 자체 회원 가입 기능
 - 채팅, 메시지 송수신, 채팅 퇴장 처리
+- 송수신 메시지 저장 후 조회 기능
 
-### 프로젝트 구조 개요
+### 프로젝트 패키지 안내
 
 🌐 `web` : 회원, 채팅 저장, 채팅 기록 조회 등 영속성과 관련된 기능 담당   
+
+> Spring Boot, Spring Web MVC (5.3.24)   
+> Spring Data JPA, Spring Data MongoDB   
+> MariaDB, MongoDB   
+> Spring Security - OAuth2 client + app login   
+> Spring Session Data Redis   
+> Thymeleaf + Javascript + WebSocket   
+
+
 💬 `message` : 채팅방 구독, 메시지 발행, 메시지 소비 등 채팅과 관련된 주요 기능 담당
 
-**프로젝트 구조 상세 - web**
+> Spring Boot, Spring WebFlux (5.3.24)    
+> Reactive WebSocket   
+> Spring Data MongoDB   
 
-> Spring Boot, Spring Web MVC (5.3.24)  
-> Spring Data JPA, Spring Data MongoDB  
-> MariaDB, MongoDB  
-> Spring Security - OAuth2 client + app login  
-> Spring Session Data Redis  
-> Thymeleaf + Javascript + WebSocket
+
+**프로젝트 패키지 : web**
 
 <details>
 <summary>
-<code>web</code> 🔐 어플리케이션 인증
+<code>web</code> 🔐 인증
 </summary>
 <pre>
 ├── auth : 어플리케이션 인증
@@ -183,15 +181,11 @@
 </pre>
 </details>
 
-**프로젝트 구조 상세 - message**
-
-> Spring Boot, Spring WebFlux (5.3.24)   
-> Reactive WebSocket   
-> Spring Data MongoDB
+**프로젝트 패키지 : message**
 
 <details>
 <summary>
-<code>message</code> 🗣 채팅
+<code>message</code> 🗣️ 채팅
 </summary>
 <pre>
 ├── auth : 채팅방 입장을 위한 회원 기본 인증 통신
@@ -234,31 +228,142 @@
 </pre>
 </details>
 
-**메시지 전송 flow**
 
-<details>
-<summary>
-<code>message: websocket</code> 🚪 채팅방 입장 ⇢ 웹소켓 세션 생명주기
-</summary>
-(작성중)
-</details>
+## 채팅 파이프라인 및 생명주기 소개
 
-<details>
-<summary>
-<code>message: websocket</code> 🕊️ 채팅 메시지 전송 ⇢ 웹소켓 Flux 스트림 callback
-</summary>
-(작성중) 
-</details>
+### 채팅방 입장 프로세스
+
+🚪 채팅방 입장 ⇢ `웹소켓 세션 관리`
+
+```
+   +------+
+   | User |
+   +------+
+      |
+      | (웹소켓 세션 생성)
+      v
++----------------+
+|WebSocketSession|
++----------------+
+      |
+      | (구독 요청: CommandType.SUBSCRIBE)
+      v
++----------------------+                   +-----------------------------------------+
+|SubscriptionManager   |                   | Map<String,      Set<WebSocketSession>> |
+|----------------------| <-------------->  |     채팅방 식별자, 웹소켓 세션              |
+|addSubscription()     |                   +-----------------------------------------+
++----------------------+
+      |
+      | (세션 정보 저장)
+      v
++------------+       +------------+       +-----------+
+|WebSocket   |------>|MessageFlux |------>|FluxSink   |
+|Session     |       |addSink()   |       |create()   |
++------------+       +------------+       +-----------+
+```
+
+
+### 채팅 메시지 전송 프로세스
+
+🕊️ 채팅 메시지 전송 ⇢ `웹소켓 Flux 콜백`
+
+```
+   +------+
+   | User |
+   +------+
+      |
+      | (메시지 발송)
+      v
++----------------+
+|WebSocketSession|
++----------------+
+      |
+      | (메시지 발송 요청: CommandType.MESSAGE)
+      v
++--------------------------------+                                         +-------------------------+
+|MessageBroadcaster              | ------------------------------------->  |SubscriptionManager      |
+|--------------------------------|   (채팅방 식별자로 같은 채팅방의 세션획득)   |-------------------------|
+|broadcastMessageToSubscribers() | <-------------------------------------  |getSubscriptions(channel)|
++--------------------------------+                                         +-------------------------+
+      |
+      | (채팅방 내 세션에 대한 각 메시지 전송)
+      v
++------------+       +-----------+                 +-----------+
+|WebSocket   |------>|MessageFlux|---------------->|FluxSink   |
+|Session     |       |getSink()  |   (Flux 콜백)    |next()     |
++------------+       +-----------+                 +-----------+
+```
+
+### 세션 생명주기
+
+🐤 채팅방 세션 ⇢ `웹소켓 세션 생명주기`
+
+```
+                        +------+
+                        | User |
+                        +------+
+                           |
+                           v
+                   +----------------+
+                   |WebSocketSession|
+                   +----------------+
+                           |
+                           v
+                 +---------------------+
+                 |SubscriptionManager  |  (웹소켓 세션 생성 & 채팅방 입장)
+                 |addSubscription()    |
+                 +---------------------+
+                           |
+   +-----------------------|------------------------------+
+   |                       |                              |
+   |    (채팅 메시지 전송)   v                              |
+   |                +--------------+           +---------------------+
+   |                |MessageFlux   |           |SubscriptionManager  |
+   |                |broadcast()   |           |removeSession()      |
+   |                +--------------+           +---------------------+
+   |                       |                              |
+   |                       v                              |
+   |          +--------------------------------+          |
+   |          |MessageBroadcaster              |          |
+   |          |broadcastMessageToSubscribers() |          |
+   |          +--------------------------------+          |
+   |                                                      |
+   +------------------------------------------------------+
+                           |
+                           | (채팅방 퇴장 or 세션 종료)
+                           v
+                        +-------+
+                        |  End  |
+                        +-------+
+```
+
 
 
 ### 로컬 실행
 
-<details>
-<summary>
-로컬 실행 방법
-</summary>
+🖥 로컬 실행방법
+
+```bash
+git clone https://github.com/platanus-kr/plata-anywhere-chat.git pac
+cd pac
+
+cd misc
+docker-compose -f docker-compose.yml up -d
+docker container ps
+cd ..
+
+./gradlew web:bootJar
+./gradlew message:bootJar
+
+java -jar web/build/libs/web-0.0.1-SNAPSHOT.jar &
+java -jar message/build/libs/message-0.0.1-SNAPSHOT.jar &
 ```
-작성중
+- 어플리케이션 환경 사양 : Java 17, Docker를 사용합니다.
+- OAuth 로그인을 하기 위해 `web/src/main/resources/application.properties` 에 OAuth 정보 입력이 필요합니다   
 ```
-> done
-</details>
+### Spring Security OAuth
+spring.security.oauth2.client.registration.github.client-id=
+spring.security.oauth2.client.registration.github.client-secret=
+```
+- 이후 웹브라우저에서 `localhost:3120` 으로 접속합니다.
+
