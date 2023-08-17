@@ -1,16 +1,17 @@
 # Plata Anywhere Chat
 
-[![Project use](https://skillicons.dev/icons?i=spring,java,gradle,mongodb,mysql,kafka,nginx,redis,gitlab,docker&theme=dark)](#)
+[![Project use](https://skillicons.dev/icons?i=spring,java,gradle,mongodb,mysql,kafka,redis,docker&theme=dark)](#)
 
 
-> WebFlux를 사용해 Pub-sub 패턴 사이클을 구현한 채팅 백엔드 어플리케이션
+> Scalable and Reactive WebSocket Backend application   
+> 확장 가능하고 리액티브한 웹소켓 백엔드 애플리케이션
 
 ## 프로젝트 목표 및 특징
 
 - [x] WebSocket과 HTTP의 차이에 대한 경험
 - [x] Reactive WebSocket 를 사용한 웹소켓 백엔드 서비스 구현
 - [x] Spring Security를 사용한 OAuth, REST API, formLogin 3가지 로그인의 구현
-- [ ] Message Broker를 이용한 어플리케이션 스케일아웃 ⇢ 진행중
+- [x] Message Broker를 이용한 스케일러블 어플리케이션 구현
 - [ ] Backpressure, Rate Limit/Backoff 적용
 - [ ] Docker Container 이미지 배포
 - [x] (실패) ~~Redis를 사용한 세션 클러스터링 구축 및 어플리케이션 간 세션 공유~~
@@ -23,11 +24,10 @@
 - nginx dynamic reverse proxy (L4)
 -  ✨ **완전한 1인 프로젝트** 
 
----
 
 ## 프로젝트 소개
 
-### 주요 기능
+### 서비스 주요 기능
 
 - 채팅방 기능 구현   
   채팅방 입장, 같은 채팅방 내 메시지 송수신 분리
@@ -341,14 +341,14 @@
 
 ### 로컬 실행
 
-🖥 로컬 실행방법
+🧍‍♂️ **단독 로컬 실행 (메시지 브로커 비활성)**
 
 ```bash
 git clone https://github.com/platanus-kr/plata-anywhere-chat.git pac
 cd pac
 
 cd misc
-docker-compose -f docker-compose.yml up -d
+docker-compose -f docker-compose-standalone.yml up -d
 docker container ps
 cd ..
 
@@ -356,10 +356,31 @@ cd ..
 ./gradlew message:bootJar
 
 java -jar web/build/libs/web-0.0.1-SNAPSHOT.jar &
-java -jar message/build/libs/message-0.0.1-SNAPSHOT.jar &
+java -jar -Dspring.profiles.active=standalone message/build/libs/message-0.0.1-SNAPSHOT.jar &
 ```
+
+👫 **Kafka 를 사용하는 로컬 실행 (메시지 브로커 활성)**
+
+```bash
+git clone https://github.com/platanus-kr/plata-anywhere-chat.git pac
+cd pac
+
+cd misc
+docker-compose -f docker-compose-kafka.yml up -d
+docker container ps
+cd ..
+
+./gradlew web:bootJar
+./gradlew message:bootJar
+
+java -jar web/build/libs/web-0.0.1-SNAPSHOT.jar &
+java -jar -Dspring.profiles.active=kafka message/build/libs/message-0.0.1-SNAPSHOT.jar &
+```
+
+🧪 **실행 환경**
+
 - 어플리케이션 환경 사양 : Java 17, Docker를 사용합니다.
-- OAuth 로그인을 하기 위해 `web/src/main/resources/application.properties` 에 OAuth 정보 입력이 필요합니다   
+- OAuth 로그인을 하기 위해서는 `web/src/main/resources/application.properties` 에 OAuth 정보 입력이 필요합니다   
 ```
 ### Spring Security OAuth
 spring.security.oauth2.client.registration.github.client-id=
@@ -367,3 +388,6 @@ spring.security.oauth2.client.registration.github.client-secret=
 ```
 - 이후 웹브라우저에서 `localhost:3120` 으로 접속합니다.
 
+🪄 **스케일아웃 하기**
+
+- [문서 참조](misc/docs/HOW_TO_SCALABLE.md)
