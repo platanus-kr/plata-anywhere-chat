@@ -154,6 +154,7 @@ public class ChatWebController {
         model.addAttribute("pacSessionMember", sessionMemberDto);
         model.addAttribute("pacMessageServer", messageAppServer);
         model.addAttribute("pacRoomId", roomById.getId());
+        model.addAttribute("pacRoomName", roomById.getName());
         model.addAttribute("isChatSessionValid", true);
         model.addAttribute("sessionValidErrorMessage", "none");
         return "chat/room";

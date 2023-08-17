@@ -1,12 +1,16 @@
 # Plata Anywhere Chat
 
-[![Project use](https://skillicons.dev/icons?i=spring,java,gradle,mongodb,mysql,kafka,redis,docker&theme=dark)](#)
+[![Project use](https://skillicons.dev/icons?i=java,gradle,spring,mysql,mongodb,redis,kafka,docker&theme=dark)](#)
 
 
-> Scalable and Reactive WebSocket Backend application   
-> 확장 가능하고 리액티브한 웹소켓 백엔드 애플리케이션
+[//]: # (> Scalable and Reactive WebSocket Backend application   )
 
-## 프로젝트 목표 및 특징
+[//]: # (> 확장 가능하고 리액티브한 웹소켓 백엔드 애플리케이션)
+
+> Reactive WebSocket Backend application   
+> 리액티브 웹소켓 백엔드 애플리케이션
+
+## 프로젝트 목표
 
 - [x] WebSocket과 HTTP의 차이에 대한 경험
 - [x] Reactive WebSocket 를 사용한 웹소켓 백엔드 서비스 구현
@@ -16,24 +20,23 @@
 - [ ] Docker Container 이미지 배포
 - [x] (실패) ~~Redis를 사용한 세션 클러스터링 구축 및 어플리케이션 간 세션 공유~~
 
-🤫 **그 외 엄청 중요하거나 목표한 바는 아니지만 이 프로젝트에서 사용되는 개념**
+🤫 **그 외 엄청 중요하거나 목표한 바는 아니지만..**
 
 - RDB 모델링 및 JPA의 fetch 전략
 - Gradle 멀티모듈
 - Thymeleaf의 레이아웃 사용, JavaScript WebSocket 사용
 - nginx dynamic reverse proxy (L4)
--  ✨ **완전한 1인 프로젝트** 
-
+-  ✨ **완전한 1인 프로젝트** ⇢ 감수X, 멘토링X, 부트캠프X
+- 리액티브가 그냥 재미있어 보여서 해보고 싶었음 🤫
 
 ## 프로젝트 소개
 
 ### 서비스 주요 기능
 
-- 채팅방 기능 구현   
-  채팅방 입장, 같은 채팅방 내 메시지 송수신 분리
-- 채팅 서비스 자체 회원 가입 기능
-- 채팅, 메시지 송수신, 채팅 퇴장 처리
-- 송수신 메시지 저장 후 조회 기능
+- 채팅 기능 구현 : 채팅방 내 메시지 송수신
+- 채팅방 기능 구현 : 채팅방 입장, 채팅방 생성
+- 채팅 메시지 조회 : 채팅 저장 후 조회 기능
+- 회원 가입 기능 : 어플리케이션 회원가입, OAtuh2 회원가입
 
 ### 프로젝트 패키지 안내
 
@@ -42,12 +45,12 @@
 > Spring Boot, Spring Web MVC (5.3.24)   
 > Spring Data JPA, Spring Data MongoDB   
 > MariaDB, MongoDB   
-> Spring Security - OAuth2 client + app login   
+> Spring Security - OAuth2 client login + app login   
 > Spring Session Data Redis   
 > Thymeleaf + Javascript + WebSocket   
 
 
-💬 `message` : 채팅방 구독, 메시지 발행, 메시지 소비 등 채팅과 관련된 주요 기능 담당
+💬 `message` : 채팅방 구독, 메시지 발행, 메시지 소비 등 채팅과 관련된 주요 기능 담당   
 
 > Spring Boot, Spring WebFlux (5.3.24)    
 > Reactive WebSocket   
@@ -107,7 +110,6 @@
     ├── model
     │   ├── AppRole.java
     │   ├── BaseTime.java
-    │   ├── ChatRole.java
     │   └── Member.java : 회원 엔티티
     ├── repository
     │   ├── MemberRepository.java
@@ -197,7 +199,16 @@
 │   └── service
 │       ├── AuthService.java
 │       └── AuthServiceImpl.java
-├── broker : 구현 예정
+├── broker
+│   ├── config
+│   │   ├── KafkaConsumerConfig.java
+│   │   └── KafkaProducerConfig.java
+│   ├── dto
+│   │   ├── BrokerChatMessage.java : 카프카로 송수신하는 DTO
+│   │   └── BrokerChatSendRequest.java : 외부에서 카프카로 전송 요청하는 DTO
+│   └── kafka
+│       ├── KafkaChatConsumerAdaptor.java
+│       └── KafkaChatPublishAdaptor.java
 ├── chat : 채팅을 위한 payload
 │   ├── ChatService.java
 │   ├── dto
@@ -209,36 +220,53 @@
 │   └── model
 │       ├── MessagePayload.java
 │       └── MessageType.java
+├── message
+│   ├── model
+│   │   ├── MessagePayload.java
+│   │   └── MessageType.java
+│   └── repository : 채팅 메시지 저장을 위한 MongoRepository 인터페이스 
+│       ├── MessageRepository.java
+│       └── mongo
+│           └── MessageCrudRepository.java
 ├── contants
 │   ├── AuthConstant.java
 │   └── SimpleConfigConstant.java
 ├── utils
 │   └── XSSFilter.java
 └── websocket
+    ├── MessageWebSocketHandler.java
     ├── broadcaster
-    │   ├── MessageBroadcaster.java : 메시지 브로드캐스터
+    │   ├── MessageBroadcaster.java  : 메시지 브로드캐스터
     │   └── MessageFlux.java : 채널과 세션을 관리하는 FluxSink
     ├── config
-    │   ├── CustomWebFluxConfig.java
-    │   └── CustomWebSocketConfig.java : WebSocketHandler 구현
+    │   └── CustomWebSocketConfig.java  : WebSocketHandler 구현
+    ├── dto
+    │   ├── CommandType.java
+    │   ├── IdentifierDto.java
+    │   ├── WebSocketMessageMetadataDto.java
+    │   ├── WebSocketRequestDto.java
+    │   └── WebSocketResponseDto.java
     ├── roommessage
-    │   └── MessageWebSocketHandler.java : WebSocket 세션 생성과 메시지 처리
+    │   ├── KafkaMessageWebSocketHandler.java : 카프카를 백엔드로 두는 웹소켓 핸들러 구현
+    │   └── StandaloneMessageWebSocketHandler.java : 단독으로 메시지를 송수신 처리하는 웹소켓 핸들러 구현
     └── subscription
-        └── SubscriptionManager.java : 채팅방 구독 관리
+        └── SubscriptionManager.java : 채팅방 입장 관리
 </pre>
 </details>
 
 
 ## 채팅 파이프라인 및 생명주기 소개
 
+>  standalone 모드 기준
+
 ### 채팅방 입장 프로세스
 
 🚪 채팅방 입장 ⇢ `웹소켓 세션 관리`
 
 ```
-   +------+
-   | User |
-   +------+
+ +---------+
+ | web 모듈 |
+ +---------+
       |
       | (웹소켓 세션 생성)
       v
@@ -249,9 +277,9 @@
       | (구독 요청: CommandType.SUBSCRIBE)
       v
 +----------------------+                   +-----------------------------------------+
-|SubscriptionManager   |                   | Map<String,      Set<WebSocketSession>> |
-|----------------------| <-------------->  |     채팅방 식별자, 웹소켓 세션              |
-|addSubscription()     |                   +-----------------------------------------+
+|SubscriptionManager   | --------------->  | Map<String,     Set<WebSocketSession>>  |
+|----------------------| (채팅방과 세션 저장)   |     채팅방 식별자,  웹소켓 세션               |
+|addSubscription()     | <---------------  +-----------------------------------------+
 +----------------------+
       |
       | (세션 정보 저장)
@@ -268,9 +296,9 @@
 🕊️ 채팅 메시지 전송 ⇢ `웹소켓 Flux 콜백`
 
 ```
-   +------+
-   | User |
-   +------+
+ +---------+
+ | web 모듈 |
+ +---------+
       |
       | (메시지 발송)
       v
@@ -282,7 +310,7 @@
       v
 +--------------------------------+                                         +-------------------------+
 |MessageBroadcaster              | ------------------------------------->  |SubscriptionManager      |
-|--------------------------------|   (채팅방 식별자로 같은 채팅방의 세션획득)   |-------------------------|
+|--------------------------------|     (채팅방 식별자로 같은 채팅방의 세션획득)      |-------------------------|
 |broadcastMessageToSubscribers() | <-------------------------------------  |getSubscriptions(channel)|
 +--------------------------------+                                         +-------------------------+
       |
@@ -299,9 +327,9 @@
 🐤 채팅방 세션 ⇢ `웹소켓 세션 생명주기`
 
 ```
-                        +------+
-                        | User |
-                        +------+
+                      +---------+
+                      | web 모듈 |
+                      +---------+
                            |
                            v
                    +----------------+
@@ -316,7 +344,7 @@
                            |
    +-----------------------|------------------------------+
    |                       |                              |
-   |    (채팅 메시지 전송)   v                              |
+   |                       v                              |
    |                +--------------+           +---------------------+
    |                |MessageFlux   |           |SubscriptionManager  |
    |                |broadcast()   |           |removeSession()      |
@@ -341,7 +369,18 @@
 
 ### 로컬 실행
 
-🧍‍♂️ **단독 로컬 실행 (메시지 브로커 비활성)**
+🧪 **실행 환경**
+
+- 어플리케이션 환경 사양 : Java 17, Docker를 사용합니다.
+- OAuth 로그인을 하기 위해서는 `web/src/main/resources/application.properties` 에 OAuth 정보 입력이 필요합니다
+```
+### Spring Security OAuth
+spring.security.oauth2.client.registration.github.client-id=
+spring.security.oauth2.client.registration.github.client-secret=
+```
+- 실행 이후 웹브라우저에서 `localhost:3120` 으로 접속합니다.
+
+🧍‍♂️ **`standalone` 단독 실행 프로파일 (메시지 브로커 비활성)**
 
 ```bash
 git clone https://github.com/platanus-kr/plata-anywhere-chat.git pac
@@ -359,7 +398,13 @@ java -jar web/build/libs/web-0.0.1-SNAPSHOT.jar &
 java -jar -Dspring.profiles.active=standalone message/build/libs/message-0.0.1-SNAPSHOT.jar &
 ```
 
-👫 **Kafka 를 사용하는 로컬 실행 (메시지 브로커 활성)**
+- 단독 실행시 docker compose에는 필수 실행을 위한 redis, mariadb, mongodb 가 포함됩니다.   
+만약 docker 사용을 원하지 않으면 각각 별도 구축이 필요합니다.   
+- 단독 모드에서는 kafka, zookeeper, kafka-ui가 제외됩니다.   
+이 어플리케이션은 메시지 송수신을 위한 기능이 자체적으로 구현되어있는 어플리케이션으로 kafka 없이 단독으로 모든 기능이 사용가능합니다.
+
+
+👫 **`kafka`, `production`Kafka 를 사용하는 실행 프로파일 (메시지 브로커 활성)**
 
 ```bash
 git clone https://github.com/platanus-kr/plata-anywhere-chat.git pac
@@ -377,17 +422,10 @@ java -jar web/build/libs/web-0.0.1-SNAPSHOT.jar &
 java -jar -Dspring.profiles.active=kafka message/build/libs/message-0.0.1-SNAPSHOT.jar &
 ```
 
-🧪 **실행 환경**
-
-- 어플리케이션 환경 사양 : Java 17, Docker를 사용합니다.
-- OAuth 로그인을 하기 위해서는 `web/src/main/resources/application.properties` 에 OAuth 정보 입력이 필요합니다   
-```
-### Spring Security OAuth
-spring.security.oauth2.client.registration.github.client-id=
-spring.security.oauth2.client.registration.github.client-secret=
-```
-- 이후 웹브라우저에서 `localhost:3120` 으로 접속합니다.
+- 메시지 브로커를 사용하는 프로파일의 경우 1개 노드로 구성된 kafka와 이를 보조하는 kafka-ui, zookeeper가 포함됩니다.   
+kraft 모드를 원하는 경우 직접 구축해야 합니다.
+- 또한 `message/src/main/resources/application-kafka.properties`의 `spring.kafka.consumer.bootstrap-servers` 항목에 모든 kafka 노드를 추가해야합니다.
 
 🪄 **스케일아웃 하기**
 
-- [문서 참조](misc/docs/HOW_TO_SCALABLE.md)
+- [문서 참조(작성중)](misc/docs/HOW_TO_SCALABLE.md)
