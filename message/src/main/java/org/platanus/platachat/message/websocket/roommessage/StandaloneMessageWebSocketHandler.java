@@ -14,7 +14,7 @@ import org.platanus.platachat.message.websocket.broadcaster.MessageBroadcaster;
 import org.platanus.platachat.message.websocket.dto.CommandType;
 import org.platanus.platachat.message.websocket.dto.IdentifierDto;
 import org.platanus.platachat.message.websocket.dto.WebSocketRequestDto;
-import org.platanus.platachat.message.websocket.dto.WebSocketSubscribeDto;
+import org.platanus.platachat.message.websocket.dto.WebSocketMessageMetadataDto;
 import org.platanus.platachat.message.websocket.subscription.SubscriptionManager;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -55,7 +55,7 @@ public class StandaloneMessageWebSocketHandler implements MessageWebSocketHandle
      */
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-        AtomicReference<WebSocketSubscribeDto> channelSub = new AtomicReference<>();
+        AtomicReference<WebSocketMessageMetadataDto> channelSub = new AtomicReference<>();
         return session.receive()
                 .map(WebSocketMessage::getPayloadAsText)
                 .publishOn(Schedulers.boundedElastic())
@@ -73,32 +73,32 @@ public class StandaloneMessageWebSocketHandler implements MessageWebSocketHandle
      *
      * @param payload            메시지 Payload
      * @param session            {@link WebSocketSession} 웹소켓 세션
-     * @param atomicSubscribeDto {@link AtomicReference} 된 {@link WebSocketSubscribeDto}
+     * @param atomicMetadata {@link AtomicReference} 된 {@link WebSocketMessageMetadataDto}
      * @return 메시지 처리 후 Mono<Void>
      */
     private Mono<Void> handleMessage(String payload,
                                      WebSocketSession session,
-                                     AtomicReference<WebSocketSubscribeDto> atomicSubscribeDto) {
+                                     AtomicReference<WebSocketMessageMetadataDto> atomicMetadata) {
         try {
             WebSocketRequestDto webSocketRequestDto = objectMapper.readValue(payload, WebSocketRequestDto.class);
             CommandType command = webSocketRequestDto.getCommand();
             IdentifierDto identifier = webSocketRequestDto.getIdentifier();
-            WebSocketSubscribeDto subscribeDto = WebSocketSubscribeDto.builder()
+            WebSocketMessageMetadataDto metadataDto = WebSocketMessageMetadataDto.builder()
                     .roomId(identifier.getChannel())
                     .memberId(identifier.getMemberId())
                     .nickname(identifier.getNickname())
                     .sessionId(identifier.getToken())
                     .build();
-            atomicSubscribeDto.set(subscribeDto);
+            atomicMetadata.set(metadataDto);
 
             if (command.equals(CommandType.SUBSCRIBE)) {
-                validSessionHealth(subscribeDto);
-                return processSubscribeCommand(subscribeDto, session);
+                validSessionHealth(metadataDto);
+                return processSubscribeCommand(metadataDto, session);
             } else if (command.equals(CommandType.MESSAGE)) {
                 if (webSocketRequestDto.getMessage().length() < 1) {
                     return Mono.empty();
                 }
-                return processMessageCommand(subscribeDto, webSocketRequestDto.getMessage());
+                return processMessageCommand(metadataDto, webSocketRequestDto.getMessage());
             }
         } catch (IOException e) {
             log.error("Error parsing WebSocket message", e);
@@ -109,8 +109,8 @@ public class StandaloneMessageWebSocketHandler implements MessageWebSocketHandle
         return Mono.error(new IllegalArgumentException("Invalid WebSocket message"));
     }
 
-    private void validSessionHealth(WebSocketSubscribeDto subscribeDto) {
-        authService.getSessionHealth(subscribeDto.getSessionId(), subscribeDto.getRoomId())
+    private void validSessionHealth(WebSocketMessageMetadataDto metadataDto) {
+        authService.getSessionHealth(metadataDto.getSessionId(), metadataDto.getRoomId())
                 // 채팅방 구현하면서 다시 손볼것.
                 .onErrorResume(error -> {
                     throw new IllegalArgumentException(error.getMessage());
@@ -126,32 +126,32 @@ public class StandaloneMessageWebSocketHandler implements MessageWebSocketHandle
     /**
      * <h3>구독 처리</h3>
      *
-     * @param subscribeDto {@link WebSocketSubscribeDto}
+     * @param metadataDto {@link WebSocketMessageMetadataDto}
      * @param session      {@link WebSocketSession} 웹 소켓 세션
      * @return 구독 추가 후 Mono.empty()
      */
-    private Mono<Void> processSubscribeCommand(WebSocketSubscribeDto subscribeDto, WebSocketSession session) {
-        subscriptionManager.addSubscription(subscribeDto.getRoomId(), session);
-        log.info(subscribeDto.getRoomId() + " 채널에 " + subscribeDto.getNickname() + " 님이 입장하셨습니다.");
-        messageBroadcaster.broadcastMessageToSubscribers(subscribeDto.getRoomId(), "SYSTEM", subscribeDto.getNickname() + "님이 채팅방에 입장 했습니다.");
+    private Mono<Void> processSubscribeCommand(WebSocketMessageMetadataDto metadataDto, WebSocketSession session) {
+        subscriptionManager.addSubscription(metadataDto.getRoomId(), session);
+        log.info(metadataDto.getRoomId() + " 채널에 " + metadataDto.getNickname() + " 님이 입장하셨습니다.");
+        messageBroadcaster.broadcastMessageToSubscribers(metadataDto.getRoomId(), "SYSTEM", metadataDto.getNickname() + "님이 채팅방에 입장 했습니다.");
         return Mono.empty();
     }
 
     /**
      * <h3>메시지 처리</h3>
      *
-     * @param subscribeDto {@link WebSocketSubscribeDto}
+     * @param metadataDto {@link WebSocketMessageMetadataDto}
      * @param messageText  채팅방에 전달하고자 하는 메시지
      * @return 메시지 브로드캐스트 후 Mono.empty()
      */
-    private Mono<Void> processMessageCommand(WebSocketSubscribeDto subscribeDto, String messageText) {
+    private Mono<Void> processMessageCommand(WebSocketMessageMetadataDto metadataDto, String messageText) {
         String message = XSSFilter.filterXSS(messageText);
 
         // 수신된 메시지를 저장.
         MessagePayload payload = MessagePayload.builder()
-                .roomId(subscribeDto.getRoomId())
-                .userId(subscribeDto.getMemberId())
-                .nickname(subscribeDto.getNickname())
+                .roomId(metadataDto.getRoomId())
+                .userId(metadataDto.getMemberId())
+                .nickname(metadataDto.getNickname())
                 .message(message)
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -164,7 +164,7 @@ public class StandaloneMessageWebSocketHandler implements MessageWebSocketHandle
                 );
 
         // 채팅방에 있는 모든 사용자에게 메시지를 전달.
-        messageBroadcaster.broadcastMessageToSubscribers(subscribeDto.getRoomId(), subscribeDto.getNickname(), message);
+        messageBroadcaster.broadcastMessageToSubscribers(metadataDto.getRoomId(), metadataDto.getNickname(), message);
         return Mono.empty();
     }
 
@@ -178,14 +178,14 @@ public class StandaloneMessageWebSocketHandler implements MessageWebSocketHandle
      * </ul>
      *
      * @param signalType    {@link SignalType} 리엑티브 스트림의 시그널 타입
-     * @param channelSubRef {@link AtomicReference} 된 {@link WebSocketSubscribeDto}
+     * @param atomicMetadata {@link AtomicReference} 된 {@link WebSocketMessageMetadataDto}
      * @param session       {@link WebSocketSession} 웹 소켓 세션
      */
     private void handleDisconnection(SignalType signalType,
-                                     AtomicReference<WebSocketSubscribeDto> channelSubRef,
+                                     AtomicReference<WebSocketMessageMetadataDto> atomicMetadata,
                                      WebSocketSession session) {
         if (SignalType.ON_COMPLETE.equals(signalType) || SignalType.ON_ERROR.equals(signalType)) {
-            WebSocketSubscribeDto channelSub = channelSubRef.get();
+            WebSocketMessageMetadataDto channelSub = atomicMetadata.get();
             if (channelSub == null) return;
             messageBroadcaster.broadcastMessageToSubscribers(channelSub.getRoomId(),
                     "SYSTEM", channelSub.getNickname() + "가 퇴장합니다.");

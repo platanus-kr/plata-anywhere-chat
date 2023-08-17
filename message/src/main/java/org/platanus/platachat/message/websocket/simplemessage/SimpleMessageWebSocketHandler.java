@@ -10,8 +10,7 @@ import org.platanus.platachat.message.websocket.broadcaster.MessageBroadcaster;
 import org.platanus.platachat.message.websocket.dto.CommandType;
 import org.platanus.platachat.message.websocket.dto.IdentifierDto;
 import org.platanus.platachat.message.websocket.dto.WebSocketRequestDto;
-import org.platanus.platachat.message.websocket.dto.WebSocketSubscribeDto;
-import org.platanus.platachat.message.websocket.subscription.StandaloneSubscriptionManager;
+import org.platanus.platachat.message.websocket.dto.WebSocketMessageMetadataDto;
 import org.platanus.platachat.message.websocket.subscription.SubscriptionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
@@ -43,7 +42,7 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
      */
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-        AtomicReference<WebSocketSubscribeDto> channelSub = new AtomicReference<>();
+        AtomicReference<WebSocketMessageMetadataDto> channelSub = new AtomicReference<>();
         log.info(session.getAttributes().toString());
         return session.receive().map(WebSocketMessage::getPayloadAsText).publishOn(Schedulers.boundedElastic()).flatMap(payload -> handleMessage(payload, session, channelSub)).doFinally(signalType -> handleDisconnection(signalType, channelSub, session)).then();
     }
@@ -51,20 +50,20 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
     /**
      * <h3>메시지 처리</h3>
      * Stub 내 command로 분기하여 메시지를 처리한다. <br />
-     * subscribe 는 {@link StandaloneSubscriptionManager} 에 구독을 추가하고, <br />
+     * subscribe 는 {@link SubscriptionManager} 에 구독을 추가하고, <br />
      * message 는 {@link MessageBroadcaster} 로 메시지를 전달한다.
      *
      * @param payload    메시지 Payload
      * @param session    {@link WebSocketSession} 웹 소켓 세션
-     * @param channelSub {@link AtomicReference} 된 {@link WebSocketSubscribeDto}
+     * @param channelSub {@link AtomicReference} 된 {@link WebSocketMessageMetadataDto}
      * @return 메시지 처리 후 Mono<Void>
      */
-    private Mono<Void> handleMessage(String payload, WebSocketSession session, AtomicReference<WebSocketSubscribeDto> channelSub) {
+    private Mono<Void> handleMessage(String payload, WebSocketSession session, AtomicReference<WebSocketMessageMetadataDto> channelSub) {
         try {
             WebSocketRequestDto webSocketRequestDto = objectMapper.readValue(payload, WebSocketRequestDto.class);
             CommandType command = webSocketRequestDto.getCommand();
             IdentifierDto identifier = webSocketRequestDto.getIdentifier();
-            WebSocketSubscribeDto stub = WebSocketSubscribeDto.builder().roomId(identifier.getChannel()).nickname(identifier.getNickname()).build();
+            WebSocketMessageMetadataDto stub = WebSocketMessageMetadataDto.builder().roomId(identifier.getChannel()).nickname(identifier.getNickname()).build();
             channelSub.set(stub);
 
             if (command.equals(CommandType.SUBSCRIBE)) {
@@ -84,11 +83,11 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
     /**
      * <h3>구독 처리</h3>
      *
-     * @param subscribeDto {@link WebSocketSubscribeDto}
+     * @param subscribeDto {@link WebSocketMessageMetadataDto}
      * @param session      {@link WebSocketSession} 웹 소켓 세션
      * @return 구독 추가 후 Mono.empty()
      */
-    private Mono<Void> processSubscribeCommand(WebSocketSubscribeDto subscribeDto, WebSocketSession session) {
+    private Mono<Void> processSubscribeCommand(WebSocketMessageMetadataDto subscribeDto, WebSocketSession session) {
         subscriptionManager.addSubscription(subscribeDto.getRoomId(), session);
         log.info(subscribeDto.getRoomId() + " 채널에 " + subscribeDto.getNickname() + " 님이 입장하셨습니다.");
         messageBroadcaster.broadcastMessageToSubscribers(subscribeDto.getRoomId(), "SYSTEM", subscribeDto.getNickname() + "님이 채팅방에 입장 했습니다.");
@@ -98,11 +97,11 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
     /**
      * <h3>메시지 처리</h3>
      *
-     * @param subscribeDto {@link WebSocketSubscribeDto}
+     * @param subscribeDto {@link WebSocketMessageMetadataDto}
      * @param messageText  메시지
      * @return 메시지 브로드캐스트 후 Mono.empty()
      */
-    private Mono<Void> processMessageCommand(WebSocketSubscribeDto subscribeDto, String messageText) {
+    private Mono<Void> processMessageCommand(WebSocketMessageMetadataDto subscribeDto, String messageText) {
         String message = XSSFilter.filterXSS(messageText);
 //        try {
 //            message = objectMapper.writeValueAsString(messageText);
@@ -125,12 +124,12 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
      * </ul>
      *
      * @param signalType {@link SignalType} 리엑티브 스트림의 시그널 타입
-     * @param channelSub {@link AtomicReference} 된 {@link WebSocketSubscribeDto}
+     * @param channelSub {@link AtomicReference} 된 {@link WebSocketMessageMetadataDto}
      * @param session    {@link WebSocketSession} 웹 소켓 세션
      */
-    private void handleDisconnection(SignalType signalType, AtomicReference<WebSocketSubscribeDto> channelSub, WebSocketSession session) {
+    private void handleDisconnection(SignalType signalType, AtomicReference<WebSocketMessageMetadataDto> channelSub, WebSocketSession session) {
         if (SignalType.ON_COMPLETE.equals(signalType) || SignalType.ON_ERROR.equals(signalType)) {
-            WebSocketSubscribeDto stub = channelSub.get();
+            WebSocketMessageMetadataDto stub = channelSub.get();
             messageBroadcaster.broadcastMessageToSubscribers(stub.getRoomId(), "SYSTEM", stub.getNickname() + "가 퇴장합니다.");
             subscriptionManager.removeSubscription(stub.getRoomId(), session);
         }
