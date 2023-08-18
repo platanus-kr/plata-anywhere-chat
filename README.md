@@ -2,12 +2,10 @@
 
 [![Project use](https://skillicons.dev/icons?i=java,gradle,spring,mysql,mongodb,redis,kafka,docker&theme=dark)](#)
 
+[//]: # "> Scalable and Reactive WebSocket Backend application   "
+[//]: # "> 확장 가능하고 리액티브한 웹소켓 백엔드 애플리케이션"
 
-[//]: # (> Scalable and Reactive WebSocket Backend application   )
-
-[//]: # (> 확장 가능하고 리액티브한 웹소켓 백엔드 애플리케이션)
-
-> Reactive WebSocket Backend application   
+> Reactive WebSocket Backend application  
 > 리액티브 웹소켓 백엔드 애플리케이션
 
 ## 프로젝트 목표
@@ -26,7 +24,7 @@
 - Gradle 멀티모듈
 - Thymeleaf의 레이아웃 사용, JavaScript WebSocket 사용
 - nginx dynamic reverse proxy (L4)
--  ✨ **완전한 1인 프로젝트** ⇢ 감수X, 멘토링X, 부트캠프X
+- ✨ **완전한 1인 프로젝트** ⇢ 감수X, 멘토링X, 부트캠프X
 
 ## 프로젝트 소개
 
@@ -39,22 +37,20 @@
 
 ### 프로젝트 패키지 안내
 
-🌐 `web` : 회원, 채팅 저장, 채팅 기록 조회 등 영속성과 관련된 기능 담당   
+🌐 `web` : 회원, 채팅 저장, 채팅 기록 조회 등 영속성과 관련된 기능 담당
 
-> Spring Boot, Spring Web MVC (5.3.24)   
-> Spring Data JPA, Spring Data MongoDB   
-> MariaDB, MongoDB   
-> Spring Security - OAuth2 client login + app login   
-> Spring Session Data Redis   
-> Thymeleaf + Javascript + WebSocket   
+> Spring Boot, Spring Web MVC (5.3.24)  
+> Spring Data JPA, Spring Data MongoDB  
+> MariaDB, MongoDB  
+> Spring Security - OAuth2 client login + app login  
+> Spring Session Data Redis  
+> Thymeleaf + Javascript + WebSocket
 
+💬 `message` : 채팅방 구독, 메시지 발행, 메시지 소비 등 채팅과 관련된 주요 기능 담당
 
-💬 `message` : 채팅방 구독, 메시지 발행, 메시지 소비 등 채팅과 관련된 주요 기능 담당   
-
-> Spring Boot, Spring WebFlux (5.3.24)    
-> Reactive WebSocket   
-> Spring Data MongoDB   
-
+> Spring Boot, Spring WebFlux (5.3.24)  
+> Reactive WebSocket  
+> Spring Data MongoDB
 
 **프로젝트 패키지 : web**
 
@@ -94,7 +90,6 @@
 </pre>
 </details>
 
-
 <details>
 <summary>
 <code>web</code> 👤 회원
@@ -119,7 +114,6 @@
         └── MemberServiceImpl.java
 </pre>
 </details>
-
 
 <details>
 <summary>
@@ -253,10 +247,9 @@
 </pre>
 </details>
 
-
 ## 채팅 파이프라인 및 생명주기 소개
 
->  standalone 모드 기준
+> standalone 모드 기준
 
 ### 채팅방 입장 프로세스
 
@@ -288,7 +281,6 @@
 |Session     |       |addSink()   |       |create()   |
 +------------+       +------------+       +-----------+
 ```
-
 
 ### 채팅 메시지 전송 프로세스
 
@@ -364,19 +356,19 @@
                         +-------+
 ```
 
-
-
 ### 로컬 실행
 
 🧪 **실행 환경**
 
 - 어플리케이션 환경 사양 : Java 17, Docker를 사용합니다.
 - OAuth 로그인을 하기 위해서는 `web/src/main/resources/application.properties` 에 OAuth 정보 입력이 필요합니다
+
 ```
 ### Spring Security OAuth
 spring.security.oauth2.client.registration.github.client-id=
 spring.security.oauth2.client.registration.github.client-secret=
 ```
+
 - 실행 이후 웹브라우저에서 `localhost:3120` 으로 접속합니다.
 
 🧍‍♂️ **`standalone` 단독 실행 프로파일 (메시지 브로커 비활성)**
@@ -397,11 +389,10 @@ java -jar web/build/libs/web-0.0.1-SNAPSHOT.jar &
 java -jar -Dspring.profiles.active=standalone message/build/libs/message-0.0.1-SNAPSHOT.jar &
 ```
 
-- 단독 실행시 docker compose에는 필수 실행을 위한 redis, mariadb, mongodb 가 포함됩니다.   
-만약 docker 사용을 원하지 않으면 각각 별도 구축이 필요합니다.   
-- 단독 모드에서는 kafka, zookeeper, kafka-ui가 제외됩니다.   
-이 어플리케이션은 메시지 송수신을 위한 기능이 자체적으로 구현되어있는 어플리케이션으로 kafka 없이 단독으로 모든 기능이 사용가능합니다.
-
+- 단독 실행시 docker compose에는 필수 실행을 위한 redis, mariadb, mongodb 가 포함됩니다.  
+  만약 docker 사용을 원하지 않으면 각각 별도 구축이 필요합니다.
+- 단독 모드에서는 kafka, zookeeper, kafka-ui가 제외됩니다.  
+  이 어플리케이션은 메시지 송수신을 위한 기능이 자체적으로 구현되어있는 어플리케이션으로 kafka 없이 단독으로 모든 기능이 사용가능합니다.
 
 👫 **`kafka`, `production`Kafka 를 사용하는 실행 프로파일 (메시지 브로커 활성)**
 
@@ -421,8 +412,8 @@ java -jar web/build/libs/web-0.0.1-SNAPSHOT.jar &
 java -jar -Dspring.profiles.active=kafka message/build/libs/message-0.0.1-SNAPSHOT.jar &
 ```
 
-- 메시지 브로커를 사용하는 프로파일의 경우 1개 노드로 구성된 카프카 클러스터와 이를 보조하는 kafka-ui, zookeeper가 포함됩니다.   
-kraft 모드를 원하는 경우 직접 구축해야 합니다.
+- 메시지 브로커를 사용하는 프로파일의 경우 1개 노드로 구성된 카프카 클러스터와 이를 보조하는 kafka-ui, zookeeper가 포함됩니다.  
+  kraft 모드를 원하는 경우 직접 구축해야 합니다.
 - 또한 `message/src/main/resources/application-kafka.properties`의 `spring.kafka.consumer.bootstrap-servers` 항목에 모든 kafka 노드를 추가해야합니다.
 
 🪄 **스케일아웃 하기**
