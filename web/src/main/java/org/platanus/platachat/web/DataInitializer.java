@@ -62,66 +62,66 @@ public class DataInitializer {
                 .build();
 
         Room createdRoom = roomService.createRoom(roomCreateRequestDto, m);
+//
+//        for (int i = 1; i <= 10; i++) {
+//            RoomCreateRequestDto requestDto = RoomCreateRequestDto.builder()
+//                    .capacity(100L)
+//                    .description("테스트 채팅방" + i + "번째")
+//                    .roomPublic(RoomPublic.AVAILABLE)
+//                    .roomName("채팅방 " + i + "번째")
+//                    .imageUrl("#")
+//                    .build();
+//            roomService.createRoom(requestDto, m);
+//        }
+//
+//        for (int i = 11; i <= 15; i++) {
+//            RoomCreateRequestDto requestDto = RoomCreateRequestDto.builder()
+//                    .capacity(100L)
+//                    .description("테스트 채팅방" + i + "번째")
+//                    .roomPublic(RoomPublic.INVISIBLE)
+//                    .roomName("채팅방 " + i + "번째")
+//                    .imageUrl("#")
+//                    .build();
+//            roomService.createRoom(requestDto, m);
+//        }
+//
+//        for (int i = 16; i <= 20; i++) {
+//            RoomCreateRequestDto requestDto = RoomCreateRequestDto.builder()
+//                    .capacity(100L)
+//                    .description("테스트 채팅방" + i + "번째")
+//                    .roomPublic(RoomPublic.PRIVATE)
+//                    .roomName("채팅방 " + i + "번째")
+//                    .imageUrl("#")
+//                    .build();
+//            roomService.createRoom(requestDto, m);
+//        }
+//
+//        for (int i = 21; i <= 25; i++) {
+//            RoomCreateRequestDto requestDto = RoomCreateRequestDto.builder()
+//                    .capacity(100L)
+//                    .description("테스트 채팅방" + i + "번째")
+//                    .roomPublic(RoomPublic.OBSERVER)
+//                    .roomName("채팅방 " + i + "번째")
+//                    .imageUrl("#")
+//                    .build();
+//            roomService.createRoom(requestDto, m);
+//        }
 
-        for (int i = 1; i <= 10; i++) {
-            RoomCreateRequestDto requestDto = RoomCreateRequestDto.builder()
-                    .capacity(100L)
-                    .description("테스트 채팅방" + i + "번째")
-                    .roomPublic(RoomPublic.AVAILABLE)
-                    .roomName("채팅방 " + i + "번째")
-                    .imageUrl("#")
-                    .build();
-            roomService.createRoom(requestDto, m);
-        }
-
-        for (int i = 11; i <= 15; i++) {
-            RoomCreateRequestDto requestDto = RoomCreateRequestDto.builder()
-                    .capacity(100L)
-                    .description("테스트 채팅방" + i + "번째")
-                    .roomPublic(RoomPublic.INVISIBLE)
-                    .roomName("채팅방 " + i + "번째")
-                    .imageUrl("#")
-                    .build();
-            roomService.createRoom(requestDto, m);
-        }
-
-        for (int i = 16; i <= 20; i++) {
-            RoomCreateRequestDto requestDto = RoomCreateRequestDto.builder()
-                    .capacity(100L)
-                    .description("테스트 채팅방" + i + "번째")
-                    .roomPublic(RoomPublic.PRIVATE)
-                    .roomName("채팅방 " + i + "번째")
-                    .imageUrl("#")
-                    .build();
-            roomService.createRoom(requestDto, m);
-        }
-
-        for (int i = 21; i <= 25; i++) {
-            RoomCreateRequestDto requestDto = RoomCreateRequestDto.builder()
-                    .capacity(100L)
-                    .description("테스트 채팅방" + i + "번째")
-                    .roomPublic(RoomPublic.OBSERVER)
-                    .roomName("채팅방 " + i + "번째")
-                    .imageUrl("#")
-                    .build();
-            roomService.createRoom(requestDto, m);
-        }
-
-        log.info("!!! 메시지 생성 !!!");
-
-        // 메시지 추가
-        messageService.deleteAll();
-        for (int i = 0; i <= 100; i++) {
-            MessagePayload build = MessagePayload.builder()
-                    .message("테스트 " + i + "번째 메시지")
-                    .nickname("닉네임")
-                    .roomId(createdRoom.getId())
-                    .type(MessageType.TEXT)
-                    .timestamp(LocalDateTime.now())
-                    .userId("test1")
-                    .build();
-            messageService.saveMessage(build);
-        }
+//        log.info("!!! 메시지 생성 !!!");
+//
+//        // 메시지 추가
+//        messageService.deleteAll();
+//        for (int i = 0; i <= 100; i++) {
+//            MessagePayload build = MessagePayload.builder()
+//                    .message("테스트 " + i + "번째 메시지")
+//                    .nickname("닉네임")
+//                    .roomId(createdRoom.getId())
+//                    .type(MessageType.TEXT)
+//                    .timestamp(LocalDateTime.now())
+//                    .userId("test1")
+//                    .build();
+//            messageService.saveMessage(build);
+//        }
     }
 
     private List<MemberJoinRequestDto> getMemberJoinRequestDtos() {

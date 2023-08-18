@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 //@RequiredArgsConstructor
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
-//    private final HttpSession httpSession;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {

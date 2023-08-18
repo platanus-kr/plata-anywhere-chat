@@ -9,14 +9,15 @@ import org.platanus.platachat.message.auth.service.AuthService;
 import org.platanus.platachat.message.message.model.MessagePayload;
 import org.platanus.platachat.message.message.repository.MessageRepository;
 import org.platanus.platachat.message.utils.XSSFilter;
+import org.platanus.platachat.message.websocket.MessageWebSocketHandler;
 import org.platanus.platachat.message.websocket.broadcaster.MessageBroadcaster;
 import org.platanus.platachat.message.websocket.dto.CommandType;
 import org.platanus.platachat.message.websocket.dto.IdentifierDto;
 import org.platanus.platachat.message.websocket.dto.WebSocketRequestDto;
-import org.platanus.platachat.message.websocket.dto.WebSocketSubscribeDto;
+import org.platanus.platachat.message.websocket.dto.WebSocketMessageMetadataDto;
 import org.platanus.platachat.message.websocket.subscription.SubscriptionManager;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Mono;
@@ -31,9 +32,10 @@ import java.util.concurrent.atomic.AtomicReference;
  * 메시지 처리
  */
 @Slf4j
-@Component
+@Component("messageWebSocketHandler")
+@Profile({"standalone", "test"})
 @RequiredArgsConstructor
-public class MessageWebSocketHandler implements WebSocketHandler {
+public class StandaloneMessageWebSocketHandler implements MessageWebSocketHandler {
 
     private final SubscriptionManager subscriptionManager;
     private final MessageBroadcaster messageBroadcaster;
@@ -44,6 +46,7 @@ public class MessageWebSocketHandler implements WebSocketHandler {
 
     /**
      * <h3>메시지 처리를 위한 핸들러</h3>
+     * <p>
      * HandlerMapping 으로 부터 전달된 세션을 처리한다. <br />
      * 크게 메시지 처리 부분과 연결 해제시 구독 해제 부분으로 나뉜다.
      *
@@ -52,7 +55,7 @@ public class MessageWebSocketHandler implements WebSocketHandler {
      */
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-        AtomicReference<WebSocketSubscribeDto> channelSub = new AtomicReference<>();
+        AtomicReference<WebSocketMessageMetadataDto> channelSub = new AtomicReference<>();
         return session.receive()
                 .map(WebSocketMessage::getPayloadAsText)
                 .publishOn(Schedulers.boundedElastic())
@@ -68,44 +71,34 @@ public class MessageWebSocketHandler implements WebSocketHandler {
      * subscribe 는 {@link SubscriptionManager} 에 구독을 추가하고, <br />
      * message 는 {@link MessageBroadcaster} 로 메시지를 전달한다.
      *
-     * @param payload    메시지 Payload
-     * @param session    {@link WebSocketSession} 웹소켓 세션
-     * @param atomicSubscribeDto {@link AtomicReference} 된 {@link WebSocketSubscribeDto}
+     * @param payload            메시지 Payload
+     * @param session            {@link WebSocketSession} 웹소켓 세션
+     * @param atomicMetadata {@link AtomicReference} 된 {@link WebSocketMessageMetadataDto}
      * @return 메시지 처리 후 Mono<Void>
      */
     private Mono<Void> handleMessage(String payload,
                                      WebSocketSession session,
-                                     AtomicReference<WebSocketSubscribeDto> atomicSubscribeDto) {
+                                     AtomicReference<WebSocketMessageMetadataDto> atomicMetadata) {
         try {
             WebSocketRequestDto webSocketRequestDto = objectMapper.readValue(payload, WebSocketRequestDto.class);
             CommandType command = webSocketRequestDto.getCommand();
             IdentifierDto identifier = webSocketRequestDto.getIdentifier();
-            WebSocketSubscribeDto subscribeDto = WebSocketSubscribeDto.builder()
+            WebSocketMessageMetadataDto metadataDto = WebSocketMessageMetadataDto.builder()
                     .roomId(identifier.getChannel())
                     .memberId(identifier.getMemberId())
                     .nickname(identifier.getNickname())
                     .sessionId(identifier.getToken())
                     .build();
-            atomicSubscribeDto.set(subscribeDto);
+            atomicMetadata.set(metadataDto);
 
-            if (command.equals(CommandType.SUBSCRIBE)) { // 여기부터 작업바람
-                authService.getSessionHealth(subscribeDto.getSessionId(), subscribeDto.getRoomId())
-                        // 채팅방 구현하면서 다시 손볼것.
-                        .onErrorResume(error -> {
-                            throw new IllegalArgumentException(error.getMessage());
-                        })
-                        .subscribeOn(Schedulers.boundedElastic())
-                        .subscribe(response -> {
-                            if (!response.getIsAdmission() || !response.getIsLogin()) {
-                                throw new IllegalArgumentException(response.getMessage());
-                            }
-                        });
-                return processSubscribeCommand(subscribeDto, session);
+            if (command.equals(CommandType.SUBSCRIBE)) {
+                validSessionHealth(metadataDto);
+                return processSubscribeCommand(metadataDto, session);
             } else if (command.equals(CommandType.MESSAGE)) {
                 if (webSocketRequestDto.getMessage().length() < 1) {
                     return Mono.empty();
                 }
-                return processMessageCommand(subscribeDto, webSocketRequestDto.getMessage());
+                return processMessageCommand(metadataDto, webSocketRequestDto.getMessage());
             }
         } catch (IOException e) {
             log.error("Error parsing WebSocket message", e);
@@ -116,41 +109,62 @@ public class MessageWebSocketHandler implements WebSocketHandler {
         return Mono.error(new IllegalArgumentException("Invalid WebSocket message"));
     }
 
+    private void validSessionHealth(WebSocketMessageMetadataDto metadataDto) {
+        authService.getSessionHealth(metadataDto.getSessionId(), metadataDto.getRoomId())
+                // 채팅방 구현하면서 다시 손볼것.
+                .onErrorResume(error -> {
+                    throw new IllegalArgumentException(error.getMessage());
+                })
+                .subscribeOn(Schedulers.boundedElastic())
+                .subscribe(response -> {
+                    if (!response.getIsAdmission() || !response.getIsLogin()) {
+                        throw new IllegalArgumentException(response.getMessage());
+                    }
+                });
+    }
+
     /**
      * <h3>구독 처리</h3>
      *
-     * @param subscribeDto {@link WebSocketSubscribeDto}
+     * @param metadataDto {@link WebSocketMessageMetadataDto}
      * @param session      {@link WebSocketSession} 웹 소켓 세션
      * @return 구독 추가 후 Mono.empty()
      */
-    private Mono<Void> processSubscribeCommand(WebSocketSubscribeDto subscribeDto, WebSocketSession session) {
-        subscriptionManager.addSubscription(subscribeDto.getRoomId(), session);
-        log.info(subscribeDto.getRoomId() + " 채널에 " + subscribeDto.getNickname() + " 님이 입장하셨습니다.");
-        messageBroadcaster.broadcastMessageToSubscribers(subscribeDto.getRoomId(), "SYSTEM", subscribeDto.getNickname() + "님이 채팅방에 입장 했습니다.");
+    private Mono<Void> processSubscribeCommand(WebSocketMessageMetadataDto metadataDto, WebSocketSession session) {
+        subscriptionManager.addSubscription(metadataDto.getRoomId(), session);
+        log.info(metadataDto.getRoomId() + " 채널에 " + metadataDto.getNickname() + " 님이 입장하셨습니다.");
+        messageBroadcaster.broadcastMessageToSubscribers(metadataDto.getRoomId(), "SYSTEM", metadataDto.getNickname() + "님이 채팅방에 입장 했습니다.");
         return Mono.empty();
     }
 
     /**
      * <h3>메시지 처리</h3>
      *
-     * @param subscribeDto {@link WebSocketSubscribeDto}
+     * @param metadataDto {@link WebSocketMessageMetadataDto}
      * @param messageText  채팅방에 전달하고자 하는 메시지
      * @return 메시지 브로드캐스트 후 Mono.empty()
      */
-    private Mono<Void> processMessageCommand(WebSocketSubscribeDto subscribeDto, String messageText) {
+    private Mono<Void> processMessageCommand(WebSocketMessageMetadataDto metadataDto, String messageText) {
         String message = XSSFilter.filterXSS(messageText);
 
         // 수신된 메시지를 저장.
-        messagesRepository.save(MessagePayload.builder()
-                .roomId(subscribeDto.getRoomId())
-                .userId(subscribeDto.getMemberId())
-                .nickname(subscribeDto.getNickname())
+        MessagePayload payload = MessagePayload.builder()
+                .roomId(metadataDto.getRoomId())
+                .userId(metadataDto.getMemberId())
+                .nickname(metadataDto.getNickname())
                 .message(message)
                 .timestamp(LocalDateTime.now())
-                .build()).subscribe();
+                .build();
+        messagesRepository.save(payload)
+                .subscribeOn(Schedulers.boundedElastic()) // 별도의 스레드 풀에서 수행
+                .subscribe(null,
+                        error -> {
+                            log.error("MessageRepository: ", error);
+                        }
+                );
 
         // 채팅방에 있는 모든 사용자에게 메시지를 전달.
-        messageBroadcaster.broadcastMessageToSubscribers(subscribeDto.getRoomId(), subscribeDto.getNickname(), message);
+        messageBroadcaster.broadcastMessageToSubscribers(metadataDto.getRoomId(), metadataDto.getNickname(), message);
         return Mono.empty();
     }
 
@@ -163,15 +177,15 @@ public class MessageWebSocketHandler implements WebSocketHandler {
      *     <li>실시간 구독자 정보 유지 : 사용자들이 채팅방에 참여하거나 떠나는것을 실시간으로 반영하고 구독자 수를 정확하게 표시한다.</li>
      * </ul>
      *
-     * @param signalType {@link SignalType} 리엑티브 스트림의 시그널 타입
-     * @param channelSubRef {@link AtomicReference} 된 {@link WebSocketSubscribeDto}
-     * @param session    {@link WebSocketSession} 웹 소켓 세션
+     * @param signalType    {@link SignalType} 리엑티브 스트림의 시그널 타입
+     * @param atomicMetadata {@link AtomicReference} 된 {@link WebSocketMessageMetadataDto}
+     * @param session       {@link WebSocketSession} 웹 소켓 세션
      */
     private void handleDisconnection(SignalType signalType,
-                                     AtomicReference<WebSocketSubscribeDto> channelSubRef,
+                                     AtomicReference<WebSocketMessageMetadataDto> atomicMetadata,
                                      WebSocketSession session) {
         if (SignalType.ON_COMPLETE.equals(signalType) || SignalType.ON_ERROR.equals(signalType)) {
-            WebSocketSubscribeDto channelSub = channelSubRef.get();
+            WebSocketMessageMetadataDto channelSub = atomicMetadata.get();
             if (channelSub == null) return;
             messageBroadcaster.broadcastMessageToSubscribers(channelSub.getRoomId(),
                     "SYSTEM", channelSub.getNickname() + "가 퇴장합니다.");

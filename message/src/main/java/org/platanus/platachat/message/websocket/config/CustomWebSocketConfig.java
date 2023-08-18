@@ -2,7 +2,7 @@ package org.platanus.platachat.message.websocket.config;
 
 
 import lombok.RequiredArgsConstructor;
-import org.platanus.platachat.message.websocket.roommessage.MessageWebSocketHandler;
+import org.platanus.platachat.message.websocket.MessageWebSocketHandler;
 import org.platanus.platachat.message.websocket.simplemessage.SimpleMessageWebSocketHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

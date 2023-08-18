@@ -1,4 +1,4 @@
-package org.platanus.platachat.message.websocket.config;
+package org.platanus.platachat.message.config;
 
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;

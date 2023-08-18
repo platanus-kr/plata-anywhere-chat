@@ -27,9 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member m = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException(MemberConstant.MEMBER_NOT_FOUND_MESSAGE));
-//        SessionMemberDto sessionMemberDto = new SessionMemberDto(m, null);
         return new CustomUserDetailsUserAdaptor(m);
-//        return new CustomUserDetailsUserAdaptor(sessionMemberDto);
     }
 }
 

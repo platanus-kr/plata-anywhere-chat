@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class IdentifierDto {
     /**
-     * 채팅방 식별자 roomId
+     * 채팅방 식별자 (변경하면안됨)
      */
     private String channel;
 

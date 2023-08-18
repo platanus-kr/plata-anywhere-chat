@@ -8,15 +8,56 @@
 <body>
 
 <section class="enter-room p-4 pt-6 flex flex-col item-center mx-auto">
+    <input type="hidden" id="messageServer" th:value="${messageServer}"/>
 
-    <div class="pac-front box-border p-4 flex flex-col">
-        <h1 class="text-lg">테스트 프론트</h1>
+    <div class="pac-front sm:w-[42rem] p-4 pt-6 box-border ">
+        <h1 class="text-2xl">처음화면</h1>
+        <p class="m-2">안녕하세요. <span class="pac-env-load hidden"><span class="pac-profiles"></span>프로파일로 실행 중입니다. </span></p>
+
+        <h2 class="text-xl mt-5">로그인 하기</h2>
+        <p class="m-2">채팅을 하기 위해서 먼저 로그인을 해야 합니다.<br />
+        테스트 계정 정보 : test1/test1, test2/test2, test3/test3 ... test5/test5</p>
+
+        <h2 class="text-xl mt-5">채팅 하기</h2>
+        <p class="m-2">로그인 후 채팅방을 만들거나 생성된 채팅방에 참여할 수 있습니다.</p>
+
+        <h2 class="text-xl mt-5">채팅 기록 보기</h2>
+        <p class="m-2">채팅 종료 후 채팅기록 메뉴에서 채팅내역을 확인할 수 있습니다.<br />
+        내가 참여한 채팅방의 기록만 확인할 수 있습니다.</p>
         <hr/>
 
     </div>
+    <script>
+        const messageServer = document.getElementById('messageServer').value;
 
+        $(document).ready(function () {
+            messageCurrentProfile()
+        })
+
+        function messageCurrentProfile() {
+            $.ajax({
+                url: 'http://' + messageServer + '/api/v1/environment/profiles',
+                type: 'GET'
+            }).done(function (data) {
+                setPacProfiles(data)
+            }).fail(function (error) {
+                // TODO: Exception Handler
+            })
+        }
+
+        function setPacProfiles(data) {
+            for (const profile of data) {
+                const element = '<span class="border-solid border-1 rounded-md text-sm text-slate-50 bg-neutral-500 border-neutral-600 px-2 py-1 mr-1">' + profile + '</span>'
+                $(".pac-profiles").append(element)
+                $(".pac-env-load").removeClass("hidden")
+            }
+        }
+
+
+    </script>
 
 </section>
+
 
 </body>
 </html>

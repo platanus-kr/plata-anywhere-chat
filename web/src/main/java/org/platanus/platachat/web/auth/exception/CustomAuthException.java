@@ -6,8 +6,6 @@ import org.platanus.platachat.web.constants.AuthConstant;
 
 @Getter
 public class CustomAuthException extends RuntimeException {
-
-    //    private String message;
     private AuthValidRetrieveResponseDto responseDto;
 
     public CustomAuthException(AuthValidRetrieveResponseDto responseDto) {

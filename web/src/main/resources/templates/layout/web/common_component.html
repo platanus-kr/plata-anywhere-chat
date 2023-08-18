@@ -10,7 +10,7 @@
 <!-- start : sidebar for front -->
 <div th:fragment="sidebar"
      @click.away="open = false"
-     class="pac-sidebar-menu flex flex-col w-full md:w-64 text-gray-700 dark-mode:text-gray-200 bg-gray-100 flex-shrink-0"
+     class="pac-sidebar-menu flex flex-col w-full md:w-64 text-gray-700 dark-mode:text-gray-200 flex-shrink-0"
      x-data="{ open: false }">
     <div
             class="flex-shrink-0 px-8 py-4 flex flex-row items-center justify-between">
@@ -99,7 +99,7 @@
 <!-- start : sidebar in room -->
 <div th:fragment="sidebar_room"
      @click.away="open = false"
-     class="pac-sidebar-menu flex flex-col w-full md:w-64 text-gray-700 dark-mode:text-gray-200 bg-gray-100 flex-shrink-0"
+     class="pac-sidebar-menu flex flex-col w-full md:w-64 text-gray-700 dark-mode:text-gray-200 flex-shrink-0"
      x-data="{ open: false }">
     <div
             class="flex-shrink-0 px-8 py-4 flex flex-row items-center justify-between">
@@ -130,36 +130,14 @@
         <a class="block px-4 py-2 mt-2 text-sm font-semibold text-gray-900 bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-50 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
            href="#" onclick="roomExit()">🏃🏻‍♂️ 채팅방 나가기</a>
         <hr class="mt-4 mb-4 mr-2 ml-2"/>
+        <a class="block px-4 py-2 mt-2 text-sm font-semibold text-gray-900 bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-50 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
+           href="#">방제 ‣ <span th:text="${pacRoomName}"></span></a>
         <div class="room-member-list">
-            <h3>채팅방 인원</h3>
-            <div class="room-member-list-scroll bg-gray-600 rounded-lg p-3 h-[30rem] overflow-y-auto">
-                <ul class="text-white">
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
-                    <li>(아이콘) 닉네임</li>
+            <a class="block px-4 py-2 mt-2 text-sm font-semibold text-gray-900 bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-50 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
+               href="#">👨‍👩‍👧‍👦 채팅 중인 회원</a>
+            <div class="room-member-list-scroll bg-gray-100 rounded-lg p-3 h-[30rem] overflow-y-auto">
+                <ul>
+                    <li>(구현 중)</li>
                 </ul>
             </div>
         </div>

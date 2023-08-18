@@ -2,6 +2,7 @@ package org.platanus.platachat.message.websocket.subscription;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.platanus.platachat.message.broker.kafka.KafkaChatConsumerAdaptor;
 import org.platanus.platachat.message.websocket.broadcaster.MessageFlux;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketMessage;
@@ -21,9 +22,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Component
 @RequiredArgsConstructor
 public class SubscriptionManager {
-
-//    private final BrokerService brokerService;
-
     private final MessageFlux messageFlux;
 
     /**
@@ -50,10 +48,8 @@ public class SubscriptionManager {
      * @param session 구독 하고자 하는 {@link WebSocketSession} 웹 소켓 세션
      */
     public void addSubscription(String channel, WebSocketSession session) {
-//        String uniqueKey = messageFlux.getChannelUniqueKey(channel, session);
         subscriptions.computeIfAbsent(channel, key -> new CopyOnWriteArraySet<>()).add(session);
         Flux<WebSocketMessage> flux = Flux.create(sink -> messageFlux.addSink(channel, session, sink));
-//        brokerService.sendSubscription(channel);
         session.send(flux).doOnTerminate(() -> messageFlux.removeSink(channel, session)).subscribe();
     }
 
@@ -93,6 +89,7 @@ public class SubscriptionManager {
         if (webSocketSessions == null) return 0L;
         return webSocketSessions.size();
     }
+
 
     public void removeSession(WebSocketSession session) {
         if (subscriptions.containsValue(session)) {

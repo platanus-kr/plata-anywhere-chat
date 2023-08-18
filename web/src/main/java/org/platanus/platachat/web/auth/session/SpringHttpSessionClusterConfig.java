@@ -30,18 +30,10 @@ public class SpringHttpSessionClusterConfig {
     public GenericJackson2JsonRedisSerializer customRedisSerializer() {
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleModule module = new SimpleModule();
-        //module.addSerializer(SessionMemberDto.class, new SessionMemberDtoSerializer());
-        //module.addDeserializer(SessionMemberDto.class, new SessionMemberDtoDeserializer());
-        //module.addSerializer(Member.class, new MemberSerializer());
-        //module.addDeserializer(Member.class, new MemberDeserializer());
         module.addSerializer(SecurityContextImpl.class, new SecurityContextImplSerializer());
         module.addDeserializer(SecurityContextImpl.class, new SecurityContextImplDeserializer());
-        //module.addSerializer(Authentication.class, new AuthenticationSerializer());
-        //module.addDeserializer(Authentication.class, new AuthenticationDeserializer());
 
-        //test1
         objectMapper.registerModule(module);
-        //objectMapper.registerModule(new JavaTimeModule());
 
         /**
          *  이부분은 위의 직렬화기/역직렬화기와 양자택일임.
@@ -91,9 +83,4 @@ public class SpringHttpSessionClusterConfig {
     public RedisSessionRepository sessionRepository(RedisOperations<String, Object> sessionRedisOperations) {
         return new RedisSessionRepository(sessionRedisOperations);
     }
-
-    //@Bean
-//    public static ConfigureRedisAction configureRedisAction() {
-//        return ConfigureRedisAction.NO_OP;
-//    }
 }
