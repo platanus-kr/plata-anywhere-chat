@@ -62,10 +62,8 @@ public class ChatWebController {
         return "chat/lobby";
     }
 
-    // TODO: 채팅방 생성 구현 필요 -> REST는 되어있다.
     @GetMapping("/room/create")
-    public String createRoom(Model model,
-                             @HasMember SessionMemberDto sessionMemberDto,
+    public String createRoom(@HasMember SessionMemberDto sessionMemberDto,
                              HttpServletRequest request) {
         return "chat/create";
     }

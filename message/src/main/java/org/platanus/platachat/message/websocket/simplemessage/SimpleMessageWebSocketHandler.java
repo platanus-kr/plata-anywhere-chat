@@ -103,12 +103,6 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
      */
     private Mono<Void> processMessageCommand(WebSocketMessageMetadataDto subscribeDto, String messageText) {
         String message = XSSFilter.filterXSS(messageText);
-//        try {
-//            message = objectMapper.writeValueAsString(messageText);
-//        } catch (JsonProcessingException e) {
-//            log.error("Error serializing message to JSON", e);
-//            return Mono.empty();
-//        }
         // 채팅방에 있는 모든 사용자에게 메시지를 전달합니다.
         messageBroadcaster.broadcastMessageToSubscribers(subscribeDto.getRoomId(), subscribeDto.getNickname(), message);
         return Mono.empty();

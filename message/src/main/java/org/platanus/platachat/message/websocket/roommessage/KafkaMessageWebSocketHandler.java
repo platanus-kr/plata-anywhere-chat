@@ -134,7 +134,7 @@ public class KafkaMessageWebSocketHandler implements MessageWebSocketHandler {
     private Mono<Void> processSubscribeCommand(WebSocketMessageMetadataDto metadataDto, WebSocketSession session) {
         subscriptionManager.addSubscription(metadataDto.getRoomId(), session);
         log.info(metadataDto.getRoomId() + " 채널에 " + metadataDto.getNickname() + " 님이 입장하셨습니다.");
-        kafkaChatPublishAdaptor.sendMessage(BrokerChatSendRequest.forSubscribeFrom(metadataDto));// TODO : 여기에요 여기
+        kafkaChatPublishAdaptor.sendMessage(BrokerChatSendRequest.forSubscribeFrom(metadataDto));
         return Mono.empty();
     }
 

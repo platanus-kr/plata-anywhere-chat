@@ -27,7 +27,6 @@
 - Thymeleaf의 레이아웃 사용, JavaScript WebSocket 사용
 - nginx dynamic reverse proxy (L4)
 -  ✨ **완전한 1인 프로젝트** ⇢ 감수X, 멘토링X, 부트캠프X
-- 리액티브가 그냥 재미있어 보여서 해보고 싶었음 🤫
 
 ## 프로젝트 소개
 
@@ -422,7 +421,7 @@ java -jar web/build/libs/web-0.0.1-SNAPSHOT.jar &
 java -jar -Dspring.profiles.active=kafka message/build/libs/message-0.0.1-SNAPSHOT.jar &
 ```
 
-- 메시지 브로커를 사용하는 프로파일의 경우 1개 노드로 구성된 kafka와 이를 보조하는 kafka-ui, zookeeper가 포함됩니다.   
+- 메시지 브로커를 사용하는 프로파일의 경우 1개 노드로 구성된 카프카 클러스터와 이를 보조하는 kafka-ui, zookeeper가 포함됩니다.   
 kraft 모드를 원하는 경우 직접 구축해야 합니다.
 - 또한 `message/src/main/resources/application-kafka.properties`의 `spring.kafka.consumer.bootstrap-servers` 항목에 모든 kafka 노드를 추가해야합니다.
 

@@ -14,17 +14,9 @@ import java.io.Serializable;
 @Getter
 @Builder
 @ToString
-//@JsonSerialize(using = SessionMemberDtoSerializer.class)
-//@JsonDeserialize(using = SessionMemberDtoDeserializer.class)
-//@JsonTypeInfo(
-//        use = JsonTypeInfo.Id.NONE,
-//        include = JsonTypeInfo.As.WRAPPER_ARRAY)
 @NoArgsConstructor
 @AllArgsConstructor
 public class SessionMemberDto implements Serializable {
-
-//    @Serial
-//    private static final long serialVersionUID = -702177806442606564L;
     private String id;
     private LoginProvider provider;
     private String username;

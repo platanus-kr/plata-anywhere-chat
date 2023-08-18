@@ -41,7 +41,6 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Page<MessagePayload> getChatLogsByPaging(String roomId, int page, int size) {
-//        final int MESSAGE_COUNT = messageRepository.countByRoomId(roomId);
         return messageRepository.findByRoomId(roomId, PageRequest.of(page, size));
     }
 

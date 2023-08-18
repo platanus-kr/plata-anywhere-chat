@@ -20,13 +20,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 @Slf4j
 @Component
-//@Component("subscriptionManager") // TODO:  여기 확인하고 지우세요
-//@Profile({"standalone", "test"})
 @RequiredArgsConstructor
 public class SubscriptionManager {
-
-//    private final BrokerService brokerService;
-
     private final MessageFlux messageFlux;
 
     /**
@@ -53,10 +48,8 @@ public class SubscriptionManager {
      * @param session 구독 하고자 하는 {@link WebSocketSession} 웹 소켓 세션
      */
     public void addSubscription(String channel, WebSocketSession session) {
-//        String uniqueKey = messageFlux.getChannelUniqueKey(channel, session);
         subscriptions.computeIfAbsent(channel, key -> new CopyOnWriteArraySet<>()).add(session);
         Flux<WebSocketMessage> flux = Flux.create(sink -> messageFlux.addSink(channel, session, sink));
-//        brokerService.sendSubscription(channel);
         session.send(flux).doOnTerminate(() -> messageFlux.removeSink(channel, session)).subscribe();
     }
 
