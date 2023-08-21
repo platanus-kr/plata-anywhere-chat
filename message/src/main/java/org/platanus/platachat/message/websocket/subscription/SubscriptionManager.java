@@ -67,7 +67,7 @@ public class SubscriptionManager {
      * <h3>구독 해제</h3>
      *
      * @param channel 채팅방 식별자
-     * @param session 채팅방을 구독중인 {@link WebSocketSession} 웹 소켓 세
+     * @param session 채팅방을 구독중인 {@link WebSocketSession} 웹 소켓 세션
      */
     public void removeSubscription(String channel, WebSocketSession session) {
         if (subscriptions.containsKey(channel)) {
@@ -86,7 +86,10 @@ public class SubscriptionManager {
      */
     public long countRoomMemberInRoom(String channel) {
         Set<WebSocketSession> webSocketSessions = subscriptions.get(channel);
-        if (webSocketSessions == null) return 0L;
+
+        if (webSocketSessions == null) {
+            return 0L;
+        }
         return webSocketSessions.size();
     }
 
