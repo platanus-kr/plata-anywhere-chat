@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 import java.time.Duration;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("간단 메시지 전송 인수 테스트")
@@ -47,7 +48,6 @@ public class SimpleMessageWebSocketAcceptanceTest extends MessageSpringBootTest 
                             .doOnNext(message -> {
                                 String payload = message.getPayloadAsText();
                                 JSONObject jsonObject = getJsonObject(payload);
-                                // {"command":"broadcast","message":"TEST1님이 채팅방에 입장 했습니다.","timestamp":"15:51:45","identifier":{"channel":"TEST_CHANNEL","memberId":null,"nickname":"SYSTEM","token":null}}
 
                                 // then
                                 assertEquals("broadcast", getStringFromJsonObject(jsonObject, "command"));
@@ -59,34 +59,40 @@ public class SimpleMessageWebSocketAcceptanceTest extends MessageSpringBootTest 
     @DisplayName("메시지 전송 테스트")
     @Test
     public void sendMessageWebsocketTest() {
-        // Given: 구독 요청 메시지
+        // given
         String subscribeMessage = getSubscribeRequest();
         String sendMessage = getMessageRequest();
 
-        // Step 1: 채팅방 구독 후 메시지 전송
         webSocketClient.execute(uri, session -> {
-                    WebSocketMessage webSocketSubscribeMessage = session.textMessage(subscribeMessage);
-                    WebSocketMessage webSocketMessage = session.textMessage(sendMessage);
+            WebSocketMessage webSocketSubscribeMessage = session.textMessage(subscribeMessage);
 
-                    Mono<Void> subscribeMono = session.send(Mono.just(webSocketSubscribeMessage))
-                            .thenMany(session.receive().take(1))
-                            .doOnNext(subscribeResponse -> {
-                                String payload = subscribeResponse.getPayloadAsText();
-                                JSONObject jsonObject = getJsonObject(payload);
-                                assertEquals("broadcast", getStringFromJsonObject(jsonObject, "command"));
-                            }).then();
+//             when
+            return session.send(Mono.just(webSocketSubscribeMessage))
+                    .thenMany(session.receive().take(2))
+                    .index()
+                    .flatMapSequential(indexedResponse -> {
+                        WebSocketMessage responseMessage = indexedResponse.getT2();
 
-                    Mono<Void> sendMono = session.send(Mono.just(webSocketMessage))
-                            .thenMany(session.receive().take(1))
-                            .doOnNext(messageResponse -> {
-                                String payload = messageResponse.getPayloadAsText();
-                                JSONObject jsonObject = getJsonObject(payload);
-                                assertEquals("안녕하세요", getStringFromJsonObject(jsonObject, "message"));
-                            }).then();
+                        if (indexedResponse.getT1() == 0) {
+                            String payload = responseMessage.getPayloadAsText();
+                            JSONObject jsonObject = getJsonObject(payload);
+                            // then
+                            assertThat("broadcast").isEqualTo(getStringFromJsonObject(jsonObject, "command"));
 
-                    return subscribeMono.then(sendMono);
-                })
-                .block(Duration.ofSeconds(5));
+                            // when
+                            return session.send(Mono.just(session.textMessage(sendMessage)));
+                        } else {
+                            String responsePayload = responseMessage.getPayloadAsText();
+                            JSONObject jsonObject = getJsonObject(responsePayload);
+                            // then
+                            assertThat("안녕하세요").isEqualTo(getStringFromJsonObject(jsonObject, "message"));
+
+                            return Mono.empty();
+                        }
+                    })
+                    .then();
+
+        }).block();
     }
 
 
