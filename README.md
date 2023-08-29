@@ -408,13 +408,15 @@ cd ..
 ./gradlew web:bootJar
 ./gradlew message:bootJar
 
-java -jar -Dspring.profiles.active=standalone web/build/libs/web-0.0.1-SNAPSHOT.jar &
+java -jar web/build/libs/web-0.0.1-SNAPSHOT.jar &
 java -jar -Dspring.profiles.active=kafka message/build/libs/message-0.0.1-SNAPSHOT.jar &
 ```
 
 - 메시지 브로커를 사용하는 프로파일의 경우 1개 노드로 구성된 카프카 클러스터와 이를 보조하는 kafka-ui, zookeeper가 포함됩니다.  
   kraft 모드를 원하는 경우 직접 구축해야 합니다.
 - 또한 `message/src/main/resources/application-kafka.properties`의 `spring.kafka.consumer.bootstrap-servers` 항목에 모든 kafka 노드를 추가해야합니다.
+
+### 실제 환경 실행
 
 🎉 **`production` 실제 운영 환경 (메시지 브로커 활성)**
 
@@ -443,7 +445,7 @@ export PAC_GITHUB_SECRET=AAAA
 EOF
 source ~/.bash_profile
 
-# 이후 Kafka, MongoDB, Redis, MariaDB 구축은 생략합니다.
+# Kafka, MongoDB, Redis, MariaDB 구축은 생략합니다.
 ```
 
 > 빌드 및 실행   

@@ -1,6 +1,5 @@
 package org.platanus.platachat.message.websocket.acceptance;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -66,7 +65,7 @@ public class SimpleMessageWebSocketAcceptanceTest extends MessageSpringBootTest 
         webSocketClient.execute(uri, session -> {
             WebSocketMessage webSocketSubscribeMessage = session.textMessage(subscribeMessage);
 
-//             when
+            // when
             return session.send(Mono.just(webSocketSubscribeMessage))
                     .thenMany(session.receive().take(2))
                     .index()

@@ -1,27 +1,40 @@
-plataanywherechat.web.application.host=localhost
-plataanywherechat.web.application.port=3120
-plataanywherechat.broker.chat.message.topic=development.pac.chat.message
-plataanywherechat.broker.chat.push.topic=development.pac.chat.push
+plataanywherechat:
+  web:
+    application:
+      host: localhost
+      port: 3120
+  broker:
+    chat:
+      message:
+        topic: development.pac.chat.message
+      push:
+        topic: development.pac.chat.push
 
-server.port=3121
-server.servlet.session.cookie.name=PAC_SESSIONID
-spring.main.web-application-type=reactive
+server:
+  port: 3121
+  servlet:
+    session:
+      cookie:
+        name: PAC_SESSIONID
 
-# Kafka
-spring.kafka.consumer.bootstrap-servers=localhost:29092
-spring.kafka.consumer.group-id=pac_group
-spring.kafka.consumer.auto-offset-reset=latest
-spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
-spring.kafka.consumer.value-deserializer=org.apache.kafka.common.serialization.StringDeserializer
-
-spring.kafka.producer.bootstrap-servers=localhost:29092
-spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
-spring.kafka.producer.value-serializer=org.apache.kafka.common.serialization.StringSerializer
-
-
-# MongoDB
-spring.data.mongodb.host=localhost
-spring.data.mongodb.port=27017
-spring.data.mongodb.database=pac
-spring.data.mongodb.username=localtest
-spring.data.mongodb.password=localtest
+spring:
+  main:
+    web-application-type: reactive
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:29092
+      group-id: pac_group
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: localhost:29092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: pac
+      username: localtest
+      password: localtest

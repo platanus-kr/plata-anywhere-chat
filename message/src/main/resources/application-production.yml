@@ -1,28 +1,40 @@
-plataanywherechat.web.application.host=${PAC_WEB_HOST}
-plataanywherechat.web.application.port=${PAC_WEB_PORT}
-plataanywherechat.broker.chat.message.topic=${PAC_KAFKA_MESSAGE_TOPIC}
-plataanywherechat.broker.chat.push.topic=${PAC_KAFKA_PUSH_TOPIC}
+plataanywherechat:
+  web:
+    application:
+      host: ${PAC_WEB_HOST}
+      port: ${PAC_WEB_PORT}
+  broker:
+    chat:
+      message:
+        topic: ${PAC_KAFKA_MESSAGE_TOPIC}
+      push:
+        topic: ${PAC_KAFKA_PUSH_TOPIC}
 
-server.port=${PAC_MESSAGE_PORT}
-server.servlet.session.cookie.name=PAC_SESSIONID
-spring.main.web-application-type=reactive
+server:
+  port: ${PAC_MESSAGE_PORT}
+  servlet:
+    session:
+      cookie:
+        name: PAC_SESSIONID
 
-# Kafka
-spring.kafka.consumer.bootstrap-servers=${PAC_KAFKA_KRAFT_NODE}
-spring.kafka.consumer.group-id=pac_group
-spring.kafka.consumer.auto-offset-reset=latest
-spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
-spring.kafka.consumer.value-deserializer=org.apache.kafka.common.serialization.StringDeserializer
-
-spring.kafka.producer.bootstrap-servers=${PAC_KAFKA_KRAFT_NODE}
-spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
-spring.kafka.producer.value-serializer=org.apache.kafka.common.serialization.StringSerializer
-
-
-# MongoDB
-spring.data.mongodb.host=${PAC_MONGODB_HOST}
-spring.data.mongodb.port=${PAC_MONGODB_PORT}
-spring.data.mongodb.database=${PAC_MONGODB_DB}
-spring.data.mongodb.username=${PAC_MONGODB_USERNAME}
-spring.data.mongodb.password=${PAC_MONGODB_PASSWORD}
-
+spring:
+  main:
+    web-application-type: reactive
+  kafka:
+    consumer:
+      bootstrap-servers: ${PAC_KAFKA_KRAFT_NODE}
+      group-id: pac_group
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: ${PAC_KAFKA_KRAFT_NODE}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  data:
+    mongodb:
+      host: ${PAC_MONGODB_HOST}
+      port: ${PAC_MONGODB_PORT}
+      database: ${PAC_MONGODB_DB}
+      username: ${PAC_MONGODB_USERNAME}
+      password: ${PAC_MONGODB_PASSWORD}

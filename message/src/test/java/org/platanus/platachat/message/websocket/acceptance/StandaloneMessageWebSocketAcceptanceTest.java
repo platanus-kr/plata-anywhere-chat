@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("채팅방 메시지 전송 인수 테스트")
-public class StandaloneMessageWebSocketAcceptanceTest  extends MessageSpringBootTest {
+public class StandaloneMessageWebSocketAcceptanceTest extends MessageSpringBootTest {
 
     @LocalServerPort
     private Integer port;
@@ -57,7 +57,6 @@ public class StandaloneMessageWebSocketAcceptanceTest  extends MessageSpringBoot
     }
 
 
-
     @DisplayName("메시지 전송 테스트")
     @Test
     public void sendMessageWebsocketTest() {
@@ -68,7 +67,7 @@ public class StandaloneMessageWebSocketAcceptanceTest  extends MessageSpringBoot
         webSocketClient.execute(uri, session -> {
             WebSocketMessage webSocketSubscribeMessage = session.textMessage(subscribeMessage);
 
-//             when
+            // when
             return session.send(Mono.just(webSocketSubscribeMessage))
                     .thenMany(session.receive().take(2))
                     .index()
