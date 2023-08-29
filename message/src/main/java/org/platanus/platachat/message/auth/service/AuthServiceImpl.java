@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.platanus.platachat.message.auth.dto.AuthValidRetrieveRequestDto;
 import org.platanus.platachat.message.auth.dto.AuthValidRetrieveResponseDto;
 import org.platanus.platachat.message.contants.AuthConstant;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,8 +19,9 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    @Value("${plataanywherechat.web.application.location}")
-    private String webAppServer;
+    private static final String PAC_WEB_HOSTNAME = "plataanywherechat.web.application.host";
+    private static final String PAC_WEB_PORT = "plataanywherechat.web.application.port";
+    private final Environment env;
 
     /**
      * 세션의 유효성 검사를 WEB WAS에 요청한다.
@@ -33,8 +34,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Mono<AuthValidRetrieveResponseDto> getSessionHealth(final String sessionId,
                                                                final String roomId) {
+        final String webApplicationServer = env.getProperty(PAC_WEB_HOSTNAME) + ":" + env.getProperty(PAC_WEB_PORT);
+
         WebClient webClient = WebClient.builder()
-                .baseUrl("http://" + webAppServer)
+                .baseUrl("http://" + webApplicationServer)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
 

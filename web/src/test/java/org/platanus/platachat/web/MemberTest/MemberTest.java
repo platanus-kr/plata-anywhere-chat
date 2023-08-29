@@ -45,7 +45,7 @@ public class MemberTest {
 
     @Order(200)
     @Test
-    void 웹회원_가입_아이디중복_예외() {
+    void 웹회원_가입_아이디중복_예외() { //TODO : 손보기
         final Member member1 = Member.builder()
                 .username("testUser")
                 .password("testPassword")

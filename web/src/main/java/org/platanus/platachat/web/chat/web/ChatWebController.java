@@ -13,6 +13,7 @@ import org.platanus.platachat.web.room.model.RoomMemberStatus;
 import org.platanus.platachat.web.room.model.RoomRole;
 import org.platanus.platachat.web.room.service.RoomService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -28,11 +29,11 @@ import java.time.LocalDateTime;
 @RequestMapping("/chat")
 @RequiredArgsConstructor
 public class ChatWebController {
-
+    private static final String PAC_MESSAGE_HOSTNAME = "plataanywherechat.message.application.host";
+    private static final String PAC_MESSAGE_PORT = "plataanywherechat.message.application.port";
     private final RoomService roomService;
     private final MemberService memberService;
-    @Value("${plataanywherechat.message.application.location}")
-    private String messageAppServer;
+    private final Environment env;
 
     /**
      * <h3>채팅방 목록 </h3>
@@ -57,8 +58,9 @@ public class ChatWebController {
         } else {
             model.addAttribute("pacsessionid", member.getToken());
         }
+        final String messageApplicationServer = getMessageApplicationServerLocation();
         model.addAttribute("member", member);
-        model.addAttribute("messageServer", messageAppServer);
+        model.addAttribute("messageServer", messageApplicationServer);
         return "chat/lobby";
     }
 
@@ -148,9 +150,11 @@ public class ChatWebController {
                 .build();
         roomService.addRoomMember(roomMember);
 
+        final String messageApplicationServer = getMessageApplicationServerLocation();
+
         model.addAttribute("pacSessionId", sessionId);
         model.addAttribute("pacSessionMember", sessionMemberDto);
-        model.addAttribute("pacMessageServer", messageAppServer);
+        model.addAttribute("pacMessageServer", messageApplicationServer);
         model.addAttribute("pacRoomId", roomById.getId());
         model.addAttribute("pacRoomName", roomById.getName());
         model.addAttribute("isChatSessionValid", true);
@@ -209,7 +213,13 @@ public class ChatWebController {
     @Deprecated
     @GetMapping("/room/random")
     public String chatRandomFront(Model model) {
-        model.addAttribute("messageServer", messageAppServer);
+        final String messageApplicationServer = getMessageApplicationServerLocation();
+
+        model.addAttribute("messageServer", messageApplicationServer);
         return "chat/simple_room";
+    }
+
+    private String getMessageApplicationServerLocation() {
+        return env.getProperty(PAC_MESSAGE_HOSTNAME) + ":" + env.getProperty(PAC_MESSAGE_PORT);
     }
 }

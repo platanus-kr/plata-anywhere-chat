@@ -15,6 +15,7 @@ import org.platanus.platachat.web.room.model.Room;
 import org.platanus.platachat.web.room.model.RoomPublic;
 import org.platanus.platachat.web.room.service.RoomService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
+@Profile("!production")
 @Component
 @RequiredArgsConstructor
 public class DataInitializer {
@@ -31,14 +33,9 @@ public class DataInitializer {
     private final RoomService roomService;
     private final MessageService messageService;
 
-    @Value("${plataanywherechat.environment.profile}")
-    private String profile;
 
     @PostConstruct
     public void init() {
-        if (!profile.equals(ConfigConstant.PROPERTY_ENV_PROFILE_LOCAL)) {
-            return;
-        }
 
         log.info("!!! 회원 생성 !!!");
 

@@ -109,7 +109,7 @@
             socket.onclose = function (event) {
                 if (event.wasClean) {
                     console.log('WebSocket 연결이 정상적으로 닫혔습니다.');
-                    alert("서버와의 연결이 끊어졌습니다.");
+                    alert("채팅방과 연결이 종료 되었습니다.");
                     location.href = '/chat/lobby';
                 } else {
                     console.error('WebSocket 연결이 비정상적으로 닫혔습니다.');
@@ -218,8 +218,7 @@
                 url: '/api/v1/room/' + pacRoomId + '/exit',
                 type: 'POST',
                 date: {}
-            }).done(function (data) {
-                alert('채팅방에서 퇴장하였습니다.')
+            }).done(function () {
                 socket.close();
                 location.href = '/room/lobby'
             }).fail(function (error) {

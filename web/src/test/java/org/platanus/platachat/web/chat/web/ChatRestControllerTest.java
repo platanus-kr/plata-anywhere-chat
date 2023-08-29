@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //@MockBeans({
 //		@MockBean(JpaMetamodelMappingContext.class) // JpaAuditing
 //})
+@Deprecated(since = "새로 만들기")
 public class ChatRestControllerTest {
 	
 	@Autowired

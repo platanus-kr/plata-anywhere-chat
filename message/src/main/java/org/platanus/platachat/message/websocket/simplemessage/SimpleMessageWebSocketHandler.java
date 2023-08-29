@@ -44,7 +44,12 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
     public Mono<Void> handle(WebSocketSession session) {
         AtomicReference<WebSocketMessageMetadataDto> channelSub = new AtomicReference<>();
         log.info(session.getAttributes().toString());
-        return session.receive().map(WebSocketMessage::getPayloadAsText).publishOn(Schedulers.boundedElastic()).flatMap(payload -> handleMessage(payload, session, channelSub)).doFinally(signalType -> handleDisconnection(signalType, channelSub, session)).then();
+        return session.receive()
+                .map(WebSocketMessage::getPayloadAsText)
+                .publishOn(Schedulers.boundedElastic())
+                .flatMap(payload -> handleMessage(payload, session, channelSub))
+                .doFinally(signalType -> handleDisconnection(signalType, channelSub, session))
+                .then();
     }
 
     /**

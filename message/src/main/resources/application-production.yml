@@ -1,0 +1,40 @@
+plataanywherechat:
+  web:
+    application:
+      host: ${PAC_WEB_HOST}
+      port: ${PAC_WEB_PORT}
+  broker:
+    chat:
+      message:
+        topic: ${PAC_KAFKA_MESSAGE_TOPIC}
+      push:
+        topic: ${PAC_KAFKA_PUSH_TOPIC}
+
+server:
+  port: ${PAC_MESSAGE_PORT}
+  servlet:
+    session:
+      cookie:
+        name: PAC_SESSIONID
+
+spring:
+  main:
+    web-application-type: reactive
+  kafka:
+    consumer:
+      bootstrap-servers: ${PAC_KAFKA_KRAFT_NODE}
+      group-id: pac_group
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: ${PAC_KAFKA_KRAFT_NODE}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  data:
+    mongodb:
+      host: ${PAC_MONGODB_HOST}
+      port: ${PAC_MONGODB_PORT}
+      database: ${PAC_MONGODB_DB}
+      username: ${PAC_MONGODB_USERNAME}
+      password: ${PAC_MONGODB_PASSWORD}

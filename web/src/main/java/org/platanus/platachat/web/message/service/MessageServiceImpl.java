@@ -22,7 +22,7 @@ public class MessageServiceImpl implements MessageService {
     
     private final MessageRepository messageRepository;
 
-    @Value("${plataanywherechat.environment.profile}")
+    @Value("${spring.profiles.active:unknown}")
     private String profile;
 
     @Override
@@ -51,7 +51,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void deleteAll() {
-        if (!profile.equals(ConfigConstant.PROPERTY_ENV_PROFILE_LOCAL)) {
+        if (profile.equals(ConfigConstant.PROPERTY_ENV_PROFILE_PRODUCTION)) {
             throw new IllegalArgumentException(CommonConstant.ENVIRONMENT_CHECK_FAILED_MESSAGE);
         }
         messageRepository.deleteAll();

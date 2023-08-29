@@ -1,0 +1,61 @@
+plataanywherechat:
+  message:
+    application:
+      host: localhost
+      port: 3121
+
+server:
+  port: 3120
+  servlet:
+    session:
+      cookie:
+        name: PAC_SESSIONID
+
+spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:pacweb;
+    username: sa
+    password:
+  sql:
+    init:
+      mode: always
+      platform: h2
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: FAKE
+            client-secret: FAKE
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  data:
+    redis:
+      repositories:
+        enabled: false
+    mongodb:
+      host: localhost
+      port: 27017
+      database: pac
+      username: localtest
+      password: localtest
+  session:
+    store-type: redis
+  main:
+    allow-bean-definition-overriding: true

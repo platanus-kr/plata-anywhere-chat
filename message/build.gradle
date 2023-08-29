@@ -23,6 +23,8 @@ dependencies {
     implementation 'org.testng:testng:7.7.0'
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {

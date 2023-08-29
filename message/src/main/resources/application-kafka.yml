@@ -1,0 +1,40 @@
+plataanywherechat:
+  web:
+    application:
+      host: localhost
+      port: 3120
+  broker:
+    chat:
+      message:
+        topic: development.pac.chat.message
+      push:
+        topic: development.pac.chat.push
+
+server:
+  port: 3121
+  servlet:
+    session:
+      cookie:
+        name: PAC_SESSIONID
+
+spring:
+  main:
+    web-application-type: reactive
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:29092
+      group-id: pac_group
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: localhost:29092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: pac
+      username: localtest
+      password: localtest

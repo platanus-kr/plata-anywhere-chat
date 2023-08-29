@@ -394,7 +394,7 @@ java -jar -Dspring.profiles.active=standalone message/build/libs/message-0.0.1-S
 - 단독 모드에서는 kafka, zookeeper, kafka-ui가 제외됩니다.  
   이 어플리케이션은 메시지 송수신을 위한 기능이 자체적으로 구현되어있는 어플리케이션으로 kafka 없이 단독으로 모든 기능이 사용가능합니다.
 
-👫 **`kafka`, `production`Kafka 를 사용하는 실행 프로파일 (메시지 브로커 활성)**
+👫 **`kafka` Kafka 를 사용하는 실행 프로파일 (메시지 브로커 활성)**
 
 ```bash
 git clone https://github.com/platanus-kr/plata-anywhere-chat.git pac
@@ -415,6 +415,51 @@ java -jar -Dspring.profiles.active=kafka message/build/libs/message-0.0.1-SNAPSH
 - 메시지 브로커를 사용하는 프로파일의 경우 1개 노드로 구성된 카프카 클러스터와 이를 보조하는 kafka-ui, zookeeper가 포함됩니다.  
   kraft 모드를 원하는 경우 직접 구축해야 합니다.
 - 또한 `message/src/main/resources/application-kafka.properties`의 `spring.kafka.consumer.bootstrap-servers` 항목에 모든 kafka 노드를 추가해야합니다.
+
+### 실제 환경 실행
+
+🎉 **`production` 실제 운영 환경 (메시지 브로커 활성)**
+
+환경변수 설정을 합니다. `docker-compose-kafka`를 사용하는 로컬 기준입니다.
+
+> 환경변수 설정 예시 (Linux)   
+
+```bash
+cat << "EOF" >> ~/.bash_profile
+export PAC_MESSAGE_HOST=localhost
+export PAC_MESSAGE_PORT=3121
+export PAC_WEB_HOST=localhost
+export PAC_WEB_PORT=3120
+export PAC_KAFKA_MESSAGE_TOPIC=development.pac.chat.message
+export PAC_KAFKA_PUSH_TOPIC=development.pac.chat.push
+export PAC_KAFKA_KRAFT_NODE=localhost:29092
+export PAC_MONGODB_HOST=localhost
+export PAC_MONGODB_PORT=27017
+export PAC_MONGODB_DB=pac
+export PAC_MONGODB_USERNAME=localtest
+export PAC_MONGODB_PASSWORD=localtest
+export PAC_REDIS_HOST=localhost
+export PAC_REDIS_PORT=6379
+export PAC_GITHUB_CLIENT_ID=AAAA
+export PAC_GITHUB_SECRET=AAAA
+EOF
+source ~/.bash_profile
+
+# Kafka, MongoDB, Redis, MariaDB 구축은 생략합니다.
+```
+
+> 빌드 및 실행   
+
+```bash
+git clone https://github.com/platanus-kr/plata-anywhere-chat.git pac
+cd pac
+
+./gradlew web:bootJar
+./gradlew message:bootJar
+
+java -jar -Dspring.profiles.active=production web/build/libs/web-0.0.1-SNAPSHOT.jar &
+java -jar -Dspring.profiles.active=production message/build/libs/message-0.0.1-SNAPSHOT.jar &
+```
 
 🪄 **스케일아웃 하기**
 

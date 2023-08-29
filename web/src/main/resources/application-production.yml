@@ -1,0 +1,64 @@
+plataanywherechat:
+  message:
+    application:
+      host: ${PAC_MESSAGE_HOST}
+      port: ${PAC_MESSAGE_PORT}
+
+server:
+  port: ${PAC_WEB_PORT}
+  servlet:
+    session:
+      cookie:
+        name: PAC_SESSIONID
+
+spring:
+  h2:
+    console:
+      enabled: false
+      path: /h2-console
+      settings:
+        web-allow-others: false
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${PAC_MARIADB_DB}
+    username: ${PAC_MARIADB_ID}
+    password: ${PAC_MARIADB_PASSWORD}
+    hikari:
+      connection-init-sql: SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci
+  sql:
+    init:
+      mode: never
+      platform:
+  jpa:
+    generate-ddl: false
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: false
+        use_sql_comments: false
+    show-sql: false
+    database-platform: org.hibernate.dialect.MariaDB103Dialect
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${PAC_GITHUB_CLIENT_ID}
+            client-secret: ${PAC_GITHUB_SECRET}
+  redis:
+    host: ${PAC_REDIS_HOST}
+    port: ${PAC_REDIS_PORT}
+  data:
+    redis:
+      repositories:
+        enabled: false
+    mongodb:
+      host: ${PAC_MONGODB_HOST}
+      port: ${PAC_MONGODB_PORT}
+      database: ${PAC_MONGODB_DB}
+      username: ${PAC_MONGODB_USERNAME}
+      password: ${PAC_MONGODB_PASSWORD}
+  session:
+    store-type: redis
+  main:
+    allow-bean-definition-overriding: true
