@@ -95,7 +95,7 @@ public class SimpleMessageWebSocketAcceptanceTest extends MessageSpringBootTest 
         }).block();
     }
 
-
+    // TODO : move to fixture...
     private String getSubscribeRequest() {
         return "{\"command\" : \"SUBSCRIBE\"," +
                 "\"identifier\" : {\"channel\" : \"TEST_CHANNEL\" , \"nickname\" : \"TEST1\"}" +
