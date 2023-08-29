@@ -37,7 +37,7 @@ public class SimpleMessageWebSocketAcceptanceTest extends MessageSpringBootTest 
     @Test
     public void establishConnectWebSocketTest() {
         // given
-        String sendMessage = getSubscribeRequest();
+        String sendMessage = WebSocketFixture.getSimpleSubscribeRequest();
 
         webSocketClient.execute(uri, session -> {
                     WebSocketMessage webSocketMessage = session.textMessage(sendMessage);
@@ -47,10 +47,10 @@ public class SimpleMessageWebSocketAcceptanceTest extends MessageSpringBootTest 
                             .thenMany(session.receive().take(1))
                             .doOnNext(message -> {
                                 String payload = message.getPayloadAsText();
-                                JSONObject jsonObject = getJsonObject(payload);
+                                JSONObject jsonObject = WebSocketFixture.getJsonObject(payload);
 
                                 // then
-                                assertEquals("broadcast", getStringFromJsonObject(jsonObject, "command"));
+                                assertEquals("broadcast", WebSocketFixture.getStringFromJsonObject(jsonObject, "command"));
                             }).then();
                 })
                 .block(Duration.ofSeconds(5));
@@ -60,8 +60,8 @@ public class SimpleMessageWebSocketAcceptanceTest extends MessageSpringBootTest 
     @Test
     public void sendMessageWebsocketTest() {
         // given
-        String subscribeMessage = getSubscribeRequest();
-        String sendMessage = getMessageRequest();
+        String subscribeMessage = WebSocketFixture.getSimpleSubscribeRequest();
+        String sendMessage = WebSocketFixture.getSimpleMessageRequest();
 
         webSocketClient.execute(uri, session -> {
             WebSocketMessage webSocketSubscribeMessage = session.textMessage(subscribeMessage);
@@ -75,17 +75,17 @@ public class SimpleMessageWebSocketAcceptanceTest extends MessageSpringBootTest 
 
                         if (indexedResponse.getT1() == 0) {
                             String payload = responseMessage.getPayloadAsText();
-                            JSONObject jsonObject = getJsonObject(payload);
+                            JSONObject jsonObject = WebSocketFixture.getJsonObject(payload);
                             // then
-                            assertThat("broadcast").isEqualTo(getStringFromJsonObject(jsonObject, "command"));
+                            assertThat("broadcast").isEqualTo(WebSocketFixture.getStringFromJsonObject(jsonObject, "command"));
 
                             // when
                             return session.send(Mono.just(session.textMessage(sendMessage)));
                         } else {
                             String responsePayload = responseMessage.getPayloadAsText();
-                            JSONObject jsonObject = getJsonObject(responsePayload);
+                            JSONObject jsonObject = WebSocketFixture.getJsonObject(responsePayload);
                             // then
-                            assertThat("안녕하세요").isEqualTo(getStringFromJsonObject(jsonObject, "message"));
+                            assertThat("안녕하세요").isEqualTo(WebSocketFixture.getStringFromJsonObject(jsonObject, "message"));
 
                             return Mono.empty();
                         }
@@ -94,35 +94,4 @@ public class SimpleMessageWebSocketAcceptanceTest extends MessageSpringBootTest 
 
         }).block();
     }
-
-    // TODO : move to fixture...
-    private String getSubscribeRequest() {
-        return "{\"command\" : \"SUBSCRIBE\"," +
-                "\"identifier\" : {\"channel\" : \"TEST_CHANNEL\" , \"nickname\" : \"TEST1\"}" +
-                "}";
-    }
-
-    private String getMessageRequest() {
-        return "{\"command\" : \"MESSAGE\"," +
-                "\"message\" : \"안녕하세요\"," +
-                "\"identifier\" : {\"channel\" : \"TEST_CHANNEL\" , \"nickname\" : \"TEST1\"}" +
-                "}";
-    }
-
-    private Object getStringFromJsonObject(JSONObject jsonObject, final String path) {
-        try {
-            return jsonObject.get(path);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private JSONObject getJsonObject(String payload) {
-        try {
-            return new JSONObject(payload);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 }

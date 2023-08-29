@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 //@SpringBootTest
+@Deprecated(since = "새로 만들기")
 class RoomServiceImplTest {
 	//@Autowired
 	//private MemberService memberService;

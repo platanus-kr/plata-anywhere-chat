@@ -19,8 +19,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    public static final String PLATAANYWHERECHAT_WEB_APPLICATION_LOCATION = "plataanywherechat.web.application.hostname";
-    public static final String LOCAL_SERVER_PORT = "local.server.port";
+    private static final String PAC_WEB_HOSTNAME = "plataanywherechat.web.application.host";
+    private static final String PAC_WEB_PORT = "plataanywherechat.web.application.port";
     private final Environment env;
 
     /**
@@ -34,10 +34,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Mono<AuthValidRetrieveResponseDto> getSessionHealth(final String sessionId,
                                                                final String roomId) {
-        String webAppServer = env.getProperty(PLATAANYWHERECHAT_WEB_APPLICATION_LOCATION) + ":" + env.getProperty(LOCAL_SERVER_PORT);
+        final String webApplicationServer = env.getProperty(PAC_WEB_HOSTNAME) + ":" + env.getProperty(PAC_WEB_PORT);
 
         WebClient webClient = WebClient.builder()
-                .baseUrl("http://" + webAppServer)
+                .baseUrl("http://" + webApplicationServer)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
 

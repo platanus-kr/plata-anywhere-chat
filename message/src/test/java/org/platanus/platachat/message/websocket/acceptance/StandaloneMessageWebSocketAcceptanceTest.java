@@ -1,6 +1,5 @@
 package org.platanus.platachat.message.websocket.acceptance;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +37,7 @@ public class StandaloneMessageWebSocketAcceptanceTest  extends MessageSpringBoot
     @Test
     public void establishConnectWebSocketTest() {
         // given
-        String sendMessage = getSubscribeRequest();
+        String sendMessage = WebSocketFixture.getStandaloneSubscribeRequest();
 
         webSocketClient.execute(uri, session -> {
                     WebSocketMessage webSocketMessage = session.textMessage(sendMessage);
@@ -48,10 +47,10 @@ public class StandaloneMessageWebSocketAcceptanceTest  extends MessageSpringBoot
                             .thenMany(session.receive().take(1))
                             .doOnNext(message -> {
                                 String payload = message.getPayloadAsText();
-                                JSONObject jsonObject = getJsonObject(payload);
+                                JSONObject jsonObject = WebSocketFixture.getJsonObject(payload);
 
                                 // then
-                                assertEquals("broadcast", getStringFromJsonObject(jsonObject, "command"));
+                                assertEquals("broadcast", WebSocketFixture.getStringFromJsonObject(jsonObject, "command"));
                             }).then();
                 })
                 .block(Duration.ofSeconds(5));
@@ -63,8 +62,8 @@ public class StandaloneMessageWebSocketAcceptanceTest  extends MessageSpringBoot
     @Test
     public void sendMessageWebsocketTest() {
         // given
-        String subscribeMessage = getSubscribeRequest();
-        String sendMessage = getMessageRequest();
+        String subscribeMessage = WebSocketFixture.getStandaloneSubscribeRequest();
+        String sendMessage = WebSocketFixture.getStandaloneMessageRequest();
 
         webSocketClient.execute(uri, session -> {
             WebSocketMessage webSocketSubscribeMessage = session.textMessage(subscribeMessage);
@@ -78,17 +77,17 @@ public class StandaloneMessageWebSocketAcceptanceTest  extends MessageSpringBoot
 
                         if (indexedResponse.getT1() == 0) {
                             String payload = responseMessage.getPayloadAsText();
-                            JSONObject jsonObject = getJsonObject(payload);
+                            JSONObject jsonObject = WebSocketFixture.getJsonObject(payload);
                             // then
-                            assertThat("broadcast").isEqualTo(getStringFromJsonObject(jsonObject, "command"));
+                            assertThat("broadcast").isEqualTo(WebSocketFixture.getStringFromJsonObject(jsonObject, "command"));
 
                             // when
                             return session.send(Mono.just(session.textMessage(sendMessage)));
                         } else {
                             String responsePayload = responseMessage.getPayloadAsText();
-                            JSONObject jsonObject = getJsonObject(responsePayload);
+                            JSONObject jsonObject = WebSocketFixture.getJsonObject(responsePayload);
                             // then
-                            assertThat("안녕하세요").isEqualTo(getStringFromJsonObject(jsonObject, "message"));
+                            assertThat("안녕하세요").isEqualTo(WebSocketFixture.getStringFromJsonObject(jsonObject, "message"));
 
                             return Mono.empty();
                         }
@@ -96,36 +95,5 @@ public class StandaloneMessageWebSocketAcceptanceTest  extends MessageSpringBoot
                     .then();
 
         }).block();
-    }
-
-
-    // TODO : move to fixture...
-    private String getSubscribeRequest() {
-        return "{\"command\" : \"SUBSCRIBE\"," +
-                "\"identifier\" : {\"channel\" : \"ROOM_ID\" , \"memberId\" : \"TEST_ID\", \"nickname\" : \"TEST1\", \"token\" : \"ABCD1234\"}" +
-                "}";
-    }
-
-    private String getMessageRequest() {
-        return "{\"command\" : \"MESSAGE\"," +
-                "\"message\" : \"안녕하세요\"," +
-                "\"identifier\" : {\"channel\" : \"ROOM_ID\" , \"memberId\" : \"TEST_ID\", \"nickname\" : \"TEST1\", \"token\" : \"ABCD1234\"}" +
-                "}";
-    }
-
-    private Object getStringFromJsonObject(JSONObject jsonObject, final String path) {
-        try {
-            return jsonObject.get(path);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private JSONObject getJsonObject(String payload) {
-        try {
-            return new JSONObject(payload);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
