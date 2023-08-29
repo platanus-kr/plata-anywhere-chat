@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/message/plata-anywhere-chat.message.main.iml" filepath="$PROJECT_DIR$/.idea/modules/message/plata-anywhere-chat.message.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/message/plata-anywhere-chat.message.test.iml" filepath="$PROJECT_DIR$/.idea/modules/message/plata-anywhere-chat.message.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/web/plata-anywhere-chat.web.main.iml" filepath="$PROJECT_DIR$/.idea/modules/web/plata-anywhere-chat.web.main.iml" />
+    </modules>
+  </component>
+</project>

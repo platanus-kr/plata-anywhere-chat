@@ -7,6 +7,7 @@ import org.platanus.platachat.message.contants.AuthConstant;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -53,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
                 .uri(AuthConstant.AUTH_VALIDATE_URI)
                 .body(Mono.just(requestDto), AuthValidRetrieveRequestDto.class)
                 .retrieve()
-                .onStatus(HttpStatus::isError, response -> {
+                .onStatus(HttpStatusCode::isError, response -> {
                     // 일단 이부분은 채팅방 구현하면서 다시 하는걸로.
                     return Mono.error(new IllegalArgumentException());
                 })

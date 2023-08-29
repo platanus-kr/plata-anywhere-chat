@@ -1,5 +1,7 @@
 package org.platanus.platachat.web.chat.web;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.platanus.platachat.web.auth.argumentresolver.HasMember;
 import org.platanus.platachat.web.auth.dto.LoginProvider;
@@ -12,7 +14,6 @@ import org.platanus.platachat.web.room.model.RoomMember;
 import org.platanus.platachat.web.room.model.RoomMemberStatus;
 import org.platanus.platachat.web.room.model.RoomRole;
 import org.platanus.platachat.web.room.service.RoomService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,8 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
 @Controller

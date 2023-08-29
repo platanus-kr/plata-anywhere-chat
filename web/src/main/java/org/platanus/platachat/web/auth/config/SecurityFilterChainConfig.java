@@ -33,21 +33,25 @@ public class SecurityFilterChainConfig {
         return new CustomAuthenticationSuccessHandler();
     }
 
+    // https://docs.spring.io/spring-security/reference/5.8/migration/servlet/config.html
     @Bean
     public SecurityFilterChain configure(HttpSecurity http,
                                          CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/oauth_login", "/error", "/h2-console/**").permitAll()
-                .antMatchers("/member/join/**", "/member/login/**").permitAll()
-                .antMatchers("/api/v1/auth", "/api/v1/auth/login", "/api/v1/auth/validate").permitAll()
-                .antMatchers("/chat/room/random").permitAll() // 테스트를 위한 임시 개방
-                .antMatchers("/css/**", "/images/**").permitAll()
-                .antMatchers("/").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .csrf().ignoringAntMatchers("/h2-console/**", "/member/join/**", "/member/login/**")
-                .and()
-                .headers().frameOptions().sameOrigin();
+        http.authorizeHttpRequests((authorize) -> authorize.requestMatchers("...")
+                        .permitAll()
+                        .anyRequest().authenticated())
+//                .antMatchers("/oauth_login", "/error", "/h2-console/**").permitAll()
+//                .antMatchers("/member/join/**", "/member/login/**").permitAll()
+//                .antMatchers("/api/v1/auth", "/api/v1/auth/login", "/api/v1/auth/validate").permitAll()
+//                .antMatchers("/chat/room/random").permitAll() // 테스트를 위한 임시 개방
+//                .antMatchers("/css/**", "/images/**").permitAll()
+//                .antMatchers("/").permitAll()
+//                .anyRequest().authenticated()
+//                .and()
+                .csrf(csrf -> csrf.disable())
+//                .ignoringAntMatchers("/h2-console/**", "/member/join/**", "/member/login/**")
+//                .and()
+//                .headers().frameOptions().sameOrigin();
         http.oauth2Login()
                 .successHandler(customAuthenticationSuccessHandler)
                 .and()

@@ -7,9 +7,14 @@ import org.platanus.platachat.web.constants.RoomConstant;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.service.MemberService;
 import org.platanus.platachat.web.room.dto.RoomCreateRequestDto;
-import org.platanus.platachat.web.room.dto.RoomsRetrieveResponseDto;
 import org.platanus.platachat.web.room.dto.RoomStatusRequestDto;
-import org.platanus.platachat.web.room.model.*;
+import org.platanus.platachat.web.room.dto.RoomsRetrieveResponseDto;
+import org.platanus.platachat.web.room.model.Room;
+import org.platanus.platachat.web.room.model.RoomMember;
+import org.platanus.platachat.web.room.model.RoomMemberStatus;
+import org.platanus.platachat.web.room.model.RoomPublic;
+import org.platanus.platachat.web.room.model.RoomRole;
+import org.platanus.platachat.web.room.model.RoomStatus;
 import org.platanus.platachat.web.room.repository.RoomMemberRepository;
 import org.platanus.platachat.web.room.repository.RoomRepository;
 import org.springframework.data.domain.Page;
@@ -63,7 +68,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomMember addRoomMember(RoomMember roomMember) {;
+    public RoomMember addRoomMember(RoomMember roomMember) {
+        ;
         Optional<RoomMember> rm = roomMemberRepository.findByRoomAndMember(roomMember.getRoom(), roomMember.getMember());
         // upsert를 지원하는게 아니라서 entity 검사를 해야함.
         if (rm.isPresent()) {

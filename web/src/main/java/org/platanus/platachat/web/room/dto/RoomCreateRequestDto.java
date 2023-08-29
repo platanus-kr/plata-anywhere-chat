@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.ToString;
 import org.platanus.platachat.web.room.model.RoomPublic;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 @Getter
 @Builder

@@ -1,6 +1,10 @@
 package org.platanus.platachat.web.chat.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * 채팅 컨트롤러 에러 응답

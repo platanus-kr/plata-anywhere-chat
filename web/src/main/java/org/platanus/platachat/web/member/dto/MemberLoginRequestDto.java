@@ -1,6 +1,10 @@
 package org.platanus.platachat.web.member.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * 일반 로그인을 위한 DTO
