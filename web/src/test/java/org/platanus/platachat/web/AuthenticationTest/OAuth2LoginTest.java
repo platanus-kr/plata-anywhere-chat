@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+@Deprecated(since = "이것도 테스트 다시 작성하기")
 @WebMvcTest(controllers = AuthRestControllerV1.class)
 @MockBeans({
         @MockBean(JpaMetamodelMappingContext.class), // JpaAuditing

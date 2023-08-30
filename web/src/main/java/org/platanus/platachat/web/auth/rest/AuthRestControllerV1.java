@@ -2,6 +2,7 @@ package org.platanus.platachat.web.auth.rest;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,7 @@ import org.platanus.platachat.web.auth.dto.AuthValidRetrieveResponseDto;
 import org.platanus.platachat.web.auth.dto.LoginProvider;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.auth.exception.CustomAuthException;
+import org.platanus.platachat.web.auth.service.AuthService;
 import org.platanus.platachat.web.constants.AuthConstant;
 import org.platanus.platachat.web.member.dto.MemberJoinRequestDto;
 import org.platanus.platachat.web.member.dto.MemberJoinResponseDto;
@@ -26,11 +28,7 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.session.Session;
 import org.springframework.session.data.redis.RedisSessionRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -38,8 +36,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthRestControllerV1 {
 
-    private final AuthenticationManager authenticationManager;
+//    private final AuthenticationManager authenticationManager;
     private final MemberService memberService;
+    private final AuthService authService;
     private final RedisSessionRepository sessionRepository;
 
     @GetMapping("/endpoint/check")
@@ -81,25 +80,10 @@ public class AuthRestControllerV1 {
      * @return {@link SessionMemberDto}
      */
     @PostMapping("/login")
-    public SessionMemberDto appLogin(@RequestBody MemberLoginRequestDto dto,
+    public SessionMemberDto appLogin(@RequestBody @Valid MemberLoginRequestDto dto,
                                      HttpServletRequest request,
                                      HttpSession session) {
-        Member member;
-        try {
-            member = memberService.login(dto.getUsername(), dto.getPassword());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(e);
-        }
-
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword());
-        Authentication authentication = authenticationManager.authenticate(token);
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                SecurityContextHolder.getContext());
-        session.setAttribute("member", new SessionMemberDto(member, request.getSession().getId()));
-
-        return new SessionMemberDto(member, session.getId());
+        return authService.authorizationSession(request, session, dto);
     }
 
     /**

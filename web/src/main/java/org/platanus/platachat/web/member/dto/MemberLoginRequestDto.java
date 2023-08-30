@@ -1,5 +1,6 @@
 package org.platanus.platachat.web.member.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +16,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MemberLoginRequestDto {
+    @NotBlank
     private String username;
+
+    @NotBlank
     private String password;
 
     public void setEncodedPassword(String password) {

@@ -16,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 
+@Deprecated(since = "이것도 테스트 다시 작성하기")
 @SpringBootTest
 public class AppLoginTest {
 
