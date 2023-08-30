@@ -35,33 +35,30 @@ public class SecurityFilterChainConfig {
 
     // https://docs.spring.io/spring-security/reference/5.8/migration/servlet/config.html
     @Bean
-    public SecurityFilterChain configure(HttpSecurity http,
-                                         CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) throws Exception {
-        http.authorizeHttpRequests((authorize) -> authorize.requestMatchers("...")
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) throws Exception {
+        http.authorizeHttpRequests((authorize) -> authorize.requestMatchers("/oauth_login",
+                                "/error",
+                                "/h2-console/**",
+                                "/member/join/**", "/member/login/**",
+                                "/api/v1/auth", "/api/v1/auth/login", "/api/v1/auth/validate",
+                                "/chat/room/random",
+                                "/css/**", "/images/**",
+                                "/")
                         .permitAll()
                         .anyRequest().authenticated())
-//                .antMatchers("/oauth_login", "/error", "/h2-console/**").permitAll()
-//                .antMatchers("/member/join/**", "/member/login/**").permitAll()
-//                .antMatchers("/api/v1/auth", "/api/v1/auth/login", "/api/v1/auth/validate").permitAll()
-//                .antMatchers("/chat/room/random").permitAll() // 테스트를 위한 임시 개방
-//                .antMatchers("/css/**", "/images/**").permitAll()
-//                .antMatchers("/").permitAll()
-//                .anyRequest().authenticated()
-//                .and()
                 .csrf(csrf -> csrf.disable())
-//                .ignoringAntMatchers("/h2-console/**", "/member/join/**", "/member/login/**")
-//                .and()
-//                .headers().frameOptions().sameOrigin();
-        http.oauth2Login()
-                .successHandler(customAuthenticationSuccessHandler)
-                .and()
-                .logout().logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("SESSION");
-        http.formLogin()
-                .successHandler(customAuthenticationSuccessHandler)
-                .and()
-                .logout().logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("SESSION");
-        http.cors().and().csrf().disable();
+                .headers(headers -> headers.frameOptions(frameOptionsConfig -> frameOptionsConfig.sameOrigin()));
+        http.oauth2Login(oauth2Login -> oauth2Login.successHandler(customAuthenticationSuccessHandler))
+                .logout(logout -> logout.logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .deleteCookies("SESSION"));
+        http.formLogin(formLogin -> formLogin.successHandler(customAuthenticationSuccessHandler))
+                .logout(logout -> logout.logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .deleteCookies("SESSION"));
+        http.cors(cors -> cors.disable());
+        http.csrf(csrf -> csrf.disable());
         return http.build();
     }
 }
-// test1

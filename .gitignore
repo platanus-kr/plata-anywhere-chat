@@ -28,6 +28,7 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 workspace.xml
+.idea/compiler.xml
 
 ### NetBeans ###
 /nbproject/private/
