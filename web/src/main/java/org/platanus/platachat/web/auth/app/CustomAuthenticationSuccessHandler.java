@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Spring Security 를 위한 Context 예절 주입기
+ * Spring Security 를 위한 Context 주입기
  */
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     @Override

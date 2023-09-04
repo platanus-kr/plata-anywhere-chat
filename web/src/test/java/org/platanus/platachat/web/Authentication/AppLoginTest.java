@@ -1,9 +1,10 @@
-package org.platanus.platachat.web.AuthenticationTest;
+package org.platanus.platachat.web.Authentication;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
+import org.platanus.platachat.web.auth.service.AuthService;
 import org.platanus.platachat.web.member.dto.MemberLoginRequestDto;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.auth.rest.AuthRestControllerV1;
@@ -11,7 +12,6 @@ import org.platanus.platachat.web.member.service.MemberService;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.security.authentication.AuthenticationManager;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
@@ -23,9 +23,9 @@ public class AppLoginTest {
     @Mock
     private MemberService memberService;
 
-    /* authenticationManager : 로그인 시 토큰 처리용. */
+    /* authService : 로그인 시 토큰 처리용. */
     @Mock
-    private AuthenticationManager authenticationManager;
+    private AuthService authService;
 
     @InjectMocks
     private AuthRestControllerV1 appAuthController;

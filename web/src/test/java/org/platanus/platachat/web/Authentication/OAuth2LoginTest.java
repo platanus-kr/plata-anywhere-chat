@@ -1,4 +1,4 @@
-package org.platanus.platachat.web.AuthenticationTest;
+package org.platanus.platachat.web.Authentication;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
