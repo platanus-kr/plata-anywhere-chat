@@ -1,6 +1,6 @@
 package org.platanus.platachat.web.member.service;
 
-import org.platanus.platachat.web.member.dto.MemberJoinRequestDto;
+import org.platanus.platachat.web.member.dto.MemberJoinRequest;
 import org.platanus.platachat.web.member.model.Member;
 
 import java.util.List;
@@ -10,11 +10,11 @@ public interface MemberService {
     /**
      * 회원 가입
      *
-     * @param memberJoinRequestDto 가입하고자 하는 회원 모델
+     * @param memberJoinRequest 가입하고자 하는 회원 모델
      * @return 가입완료된 회원
      */
 
-    Member join(MemberJoinRequestDto memberJoinRequestDto);
+    Member join(MemberJoinRequest memberJoinRequest);
 
     /**
      * 회원 찾기

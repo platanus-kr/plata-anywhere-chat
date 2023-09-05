@@ -1,7 +1,7 @@
 package org.platanus.platachat.web.room.repository.jpa;
 
 import org.platanus.platachat.web.member.model.Member;
-import org.platanus.platachat.web.room.dto.RoomsRetrieveResponseDto;
+import org.platanus.platachat.web.room.dto.RoomsRetrieveResponse;
 import org.platanus.platachat.web.room.model.Room;
 import org.platanus.platachat.web.room.model.RoomMember;
 import org.springframework.data.domain.Page;
@@ -22,7 +22,7 @@ public interface RoomMemberJpaRepository extends JpaRepository<RoomMember, Strin
             "from RoomMember rm " +
 //            "join fetch rm.room " +
             "where rm.member.id = :memberId")
-    Page<RoomsRetrieveResponseDto> findRoomsByMemberIdWithPagination(@Param("memberId") String memberId, Pageable pageable);
+    Page<RoomsRetrieveResponse> findRoomsByMemberIdWithPagination(@Param("memberId") String memberId, Pageable pageable);
 
     @Query("select rm.room from RoomMember rm where rm.member.id = :memberId")
     List<Room> findRoomsMemberId(@Param("memberId") String memberId);

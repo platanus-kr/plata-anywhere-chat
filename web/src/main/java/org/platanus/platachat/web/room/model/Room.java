@@ -25,7 +25,6 @@ import java.util.UUID;
 
 @Getter
 @Builder
-//@ToString(exclude = {"participates"}, callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ROOMS", indexes = {

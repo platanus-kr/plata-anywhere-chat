@@ -1,7 +1,7 @@
 package org.platanus.platachat.web.chat.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.platanus.platachat.web.auth.dto.AuthValidRetrieveResponseDto;
+import org.platanus.platachat.web.auth.dto.AuthValidRetrieveResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,7 +15,7 @@ public class ExceptionChatWebController {
     @ExceptionHandler(CustomChatException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
-    public AuthValidRetrieveResponseDto authException(CustomChatException e) {
+    public AuthValidRetrieveResponse authException(CustomChatException e) {
         log.error("AuthExceptionHandler", e);
         return e.getResponseDto();
     }
@@ -23,7 +23,7 @@ public class ExceptionChatWebController {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    public AuthValidRetrieveResponseDto authException(Exception e) {
+    public AuthValidRetrieveResponse authException(Exception e) {
         log.error("AuthExceptionHandler", e);
         CustomChatException res = (CustomChatException) e;
         return res.getResponseDto();

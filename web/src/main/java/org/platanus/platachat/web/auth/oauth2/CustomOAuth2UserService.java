@@ -2,7 +2,7 @@ package org.platanus.platachat.web.auth.oauth2;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.platanus.platachat.web.auth.dto.CustomOAuth2MemberDto;
+import org.platanus.platachat.web.auth.dto.CustomOAuth2Member;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.constants.AuthConstant;
 import org.platanus.platachat.web.constants.MemberConstant;
@@ -25,7 +25,6 @@ import java.util.Optional;
 /**
  * OAuth2 가입을 위한 서비스
  */
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -41,7 +40,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
         log.info(oAuth2User.getAttributes().toString());
-        CustomOAuth2MemberDto attributes = CustomOAuth2MemberDto.ofGitHub(registrationId, userNameAttributeName, oAuth2User.getAttributes());
+        CustomOAuth2Member attributes = CustomOAuth2Member.ofGitHub(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
         if (isDeletedUser(attributes)) {
             throw new OAuth2AuthenticationException(MemberConstant.MEMBER_ALREADY_REVOKE_USER_MESSAGE);
@@ -50,8 +49,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         session.setAttribute("oAuthToken", userRequest.getAccessToken().getTokenValue());
         session.setAttribute("member", new SessionMemberDto(m, userRequest.getAccessToken().getTokenValue()));
-        //System.out.println("CustomOAuth2UserService ::"  + session.getId());
-        //session.setAttribute("member", new SessionMemberDto(m, session.getId()));
 
         return new DefaultOAuth2User(Collections.singleton(
                 new SimpleGrantedAuthority(m.getAppRole().getKey())),
@@ -60,7 +57,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         );
     }
 
-    private boolean isDeletedUser(CustomOAuth2MemberDto m) {
+    private boolean isDeletedUser(CustomOAuth2Member m) {
         Optional<Member> findMember = memberRepository.findByProviderId(m.getProviderId());
         if (findMember.isPresent() && findMember.get().getDeleted()) {
             return true;
@@ -71,7 +68,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         return false;
     }
 
-    private Member upsert(CustomOAuth2MemberDto m) {
+    private Member upsert(CustomOAuth2Member m) {
         Member buildMember = Member.builder()
                 .username(m.getUsername())
                 .password(AuthConstant.DUMMY_PASSWORD)
@@ -85,10 +82,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .appRole(AppRole.ROLE_USER)
                 .build();
 
-        Member findMember = memberRepository.findByProviderId(buildMember.getProviderId()).map(e -> e.update(buildMember)).orElse(buildMember);
-        if (findMember == null) {
-            findMember = m.toMember();
-        }
+        Member findMember = memberRepository.findByProviderId(buildMember.getProviderId())
+                .map(e -> e.update(buildMember))
+                .orElse(buildMember);
 
         return memberRepository.save(findMember);
     }

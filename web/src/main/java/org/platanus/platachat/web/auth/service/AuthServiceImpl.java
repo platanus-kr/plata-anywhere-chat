@@ -8,7 +8,7 @@ import org.platanus.platachat.web.auth.app.CustomUserDetailsService;
 import org.platanus.platachat.web.auth.app.CustomUserDetailsUserAdaptor;
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.constants.MemberConstant;
-import org.platanus.platachat.web.member.dto.MemberLoginRequestDto;
+import org.platanus.platachat.web.auth.dto.AppLoginRequest;
 import org.platanus.platachat.web.member.model.Member;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
      * CustomAuthenticationProvider의 기능을 실제 사용한다.
      */
     @Override
-    public SessionMemberDto login(HttpServletRequest request, HttpSession session, MemberLoginRequestDto dto) {
+    public SessionMemberDto login(HttpServletRequest request, HttpSession session, AppLoginRequest dto) {
 
         CustomUserDetailsUserAdaptor memberContext =
                 (CustomUserDetailsUserAdaptor) customUserDetailsService.loadUserByUsername(dto.getUsername());

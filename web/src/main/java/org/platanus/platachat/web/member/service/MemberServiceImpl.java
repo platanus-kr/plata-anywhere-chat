@@ -3,7 +3,7 @@ package org.platanus.platachat.web.member.service;
 import lombok.RequiredArgsConstructor;
 
 import org.platanus.platachat.web.constants.MemberConstant;
-import org.platanus.platachat.web.member.dto.MemberJoinRequestDto;
+import org.platanus.platachat.web.member.dto.MemberJoinRequest;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,14 +21,14 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    public Member join(MemberJoinRequestDto memberJoinRequestDto) {
-        memberJoinRequestDto.setEncodedPassword(passwordEncoder.encode(memberJoinRequestDto.getPassword()));
-        Member member = validateUser(memberJoinRequestDto);
+    public Member join(MemberJoinRequest memberJoinRequest) {
+        memberJoinRequest.setEncodedPassword(passwordEncoder.encode(memberJoinRequest.getPassword()));
+        Member member = validateUser(memberJoinRequest);
         memberRepository.save(member);
         return member;
     }
 
-    private Member validateUser(MemberJoinRequestDto dto) throws IllegalArgumentException {
+    private Member validateUser(MemberJoinRequest dto) throws IllegalArgumentException {
         Member joinRequest = dto.toMember();
         Optional<Member> findUserOpt = memberRepository.findByUsername(joinRequest.getUsername());
         if (findUserOpt.isPresent()) {

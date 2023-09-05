@@ -26,13 +26,17 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String username = authentication.getName();
         String password = (String) authentication.getCredentials();
 
-        CustomUserDetailsUserAdaptor memberContext = (CustomUserDetailsUserAdaptor) customUserDetailsService.loadUserByUsername(username);
+        CustomUserDetailsUserAdaptor memberContext =
+                (CustomUserDetailsUserAdaptor) customUserDetailsService.loadUserByUsername(username);
         String passwordInDb = memberContext.getMember().getPassword();
 
         if (!passwordEncoder.matches(password, passwordInDb)) {
             throw new BadCredentialsException(MemberConstant.MEMBER_NOT_MATCH_PASSWORD_MESSAGE);
         }
-        return new UsernamePasswordAuthenticationToken(memberContext.getMember(), null, memberContext.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(
+                memberContext.getMember(),
+                null,
+                memberContext.getAuthorities());
     }
 
     @Override

@@ -6,9 +6,9 @@ import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.constants.RoomConstant;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.service.MemberService;
-import org.platanus.platachat.web.room.dto.RoomCreateRequestDto;
-import org.platanus.platachat.web.room.dto.RoomStatusRequestDto;
-import org.platanus.platachat.web.room.dto.RoomsRetrieveResponseDto;
+import org.platanus.platachat.web.room.dto.RoomCreateRequest;
+import org.platanus.platachat.web.room.dto.RoomStatusRequest;
+import org.platanus.platachat.web.room.dto.RoomsRetrieveResponse;
 import org.platanus.platachat.web.room.model.Room;
 import org.platanus.platachat.web.room.model.RoomMember;
 import org.platanus.platachat.web.room.model.RoomMemberStatus;
@@ -35,7 +35,7 @@ public class RoomServiceImpl implements RoomService {
 
 
     @Override
-    public Room createRoom(RoomCreateRequestDto roomReqDto, Member m) {
+    public Room createRoom(RoomCreateRequest roomReqDto, Member m) {
         // 채팅방 생성
         Room r = Room.builder()
                 .name(roomReqDto.getRoomName())
@@ -105,7 +105,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Room changeRoomInformation(String roomId,
-                                      RoomStatusRequestDto requestDto,
+                                      RoomStatusRequest requestDto,
                                       SessionMemberDto sessionMemberDto) {
         validateDto(roomId, requestDto);
 
@@ -132,7 +132,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Room changeRoomOwner(String roomId,
-                                RoomStatusRequestDto requestDto,
+                                RoomStatusRequest requestDto,
                                 SessionMemberDto sessionMemberDto) {
         validateDto(roomId, requestDto);
 
@@ -200,13 +200,13 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Page<RoomsRetrieveResponseDto> getRoomDtosByMemberIdAsPaging(String memberId, int page) {
+    public Page<RoomsRetrieveResponse> getRoomDtosByMemberIdAsPaging(String memberId, int page) {
         final int PAGE_SIZE = 10;
         return getRoomDtosByMemberIdAsPaging(memberId, page, PAGE_SIZE);
     }
 
     @Override
-    public Page<RoomsRetrieveResponseDto> getRoomDtosByMemberIdAsPaging(String memberId, int page, int size) {
+    public Page<RoomsRetrieveResponse> getRoomDtosByMemberIdAsPaging(String memberId, int page, int size) {
         return roomMemberRepository.findRoomsByMemberIdWithPagination(memberId, PageRequest.of(page, size));
     }
 
@@ -297,7 +297,7 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.save(room);
     }
 
-    private void validateDto(String roomId, RoomStatusRequestDto dto) {
+    private void validateDto(String roomId, RoomStatusRequest dto) {
         if (StringUtils.isBlank(roomId)) {
             throw new IllegalArgumentException(RoomConstant.ROOM_VALIDATE_ROOM_ID_IS_BLANK_MESSAGE);
         }

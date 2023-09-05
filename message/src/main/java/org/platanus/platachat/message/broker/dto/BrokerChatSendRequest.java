@@ -2,7 +2,7 @@ package org.platanus.platachat.message.broker.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.platanus.platachat.message.websocket.dto.WebSocketMessageMetadataDto;
+import org.platanus.platachat.message.websocket.dto.WebSocketMessageMetadata;
 
 import java.time.LocalDateTime;
 
@@ -37,10 +37,10 @@ public class BrokerChatSendRequest {
     /**
      * 채팅방 입장 첫 메시지를 포함한 요청
      *
-     * @param dto {@link WebSocketMessageMetadataDto}
+     * @param dto {@link WebSocketMessageMetadata}
      * @return {@link BrokerChatSendRequest}
      */
-    public static BrokerChatSendRequest forSubscribeFrom(WebSocketMessageMetadataDto dto) {
+    public static BrokerChatSendRequest forSubscribeFrom(WebSocketMessageMetadata dto) {
         return BrokerChatSendRequest.builder()
                 .roomId(dto.getRoomId())
                 .message(String.format(SUBSCRIBE_MESSAGE, dto.getNickname()))
@@ -54,10 +54,10 @@ public class BrokerChatSendRequest {
     /**
      * 채팅방 퇴장 메시지를 포함한 요청
      *
-     * @param dto {@link WebSocketMessageMetadataDto}
+     * @param dto {@link WebSocketMessageMetadata}
      * @return {@link BrokerChatSendRequest}
      */
-    public static BrokerChatSendRequest forLeaveFrom(WebSocketMessageMetadataDto dto) {
+    public static BrokerChatSendRequest forLeaveFrom(WebSocketMessageMetadata dto) {
         return BrokerChatSendRequest.builder()
                 .roomId(dto.getRoomId())
                 .message(String.format(LEAVE_MESSAGE, dto.getNickname()))
@@ -70,11 +70,11 @@ public class BrokerChatSendRequest {
     /**
      * 채팅 메시지 요청
      *
-     * @param dto {@link WebSocketMessageMetadataDto}
+     * @param dto {@link WebSocketMessageMetadata}
      * @param message 채팅 메시지
      * @return {@link BrokerChatSendRequest}
      */
-    public static BrokerChatSendRequest from(WebSocketMessageMetadataDto dto, String message) {
+    public static BrokerChatSendRequest from(WebSocketMessageMetadata dto, String message) {
         return BrokerChatSendRequest.builder()
                 .roomId(dto.getRoomId())
                 .message(message)

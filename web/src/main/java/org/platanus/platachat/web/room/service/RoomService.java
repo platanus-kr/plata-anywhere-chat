@@ -3,9 +3,9 @@ package org.platanus.platachat.web.room.service;
 
 import org.platanus.platachat.web.auth.dto.SessionMemberDto;
 import org.platanus.platachat.web.member.model.Member;
-import org.platanus.platachat.web.room.dto.RoomCreateRequestDto;
-import org.platanus.platachat.web.room.dto.RoomsRetrieveResponseDto;
-import org.platanus.platachat.web.room.dto.RoomStatusRequestDto;
+import org.platanus.platachat.web.room.dto.RoomCreateRequest;
+import org.platanus.platachat.web.room.dto.RoomsRetrieveResponse;
+import org.platanus.platachat.web.room.dto.RoomStatusRequest;
 import org.platanus.platachat.web.room.model.Room;
 import org.platanus.platachat.web.room.model.RoomMember;
 import org.springframework.data.domain.Page;
@@ -18,15 +18,15 @@ public interface RoomService {
 
     RoomMember addRoomMember(RoomMember roomMember);
 
-    Room createRoom(RoomCreateRequestDto roomReqDto, Member m);
+    Room createRoom(RoomCreateRequest roomReqDto, Member m);
 
     List<Room> getRoomsByMemberId(String memberId);
 
     Room getRoomById(String id, SessionMemberDto sessionMemberDto);
 
-    Room changeRoomInformation(String roomId, RoomStatusRequestDto roomReqDto, SessionMemberDto sessionMemberDto);
+    Room changeRoomInformation(String roomId, RoomStatusRequest roomReqDto, SessionMemberDto sessionMemberDto);
 
-    Room changeRoomOwner(String roomId, RoomStatusRequestDto requestDto, SessionMemberDto sessionMemberDto);
+    Room changeRoomOwner(String roomId, RoomStatusRequest requestDto, SessionMemberDto sessionMemberDto);
 
     Page<Room> getRoomsByVisibleAsPaging(int page);
 
@@ -36,9 +36,9 @@ public interface RoomService {
 
     Page<Room> getRoomsByMemberIdAsPaging(String memberId, int page, int size);
 
-    Page<RoomsRetrieveResponseDto> getRoomDtosByMemberIdAsPaging(String memberId, int page);
+    Page<RoomsRetrieveResponse> getRoomDtosByMemberIdAsPaging(String memberId, int page);
 
-    Page<RoomsRetrieveResponseDto> getRoomDtosByMemberIdAsPaging(String memberId, int page, int size);
+    Page<RoomsRetrieveResponse> getRoomDtosByMemberIdAsPaging(String memberId, int page, int size);
 
     void exitRoom(String roomId, SessionMemberDto sessionMemberDto);
 

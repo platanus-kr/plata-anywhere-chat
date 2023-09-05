@@ -1,0 +1,56 @@
+package org.platanus.platachat.web.authentication;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.platanus.platachat.web.auth.dto.SessionMemberDto;
+import org.platanus.platachat.web.auth.service.AuthService;
+import org.platanus.platachat.web.auth.dto.AppLoginRequest;
+import org.platanus.platachat.web.member.model.Member;
+import org.platanus.platachat.web.auth.rest.AuthController;
+import org.platanus.platachat.web.member.service.MemberService;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpSession;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.when;
+
+@Deprecated(since = "이것도 테스트 다시 작성하기")
+@SpringBootTest
+public class AppLoginTest {
+
+    @Mock
+    private MemberService memberService;
+
+    /* authService : 로그인 시 토큰 처리용. */
+    @Mock
+    private AuthService authService;
+
+    @InjectMocks
+    private AuthController appAuthController;
+
+    @Test
+    public void 앱_로그인_세션발급_테스트() {
+        // given
+        final String TEST_USERNAME = "testUser";
+        final String TEST_PASSWORD = "password";
+        AppLoginRequest dto = AppLoginRequest.builder()
+                .username(TEST_USERNAME)
+                .password(TEST_PASSWORD)
+                .build();
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        MockHttpSession mockSession = new MockHttpSession();
+        // JSESSIONID(aka PACSESSIONID) 임의로 지정해서 세션 생성되서 내려오는지 확인하는 용도. 중요!
+        mockSession.setAttribute("PACSESSION", mockSession.changeSessionId());
+
+        // when
+        when(memberService.getMemberWithPassword(TEST_USERNAME, TEST_PASSWORD))
+                .thenReturn(Member.builder().username(TEST_USERNAME).password(TEST_PASSWORD).build());
+
+        // then
+        SessionMemberDto sessionMemberDto = appAuthController.appLogin(dto, mockRequest, mockSession);
+        System.out.println(sessionMemberDto.toString());
+        assertThat(sessionMemberDto.getToken()).isNotBlank();
+    }
+}
