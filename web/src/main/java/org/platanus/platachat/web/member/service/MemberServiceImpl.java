@@ -50,7 +50,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member login(String username, String password) throws IllegalArgumentException {
+    @Deprecated(since = "테스트 다시 만들면서 반드시 제거할 것 ")
+    public Member getMemberWithPassword(String username, String password) throws IllegalArgumentException {
         Member findMember = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException(MemberConstant.MEMBER_NOT_FOUND_MESSAGE));
         if (!passwordEncoder.matches(password, findMember.getPassword())) {

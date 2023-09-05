@@ -1,6 +1,3 @@
-############### auth
-
-
 ### member join test
 POST {{pac-web}}/api/v1/auth/join
 Content-Type: application/json
@@ -37,7 +34,7 @@ Content-Type: application/json
 
 
 ### validate web authorization
-GET {{pac-web}}/auth/endpoint/check
+GET {{pac-web}}/api/v1/auth/endpoint/check
 
 ### logout suthorize
 GET {{pac-web}}/logout
@@ -52,7 +49,7 @@ Content-Type: application/json
 }
 
 
-############## chat room
+
 
 ### chat public room list
 GET {{pac-web}}/api/v1/room/list?page=1
@@ -112,8 +109,6 @@ POST {{pac-web}}/api/v1/room/{{public_room}}/exit
 POST {{pac-web}}/api/v1/room/{{public_room}}/join
 
 
-
-######### chat message
 
 ### chat logs
 GET {{pac-web}}/api/v1/chat/log/simple/7394e567-daab-4d48-81f8-ecc0c482e94e?page=2

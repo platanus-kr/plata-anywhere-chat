@@ -53,5 +53,5 @@ public interface MemberService {
     boolean leave(Member member);
 
 
-    Member login(String username, String password);
+    Member getMemberWithPassword(String username, String password);
 }

@@ -45,7 +45,7 @@ public class AppLoginTest {
         mockSession.setAttribute("PACSESSION", mockSession.changeSessionId());
 
         // when
-        when(memberService.login(TEST_USERNAME, TEST_PASSWORD))
+        when(memberService.getMemberWithPassword(TEST_USERNAME, TEST_PASSWORD))
                 .thenReturn(Member.builder().username(TEST_USERNAME).password(TEST_PASSWORD).build());
 
         // then

@@ -20,10 +20,7 @@ import org.platanus.platachat.web.member.dto.MemberLoginRequestDto;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.service.MemberService;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.session.Session;
@@ -36,7 +33,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthRestControllerV1 {
 
-//    private final AuthenticationManager authenticationManager;
     private final MemberService memberService;
     private final AuthService authService;
     private final RedisSessionRepository sessionRepository;
@@ -83,7 +79,7 @@ public class AuthRestControllerV1 {
     public SessionMemberDto appLogin(@RequestBody @Valid MemberLoginRequestDto dto,
                                      HttpServletRequest request,
                                      HttpSession session) {
-        return authService.authorizationSession(request, session, dto);
+        return authService.login(request, session, dto);
     }
 
     /**
