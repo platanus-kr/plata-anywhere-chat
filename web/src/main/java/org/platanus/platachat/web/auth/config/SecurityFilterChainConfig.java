@@ -3,6 +3,7 @@ package org.platanus.platachat.web.auth.config;
 import lombok.RequiredArgsConstructor;
 import org.platanus.platachat.web.auth.app.CustomAuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @EnableWebSecurity
+@Configuration
 @RequiredArgsConstructor
 public class SecurityFilterChainConfig {
 

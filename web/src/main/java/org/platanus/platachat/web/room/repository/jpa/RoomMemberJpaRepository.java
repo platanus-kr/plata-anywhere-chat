@@ -17,7 +17,7 @@ import java.util.Optional;
 public interface RoomMemberJpaRepository extends JpaRepository<RoomMember, String> {
 
     // TODO: QueryDSL 대상
-    @Query("select new org.platanus.platachat.web.room.dto.RoomsRetrieveResponseDto(" +
+    @Query("select new org.platanus.platachat.web.room.dto.RoomsRetrieveResponse(" +
             "rm.room.id, rm.room.name, rm.room.description, rm.room.imageUrl, rm.room.created) " +
             "from RoomMember rm " +
 //            "join fetch rm.room " +

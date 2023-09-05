@@ -1,9 +1,9 @@
-package org.platanus.platachat.web.authentication.acceptance;
+package org.platanus.platachat.web.util;
 
+import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -12,17 +12,13 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
 @ActiveProfiles("test")
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class LoginAcceptanceTest {
+public class SpringBootTestPrefix {
+
+    @LocalServerPort
+    int port;
 
     @BeforeEach
-    void beforeEach() {
-
+    void springBootTestSetup() {
+        RestAssured.port = port;
     }
-
-    @DisplayName("어플리케이션 자체 로그인 테스트")
-    @Test
-    public void test() {
-        System.out.println("ㅎㅇ ");
-    }
-
 }
