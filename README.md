@@ -39,18 +39,18 @@
 
 🌐 `web` : 회원, 채팅 저장, 채팅 기록 조회 등 영속성과 관련된 기능 담당
 
-> Spring Boot, Spring Web MVC (5.3.24)  
-> Spring Data JPA, Spring Data MongoDB  
-> MariaDB, MongoDB  
-> Spring Security - OAuth2 client login + app login  
-> Spring Session Data Redis  
-> Thymeleaf + Javascript + WebSocket
+> Spring Boot 3, Spring Web (6.0.11)   
+> Spring Data JPA, Spring Data MongoDB   
+> MariaDB, MongoDB   
+> Spring Security   
+> Spring Session Data Redis   
+> Thymeleaf + Javascript + WebSocket   
 
 💬 `message` : 채팅방 구독, 메시지 발행, 메시지 소비 등 채팅과 관련된 주요 기능 담당
 
-> Spring Boot, Spring WebFlux (5.3.24)  
-> Reactive WebSocket  
-> Spring Data MongoDB
+> Spring Boot 3, Spring WebFlux (6.0.11)  
+> Reactive WebSocket   
+> Spring Data MongoDB   
 
 **프로젝트 패키지 : web**
 
