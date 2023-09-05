@@ -3,23 +3,19 @@ package org.platanus.platachat.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.platanus.platachat.web.constants.ConfigConstant;
-import org.platanus.platachat.web.member.dto.MemberJoinRequestDto;
+import org.platanus.platachat.web.member.dto.MemberJoinRequest;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.service.MemberService;
-import org.platanus.platachat.web.message.model.MessagePayload;
-import org.platanus.platachat.web.message.model.MessageType;
 import org.platanus.platachat.web.message.service.MessageService;
-import org.platanus.platachat.web.room.dto.RoomCreateRequestDto;
+import org.platanus.platachat.web.room.dto.RoomCreateRequest;
 import org.platanus.platachat.web.room.model.Room;
 import org.platanus.platachat.web.room.model.RoomPublic;
 import org.platanus.platachat.web.room.service.RoomService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.time.LocalDateTime;
+import jakarta.annotation.PostConstruct;
+
 import java.util.List;
 
 @Slf4j
@@ -40,8 +36,8 @@ public class DataInitializer {
         log.info("!!! 회원 생성 !!!");
 
         // 회원 추가
-        List<MemberJoinRequestDto> lists = getMemberJoinRequestDtos();
-        for (MemberJoinRequestDto dto : lists) {
+        List<MemberJoinRequest> lists = getMemberJoinRequestDtos();
+        for (MemberJoinRequest dto : lists) {
             memberService.join(dto);
         }
 
@@ -50,7 +46,7 @@ public class DataInitializer {
         // 방 만들기
         Member m = memberService.findByEmail("test1@test.com");
 
-        RoomCreateRequestDto roomCreateRequestDto = RoomCreateRequestDto.builder()
+        RoomCreateRequest roomCreateRequest = RoomCreateRequest.builder()
                 .capacity(100L)
                 .description("테스트 채팅방")
                 .roomPublic(RoomPublic.AVAILABLE)
@@ -58,7 +54,7 @@ public class DataInitializer {
                 .imageUrl("#")
                 .build();
 
-        Room createdRoom = roomService.createRoom(roomCreateRequestDto, m);
+        Room createdRoom = roomService.createRoom(roomCreateRequest, m);
 //
 //        for (int i = 1; i <= 10; i++) {
 //            RoomCreateRequestDto requestDto = RoomCreateRequestDto.builder()
@@ -121,39 +117,39 @@ public class DataInitializer {
 //        }
     }
 
-    private List<MemberJoinRequestDto> getMemberJoinRequestDtos() {
-        List<MemberJoinRequestDto> lists = List.of(
-                MemberJoinRequestDto.builder()
+    private List<MemberJoinRequest> getMemberJoinRequestDtos() {
+        List<MemberJoinRequest> lists = List.of(
+                MemberJoinRequest.builder()
                         .username("test1")
                         .password("test1")
                         .email("test1@test.com")
                         .nickname("테스트1")
                         .build(),
-                MemberJoinRequestDto.builder()
+                MemberJoinRequest.builder()
                         .username("test2")
                         .password("test2")
                         .email("test2@test.com")
                         .nickname("테스트2")
                         .build(),
-                MemberJoinRequestDto.builder()
+                MemberJoinRequest.builder()
                         .username("test3")
                         .password("test3")
                         .email("test3@test.com")
                         .nickname("테스트3")
                         .build(),
-                MemberJoinRequestDto.builder()
+                MemberJoinRequest.builder()
                         .username("test4")
                         .password("test4")
                         .email("test4@test.com")
                         .nickname("테스트4")
                         .build(),
-                MemberJoinRequestDto.builder()
+                MemberJoinRequest.builder()
                         .username("test5")
                         .password("test5")
                         .email("test5@test.com")
                         .nickname("테스트5")
                         .build(),
-                MemberJoinRequestDto.builder()
+                MemberJoinRequest.builder()
                         .username("test6")
                         .password("test6")
                         .email("test6@test.com")

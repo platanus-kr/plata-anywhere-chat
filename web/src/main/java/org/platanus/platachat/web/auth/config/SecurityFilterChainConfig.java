@@ -2,30 +2,29 @@ package org.platanus.platachat.web.auth.config;
 
 import lombok.RequiredArgsConstructor;
 import org.platanus.platachat.web.auth.app.CustomAuthenticationSuccessHandler;
-import org.platanus.platachat.web.auth.oauth2.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @EnableWebSecurity
+@Configuration
 @RequiredArgsConstructor
 public class SecurityFilterChainConfig {
 
-    private final CustomOAuth2UserService customOAuth2MemberService;
-
     /**
      * 커스텀 컨트롤러나 REST로 인증하려면 Bean 주입 필요.
-     *
-     * @param authConfig
-     * @return
-     * @throws Exception
      */
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
@@ -33,31 +32,54 @@ public class SecurityFilterChainConfig {
         return new CustomAuthenticationSuccessHandler();
     }
 
+    /**
+     * securityFilterChains 변경사항
+     *
+     * <pre>
+     *     1. 사용처 변화
+     *     https://github.com/spring-projects/spring-security/issues/12864#issuecomment-1490089032
+     *
+     *     2. cve-2023-34035
+     *     https://spring.io/security/cve-2023-34035
+     *     https://github.com/jzheaux/cve-2023-34035-mitigations/tree/6.1.x
+     * </pre>
+     */
     @Bean
-    public SecurityFilterChain configure(HttpSecurity http,
-                                         CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/oauth_login", "/error", "/h2-console/**").permitAll()
-                .antMatchers("/member/join/**", "/member/login/**").permitAll()
-                .antMatchers("/api/v1/auth", "/api/v1/auth/login", "/api/v1/auth/validate").permitAll()
-                .antMatchers("/chat/room/random").permitAll() // 테스트를 위한 임시 개방
-                .antMatchers("/css/**", "/images/**").permitAll()
-                .antMatchers("/").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .csrf().ignoringAntMatchers("/h2-console/**", "/member/join/**", "/member/login/**")
-                .and()
-                .headers().frameOptions().sameOrigin();
-        http.oauth2Login()
-                .successHandler(customAuthenticationSuccessHandler)
-                .and()
-                .logout().logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("SESSION");
-        http.formLogin()
-                .successHandler(customAuthenticationSuccessHandler)
-                .and()
-                .logout().logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("SESSION");
-        http.cors().and().csrf().disable();
+    public SecurityFilterChain securityFilterChains(HttpSecurity http,
+                                                    CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) throws Exception {
+        http.authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers(antMatcher("/oauth_login")).permitAll()
+                        .requestMatchers(antMatcher("/error")).permitAll()
+                        .requestMatchers(antMatcher("/h2-console/**")).permitAll()
+                        .requestMatchers(antMatcher("/member/join/**")).permitAll()
+                        .requestMatchers(antMatcher("/member/login/**")).permitAll()
+                        .requestMatchers(antMatcher("/api/v1/auth/join")).permitAll()
+                        .requestMatchers(antMatcher("/api/v1/auth/login")).permitAll()
+                        .requestMatchers(antMatcher("/api/v1/auth/validate")).permitAll()
+                        .requestMatchers(antMatcher("/chat/room/random")).permitAll()
+                        .requestMatchers(antMatcher("/css/**")).permitAll()
+                        .requestMatchers(antMatcher("/images/**")).permitAll()
+                        .requestMatchers(antMatcher("/")).permitAll()
+                        .requestMatchers(antMatcher("/favicon.ico")).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers.frameOptions(frameOptionsConfig -> frameOptionsConfig.sameOrigin()));
+        http.formLogin(formLogin -> formLogin.successHandler(customAuthenticationSuccessHandler))
+                .logout(logout -> logout.logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .deleteCookies("SESSION"));
+        http.oauth2Login(oauth2Login -> oauth2Login.successHandler(customAuthenticationSuccessHandler))
+                .logout(logout -> logout.logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .deleteCookies("SESSION"));
+        http.cors(cors -> cors.disable());
+        http.csrf(csrf -> csrf.disable());
         return http.build();
     }
+
+    @Bean
+    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
+        return new MvcRequestMatcher.Builder(introspector).servletPath("/");
+    }
 }
-// test1

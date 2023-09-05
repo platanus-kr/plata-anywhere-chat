@@ -13,9 +13,9 @@ import org.platanus.platachat.message.utils.XSSFilter;
 import org.platanus.platachat.message.websocket.MessageWebSocketHandler;
 import org.platanus.platachat.message.websocket.broadcaster.MessageBroadcaster;
 import org.platanus.platachat.message.websocket.dto.CommandType;
-import org.platanus.platachat.message.websocket.dto.IdentifierDto;
-import org.platanus.platachat.message.websocket.dto.WebSocketRequestDto;
-import org.platanus.platachat.message.websocket.dto.WebSocketMessageMetadataDto;
+import org.platanus.platachat.message.websocket.dto.Identifier;
+import org.platanus.platachat.message.websocket.dto.WebSocketRequest;
+import org.platanus.platachat.message.websocket.dto.WebSocketMessageMetadata;
 import org.platanus.platachat.message.websocket.subscription.SubscriptionManager;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -55,7 +55,7 @@ public class KafkaMessageWebSocketHandler implements MessageWebSocketHandler {
      */
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-        AtomicReference<WebSocketMessageMetadataDto> channelSub = new AtomicReference<>();
+        AtomicReference<WebSocketMessageMetadata> channelSub = new AtomicReference<>();
         return session.receive()
                 .map(WebSocketMessage::getPayloadAsText)
                 .publishOn(Schedulers.boundedElastic())
@@ -74,17 +74,17 @@ public class KafkaMessageWebSocketHandler implements MessageWebSocketHandler {
      *
      * @param payload            메시지 Payload
      * @param session            {@link WebSocketSession} 웹소켓 세션
-     * @param atomicMetadata {@link AtomicReference} 된 {@link WebSocketMessageMetadataDto}
+     * @param atomicMetadata {@link AtomicReference} 된 {@link WebSocketMessageMetadata}
      * @return 메시지 처리 후 Mono<Void>
      */
     private Mono<Void> handleMessage(String payload,
                                      WebSocketSession session,
-                                     AtomicReference<WebSocketMessageMetadataDto> atomicMetadata) {
+                                     AtomicReference<WebSocketMessageMetadata> atomicMetadata) {
         try {
-            WebSocketRequestDto webSocketRequestDto = objectMapper.readValue(payload, WebSocketRequestDto.class);
-            CommandType command = webSocketRequestDto.getCommand();
-            IdentifierDto identifier = webSocketRequestDto.getIdentifier();
-            WebSocketMessageMetadataDto metadataDto = WebSocketMessageMetadataDto.builder()
+            WebSocketRequest webSocketRequest = objectMapper.readValue(payload, WebSocketRequest.class);
+            CommandType command = webSocketRequest.getCommand();
+            Identifier identifier = webSocketRequest.getIdentifier();
+            WebSocketMessageMetadata metadataDto = WebSocketMessageMetadata.builder()
                     .roomId(identifier.getChannel())
                     .memberId(identifier.getMemberId())
                     .nickname(identifier.getNickname())
@@ -96,10 +96,10 @@ public class KafkaMessageWebSocketHandler implements MessageWebSocketHandler {
                 validSessionHealth(metadataDto);
                 return processSubscribeCommand(metadataDto, session);
             } else if (command.equals(CommandType.MESSAGE)) {
-                if (webSocketRequestDto.getMessage().length() < 1) {
+                if (webSocketRequest.getMessage().length() < 1) {
                     return Mono.empty();
                 }
-                return processMessageCommand(metadataDto, webSocketRequestDto.getMessage());
+                return processMessageCommand(metadataDto, webSocketRequest.getMessage());
             }
         } catch (IOException e) {
             log.error("Error parsing WebSocket message", e);
@@ -110,7 +110,7 @@ public class KafkaMessageWebSocketHandler implements MessageWebSocketHandler {
         return Mono.error(new IllegalArgumentException("Invalid WebSocket message"));
     }
 
-    private void validSessionHealth(WebSocketMessageMetadataDto metadataDto) {
+    private void validSessionHealth(WebSocketMessageMetadata metadataDto) {
         authService.getSessionHealth(metadataDto.getSessionId(), metadataDto.getRoomId())
                 // 채팅방 구현하면서 다시 손볼것.
                 .onErrorResume(error -> {
@@ -127,11 +127,11 @@ public class KafkaMessageWebSocketHandler implements MessageWebSocketHandler {
     /**
      * <h3>구독 처리</h3>
      *
-     * @param metadataDto {@link WebSocketMessageMetadataDto}
+     * @param metadataDto {@link WebSocketMessageMetadata}
      * @param session      {@link WebSocketSession} 웹 소켓 세션
      * @return 구독 추가 후 Mono.empty()
      */
-    private Mono<Void> processSubscribeCommand(WebSocketMessageMetadataDto metadataDto, WebSocketSession session) {
+    private Mono<Void> processSubscribeCommand(WebSocketMessageMetadata metadataDto, WebSocketSession session) {
         subscriptionManager.addSubscription(metadataDto.getRoomId(), session);
         log.info(metadataDto.getRoomId() + " 채널에 " + metadataDto.getNickname() + " 님이 입장하셨습니다.");
         kafkaChatPublishAdaptor.sendMessage(BrokerChatSendRequest.forSubscribeFrom(metadataDto));
@@ -141,11 +141,11 @@ public class KafkaMessageWebSocketHandler implements MessageWebSocketHandler {
     /**
      * <h3>메시지 처리</h3>
      *
-     * @param metadataDto {@link WebSocketMessageMetadataDto}
+     * @param metadataDto {@link WebSocketMessageMetadata}
      * @param messageText  채팅방에 전달하고자 하는 메시지
      * @return 메시지 브로드캐스트 후 Mono.empty()
      */
-    private Mono<Void> processMessageCommand(WebSocketMessageMetadataDto metadataDto, String messageText) {
+    private Mono<Void> processMessageCommand(WebSocketMessageMetadata metadataDto, String messageText) {
         String message = XSSFilter.filterXSS(messageText);
 
         // 수신된 메시지를 저장.
@@ -180,14 +180,14 @@ public class KafkaMessageWebSocketHandler implements MessageWebSocketHandler {
      * </ul>
      *
      * @param signalType    {@link SignalType} 리엑티브 스트림의 시그널 타입
-     * @param atomicMetadata {@link AtomicReference} 된 {@link WebSocketMessageMetadataDto}
+     * @param atomicMetadata {@link AtomicReference} 된 {@link WebSocketMessageMetadata}
      * @param session       {@link WebSocketSession} 웹 소켓 세션
      */
     private void handleDisconnection(SignalType signalType,
-                                     AtomicReference<WebSocketMessageMetadataDto> atomicMetadata,
+                                     AtomicReference<WebSocketMessageMetadata> atomicMetadata,
                                      WebSocketSession session) {
         if (SignalType.ON_COMPLETE.equals(signalType) || SignalType.ON_ERROR.equals(signalType)) {
-            WebSocketMessageMetadataDto channelSub = atomicMetadata.get();
+            WebSocketMessageMetadata channelSub = atomicMetadata.get();
             if (channelSub == null) return;
             kafkaChatPublishAdaptor.sendMessage(BrokerChatSendRequest.forLeaveFrom(channelSub));
             subscriptionManager.removeSubscription(channelSub.getRoomId(), session);

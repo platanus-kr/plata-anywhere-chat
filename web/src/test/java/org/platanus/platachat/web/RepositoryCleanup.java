@@ -5,11 +5,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Table;
-import javax.persistence.metamodel.EntityType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Table;
+import jakarta.persistence.metamodel.EntityType;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

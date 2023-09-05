@@ -5,14 +5,14 @@ import org.platanus.platachat.web.member.model.Member;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Spring Security 를 위한 Context 예절 주입기
+ * Spring Security 를 위한 Context 주입기
  */
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     @Override

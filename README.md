@@ -39,18 +39,18 @@
 
 🌐 `web` : 회원, 채팅 저장, 채팅 기록 조회 등 영속성과 관련된 기능 담당
 
-> Spring Boot, Spring Web MVC (5.3.24)  
-> Spring Data JPA, Spring Data MongoDB  
-> MariaDB, MongoDB  
-> Spring Security - OAuth2 client login + app login  
-> Spring Session Data Redis  
-> Thymeleaf + Javascript + WebSocket
+> Spring Boot 3, Spring Web (6.0.11)   
+> Spring Data JPA, Spring Data MongoDB   
+> MariaDB, MongoDB   
+> Spring Security   
+> Spring Session Data Redis   
+> Thymeleaf + Javascript + WebSocket   
 
 💬 `message` : 채팅방 구독, 메시지 발행, 메시지 소비 등 채팅과 관련된 주요 기능 담당
 
-> Spring Boot, Spring WebFlux (5.3.24)  
-> Reactive WebSocket  
-> Spring Data MongoDB
+> Spring Boot 3, Spring WebFlux (6.0.11)  
+> Reactive WebSocket   
+> Spring Data MongoDB   
 
 **프로젝트 패키지 : web**
 
@@ -72,17 +72,17 @@
 │   ├── config
 │   │   └── SpringSecurityConfig.java
 │   ├── dto : 세션에 인증 정보를 담기 위한 DTO
-│   │   ├── AuthValidRetrieveRequestDto.java
-│   │   ├── AuthValidRetrieveResponseDto.java
-│   │   ├── CustomOAuth2MemberDto.java
-│   │   └── SessionMemberDto.java
+│   │   ├── AuthValidRetrieveRequest.java
+│   │   ├── AuthValidRetrieveResponse.java
+│   │   ├── CustomOAuth2Member.java
+│   │   └── SessionMember.java
 │   ├── exception
 │   │   ├── CustomAuthException.java
-│   │   └── ExceptionAuthRestControllerV1.java
+│   │   └── ExceptionAuthController.java
 │   ├── oauth2 : OAuth2 인증 설정
 │   │   └── CustomOAuth2UserService.java
 │   ├── rest
-│   │   └── AuthRestControllerV1.java
+│   │   └── AuthController.java
 │   ├── session
 │   │   └── SpringHttpSessionClusterConfig.java : 세션 스토리지 REDIS 설정
 │   └── web
@@ -97,10 +97,10 @@
 <pre>
 └── member
     ├── dto
-    │   ├── MemberJoinRequestDto.java
-    │   ├── MemberJoinResponseDto.java
-    │   ├── MemberLoginRequestDto.java
-    │   └── MemberLoginResponseDto.java
+    │   ├── MemberJoinRequest.java
+    │   ├── MemberJoinResponse.java
+    │   ├── MemberLoginRequest.java
+    │   └── MemberLoginResponse.java
     ├── model
     │   ├── AppRole.java
     │   ├── BaseTime.java
@@ -122,13 +122,13 @@
 <pre>
 ├── chat
 │   ├── dto
-│   │   └── ChatExceptionResponseDto.java
+│   │   └── ChatExceptionResponse.java
 │   ├── exception
 │   │   ├── CustomChatException.java
 │   │   ├── ExceptionChatRestControllerV1.java
 │   │   └── ExceptionChatWebController.java
 │   ├── rest
-│   │   └── ChatLogRestControllerV1.java : 채팅 로그 조회 REST API 컨트롤러
+│   │   └── ChatLogController.java : 채팅 로그 조회 REST API 컨트롤러
 │   └── web
 │       └── ChatWebController.java : 채팅, 채팅방, 채팅 로그 view 용도 컨트롤러
 ├── message
@@ -144,13 +144,17 @@
 │       └── MessageServiceImpl.java
 └── room
     ├── dto
-    │   ├── RoomCreateRequestDto.java
-    │   ├── RoomCreateResponseDto.java
-    │   ├── RoomMemberResponseDto.java
-    │   ├── RoomRetrieveResponseDto.java
-    │   ├── RoomStatusRequestDto.java
-    │   ├── RoomStatusResponseDto.java
-    │   └── RoomsRetrieveResponseDto.java
+    │   ├── RoomCreateRequest.java
+    │   ├── RoomCreateResponse.java
+    │   ├── RoomMemberResponse.java
+    │   ├── RoomRetrieveResponse.java
+    │   ├── RoomStatusRequest.java
+    │   ├── RoomStatusResponse.java
+    │   └── RoomsRetrieveResponse.java
+    ├── exception
+    │   ├── ExceptionRoomController.java
+    │   ├── RoomError.java
+    │   └── RoomException.java
     ├── model
     │   ├── Room.java : 채팅방 엔티티
     │   ├── RoomMember.java : 채팅방 사용자 엔티티 
@@ -161,15 +165,11 @@
     ├── repository
     │   ├── RoomMemberRepository.java
     │   ├── RoomRepository.java
-    │   ├── exception
-    │   │   ├── ExceptionRoomRestControllerV1.java
-    │   │   ├── RoomErrorDto.java
-    │   │   └── RoomException.java
     │   └── jpa
     │       ├── RoomJpaRepository.java
     │       └── RoomMemberJpaRepository.java
     ├── rest
-    │   └── RoomRestControllerV1.java : 채팅방 REST API 컨트롤러 
+    │   └── RoomController.java : 채팅방 REST API 컨트롤러 
     └── service
         ├── RoomService.java
         └── RoomServiceImpl.java
@@ -187,8 +187,8 @@
 │   ├── config
 │   │   └── SpringSecurityConfig.java
 │   ├── dto
-│   │   ├── AuthValidRetrieveRequestDto.java
-│   │   └── AuthValidRetrieveResponseDto.java
+│   │   ├── AuthValidRetrieveRequest.java
+│   │   └── AuthValidRetrieveResponse.java
 │   └── service
 │       ├── AuthService.java
 │       └── AuthServiceImpl.java
@@ -205,11 +205,11 @@
 ├── chat : 채팅을 위한 payload
 │   ├── ChatService.java
 │   ├── dto
-│   │   ├── BrokerRequestDto.java
-│   │   ├── ChannelSubscribeDto.java
-│   │   ├── IdentifierDto.java
-│   │   ├── MessageRequestDto.java
-│   │   └── MessageResponseDto.java
+│   │   ├── BrokerRequest.java
+│   │   ├── ChannelSubscribe.java
+│   │   ├── Identifier.java
+│   │   ├── MessageRequest.java
+│   │   └── MessageResponse.java
 │   └── model
 │       ├── MessagePayload.java
 │       └── MessageType.java
@@ -235,10 +235,10 @@
     │   └── CustomWebSocketConfig.java  : WebSocketHandler 구현
     ├── dto
     │   ├── CommandType.java
-    │   ├── IdentifierDto.java
-    │   ├── WebSocketMessageMetadataDto.java
-    │   ├── WebSocketRequestDto.java
-    │   └── WebSocketResponseDto.java
+    │   ├── Identifier.java
+    │   ├── WebSocketMessageMetadata.java
+    │   ├── WebSocketRequest.java
+    │   └── WebSocketResponse.java
     ├── roommessage
     │   ├── KafkaMessageWebSocketHandler.java : 카프카를 백엔드로 두는 웹소켓 핸들러 구현
     │   └── StandaloneMessageWebSocketHandler.java : 단독으로 메시지를 송수신 처리하는 웹소켓 핸들러 구현

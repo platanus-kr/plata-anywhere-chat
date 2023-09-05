@@ -1,12 +1,12 @@
 package org.platanus.platachat.message.auth.service;
 
 import lombok.RequiredArgsConstructor;
-import org.platanus.platachat.message.auth.dto.AuthValidRetrieveRequestDto;
-import org.platanus.platachat.message.auth.dto.AuthValidRetrieveResponseDto;
+import org.platanus.platachat.message.auth.dto.AuthValidRetrieveRequest;
+import org.platanus.platachat.message.auth.dto.AuthValidRetrieveResponse;
 import org.platanus.platachat.message.contants.AuthConstant;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -32,8 +32,8 @@ public class AuthServiceImpl implements AuthService {
      * @return 세션의 유효성 검사 결과
      */
     @Override
-    public Mono<AuthValidRetrieveResponseDto> getSessionHealth(final String sessionId,
-                                                               final String roomId) {
+    public Mono<AuthValidRetrieveResponse> getSessionHealth(final String sessionId,
+                                                            final String roomId) {
         final String webApplicationServer = env.getProperty(PAC_WEB_HOSTNAME) + ":" + env.getProperty(PAC_WEB_PORT);
 
         WebClient webClient = WebClient.builder()
@@ -41,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
 
-        AuthValidRetrieveRequestDto requestDto = AuthValidRetrieveRequestDto.builder()
+        AuthValidRetrieveRequest requestDto = AuthValidRetrieveRequest.builder()
                 .sessionId(sessionId)
                 .roomId(roomId)
                 .build();
@@ -51,12 +51,12 @@ public class AuthServiceImpl implements AuthService {
         // 예를 들어, 동일한 요청을 다양한 조건에 따라 다른 방식으로 처리하도록 구성하여 유연성을 증대시킬 수 있음.
         return webClient.post()
                 .uri(AuthConstant.AUTH_VALIDATE_URI)
-                .body(Mono.just(requestDto), AuthValidRetrieveRequestDto.class)
+                .body(Mono.just(requestDto), AuthValidRetrieveRequest.class)
                 .retrieve()
-                .onStatus(HttpStatus::isError, response -> {
+                .onStatus(HttpStatusCode::isError, response -> {
                     // 일단 이부분은 채팅방 구현하면서 다시 하는걸로.
                     return Mono.error(new IllegalArgumentException());
                 })
-                .bodyToMono(AuthValidRetrieveResponseDto.class);
+                .bodyToMono(AuthValidRetrieveResponse.class);
     }
 }
