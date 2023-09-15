@@ -430,6 +430,9 @@ export PAC_MESSAGE_HOST=localhost
 export PAC_MESSAGE_PORT=3121
 export PAC_WEB_HOST=localhost
 export PAC_WEB_PORT=3120
+export PAC_MARIADB_DB=jdbc:mariadb://localhost:33306/pac
+export PAC_MARIADB_ID=paclocal
+export PAC_MARIADB_PASSWORD=paclocaldockercompose
 export PAC_KAFKA_MESSAGE_TOPIC=development.pac.chat.message
 export PAC_KAFKA_PUSH_TOPIC=development.pac.chat.push
 export PAC_KAFKA_KRAFT_NODE=localhost:29092
@@ -446,6 +449,14 @@ EOF
 source ~/.bash_profile
 
 # Kafka, MongoDB, Redis, MariaDB 구축은 생략합니다.
+```
+
+MariaDB 스키마로 테이블을 생성 합니다.
+
+> 테이블 생성은 1회만 합니다.
+
+```bash
+mysql -u paclocal -p paclocaldockercompose pac < misc/db/mariadb-schema-pac.sql
 ```
 
 > 빌드 및 실행   

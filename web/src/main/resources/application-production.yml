@@ -12,12 +12,6 @@ server:
         name: PAC_SESSIONID
 
 spring:
-  h2:
-    console:
-      enabled: false
-      path: /h2-console
-      settings:
-        web-allow-others: false
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: ${PAC_MARIADB_DB}
@@ -45,11 +39,10 @@ spring:
           github:
             client-id: ${PAC_GITHUB_CLIENT_ID}
             client-secret: ${PAC_GITHUB_SECRET}
-  redis:
-    host: ${PAC_REDIS_HOST}
-    port: ${PAC_REDIS_PORT}
   data:
     redis:
+      host: ${PAC_REDIS_HOST}
+      port: ${PAC_REDIS_PORT}
       repositories:
         enabled: false
     mongodb:

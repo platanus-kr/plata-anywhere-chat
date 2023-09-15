@@ -49,12 +49,11 @@ spring:
           github:
             client-id: FAKE
             client-secret: FAKE
-  redis:
-    host: 127.0.0.1
-    port: 6379
   data:
     redis:
-      repositories:
+    host: 127.0.0.1
+    port: 6379
+    repositories:
         enabled: false
     mongodb:
       host: localhost
