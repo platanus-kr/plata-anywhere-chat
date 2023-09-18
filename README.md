@@ -428,6 +428,7 @@ java -jar -Dspring.profiles.active=kafka message/build/libs/message-0.0.1-SNAPSH
 cat << "EOF" >> ~/.bash_profile
 export PAC_MESSAGE_HOST=localhost
 export PAC_MESSAGE_PORT=3121
+export PAC_MESSAGE_FQDN=message.fqdn.com
 export PAC_WEB_HOST=localhost
 export PAC_WEB_PORT=3120
 export PAC_MARIADB_DB=jdbc:mariadb://localhost:33306/pac

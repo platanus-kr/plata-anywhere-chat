@@ -1,8 +1,17 @@
+logging:
+  level:
+    org:
+      springframework:
+        security: ERROR
+
+
 plataanywherechat:
   message:
     application:
       host: ${PAC_MESSAGE_HOST}
       port: ${PAC_MESSAGE_PORT}
+    ws:
+      address: ${PAC_MESSAGE_FQDN}
 
 server:
   port: ${PAC_WEB_PORT}

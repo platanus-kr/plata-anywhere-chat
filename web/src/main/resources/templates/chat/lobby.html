@@ -91,7 +91,7 @@
             }
 
 
-            socket = new WebSocket('ws://' + messageServer + '/message');
+            socket = new WebSocket(messageServer + '/message');
             socket.onopen = function (event) {
                 // 연결이 열리면 실행되는 코드
                 console.log('WebSocket 연결이 열렸습니다.');

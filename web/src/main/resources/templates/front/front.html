@@ -36,7 +36,7 @@
 
         function messageCurrentProfile() {
             $.ajax({
-                url: 'http://' + messageServer + '/api/v1/environment/profiles',
+                url: messageServer + '/api/v1/environment/profiles',
                 type: 'GET'
             }).done(function (data) {
                 setPacProfiles(data)

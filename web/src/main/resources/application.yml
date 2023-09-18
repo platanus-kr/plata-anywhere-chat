@@ -10,6 +10,8 @@ plataanywherechat:
     application:
       host: localhost
       port: 3121
+    ws:
+      address: ws://localhost:3121
 
 server:
   port: 3120
