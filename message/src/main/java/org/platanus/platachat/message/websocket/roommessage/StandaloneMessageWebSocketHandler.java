@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Slf4j
 @Component("messageWebSocketHandler")
-@Profile({"standalone", "test"})
+@Profile({"standalone", "test","default"})
 @RequiredArgsConstructor
 public class StandaloneMessageWebSocketHandler implements MessageWebSocketHandler {
 
