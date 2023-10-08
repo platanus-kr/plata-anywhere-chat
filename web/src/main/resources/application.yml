@@ -21,6 +21,7 @@ server:
         name: PAC_SESSIONID
 
 spring:
+
   h2:
     console:
       enabled: true
