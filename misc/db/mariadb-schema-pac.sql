@@ -16,7 +16,6 @@ CREATE TABLE `members` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username_idx` (`username`),
   UNIQUE KEY `provider_id_idx` (`provider_id`),
-  UNIQUE KEY `email_idx` (`email`),
   UNIQUE KEY `nickname_idx` (`nickname`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
