@@ -4,8 +4,13 @@ logging:
       springframework:
         security: ERROR
 
-
 plataanywherechat:
+  web:
+    application:
+      host: ${PAC_WEB_HOST}
+      port: ${PAC_WEB_PORT}
+    http:
+      address: ${PAC_WEB_FQDN}
   message:
     application:
       host: ${PAC_MESSAGE_HOST}
@@ -21,6 +26,9 @@ server:
         name: PAC_SESSIONID
 
 spring:
+  h2:
+    console:
+      enabled: false
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: ${PAC_MARIADB_DB}

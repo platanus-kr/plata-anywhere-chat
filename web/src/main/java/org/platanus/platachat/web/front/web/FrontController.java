@@ -1,7 +1,7 @@
 package org.platanus.platachat.web.front.web;
 
 import lombok.RequiredArgsConstructor;
-import org.platanus.platachat.web.util.MessageAddressFactory;
+import org.platanus.platachat.web.util.URLAddressFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class FrontController {
 
-    private final MessageAddressFactory messageAddressFactory;
+    private final URLAddressFactory URLAddressFactory;
 
     /**
      * <h3>최상위 페이지</h3>
@@ -19,7 +19,7 @@ public class FrontController {
      */
     @GetMapping
     public String front(Model model) {
-        final String messageApplicationServer = messageAddressFactory.getWebServerAddress();
+        final String messageApplicationServer = URLAddressFactory.getMessageHttpAddress();
         model.addAttribute("messageServer", messageApplicationServer);
         return "front/front";
     }

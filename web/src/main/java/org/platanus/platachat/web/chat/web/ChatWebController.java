@@ -14,7 +14,7 @@ import org.platanus.platachat.web.room.model.RoomMember;
 import org.platanus.platachat.web.room.model.RoomMemberStatus;
 import org.platanus.platachat.web.room.model.RoomRole;
 import org.platanus.platachat.web.room.service.RoomService;
-import org.platanus.platachat.web.util.MessageAddressFactory;
+import org.platanus.platachat.web.util.URLAddressFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +30,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ChatWebController {
 
-    private final MessageAddressFactory messageAddressFactory;
+    private final URLAddressFactory URLAddressFactory;
     private final RoomService roomService;
     private final MemberService memberService;
     private final Environment env;
@@ -220,6 +220,6 @@ public class ChatWebController {
     }
 
     private String getMessageApplicationServerLocation() {
-        return messageAddressFactory.getWebSocketAddress();
+        return URLAddressFactory.getMessageWebSocketAddress();
     }
 }

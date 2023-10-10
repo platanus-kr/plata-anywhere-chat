@@ -4,8 +4,13 @@ logging:
       springframework:
         security: TRACE
 
-
 plataanywherechat:
+  web:
+    application:
+      host: localhost
+      port: 3120
+    http:
+      address: http://localhost:3120
   message:
     application:
       host: localhost
@@ -21,7 +26,6 @@ server:
         name: PAC_SESSIONID
 
 spring:
-
   h2:
     console:
       enabled: true
