@@ -31,7 +31,7 @@ public class CustomOAuth2Member {
                 .username(String.valueOf(attributes.get("login")))
                 .profileImage(String.valueOf(attributes.get("avatar_url")))
                 .name(String.valueOf(name))
-                .email(String.valueOf(attributes.get("email")))
+                .email(AuthConstant.DUMMY_EMAIL) // String.valueOf(attributes.get("email"))
                 .blog(String.valueOf(attributes.get("blog")))
                 .build();
     }
