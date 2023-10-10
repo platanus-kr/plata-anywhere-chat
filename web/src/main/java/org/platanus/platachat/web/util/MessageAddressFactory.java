@@ -24,8 +24,8 @@ public class MessageAddressFactory {
     public void init() {
         String[] activeProfiles = environment.getActiveProfiles();
         if (Arrays.asList(activeProfiles).contains("production")) {
-            webSocketAddress = "wss://" + PAC_MESSAGE_FQDN;
-            webAddress = "https://" + PAC_MESSAGE_FQDN;
+            webSocketAddress = "wss://" + environment.getProperty(PAC_MESSAGE_FQDN);
+            webAddress = "https://" + environment.getProperty(PAC_MESSAGE_FQDN);
         } else {
             webSocketAddress = "ws://" + environment.getProperty(PAC_MESSAGE_HOSTNAME) + ":" + environment.getProperty(PAC_MESSAGE_PORT);
             webAddress = "http://" + environment.getProperty(PAC_MESSAGE_HOSTNAME) + ":" + environment.getProperty(PAC_MESSAGE_PORT);
