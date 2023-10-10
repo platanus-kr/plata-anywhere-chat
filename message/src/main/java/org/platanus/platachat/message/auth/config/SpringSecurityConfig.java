@@ -14,6 +14,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebFluxSecurity
+@Deprecated
 public class SpringSecurityConfig {
 
     @Bean
