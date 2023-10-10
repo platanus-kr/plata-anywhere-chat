@@ -71,7 +71,6 @@ public class Member extends BaseTime implements Serializable {
 
     @NotBlank
     @Email
-    @Column(unique = true)
     private String email;
 
     private Boolean deleted;
