@@ -476,4 +476,5 @@ java -jar -Dspring.profiles.active=production message/build/libs/message-0.0.1-S
 
 🪄 **스케일아웃 하기**
 
+- [카프카를 사용하지 않는 배포](misc/docs/HOW_TO_DEPLOY_WITHOUT_KAFKA.md)
 - [문서 참조(작성중)](misc/docs/HOW_TO_SCALABLE.md)
