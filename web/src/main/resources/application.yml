@@ -4,12 +4,19 @@ logging:
       springframework:
         security: TRACE
 
-
 plataanywherechat:
+  web:
+    application:
+      host: localhost
+      port: 3120
+    http:
+      address: http://localhost:3120
   message:
     application:
       host: localhost
       port: 3121
+    ws:
+      address: ws://localhost:3121
 
 server:
   port: 3120
@@ -49,12 +56,11 @@ spring:
           github:
             client-id: FAKE
             client-secret: FAKE
-  redis:
-    host: 127.0.0.1
-    port: 6379
   data:
     redis:
-      repositories:
+    host: 127.0.0.1
+    port: 6379
+    repositories:
         enabled: false
     mongodb:
       host: localhost

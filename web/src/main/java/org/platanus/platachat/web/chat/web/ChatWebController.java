@@ -14,6 +14,7 @@ import org.platanus.platachat.web.room.model.RoomMember;
 import org.platanus.platachat.web.room.model.RoomMemberStatus;
 import org.platanus.platachat.web.room.model.RoomRole;
 import org.platanus.platachat.web.room.service.RoomService;
+import org.platanus.platachat.web.util.URLAddressFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,8 +29,8 @@ import java.time.LocalDateTime;
 @RequestMapping("/chat")
 @RequiredArgsConstructor
 public class ChatWebController {
-    private static final String PAC_MESSAGE_HOSTNAME = "plataanywherechat.message.application.host";
-    private static final String PAC_MESSAGE_PORT = "plataanywherechat.message.application.port";
+
+    private final URLAddressFactory URLAddressFactory;
     private final RoomService roomService;
     private final MemberService memberService;
     private final Environment env;
@@ -219,6 +220,6 @@ public class ChatWebController {
     }
 
     private String getMessageApplicationServerLocation() {
-        return env.getProperty(PAC_MESSAGE_HOSTNAME) + ":" + env.getProperty(PAC_MESSAGE_PORT);
+        return URLAddressFactory.getMessageWebSocketAddress();
     }
 }

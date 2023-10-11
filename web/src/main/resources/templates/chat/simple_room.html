@@ -130,7 +130,7 @@
 
             document.querySelector(".chat-input-nickname-init").value = nickname;
 
-            socket = new WebSocket('ws://' + messageServer + '/simplemessage');
+            socket = new WebSocket(messageServer + '/simplemessage');
             socket.onopen = function (event) {
                 // 연결이 열리면 실행되는 코드
                 console.log('WebSocket 연결이 열렸습니다.');

@@ -19,6 +19,8 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @RequiredArgsConstructor
 public class SecurityFilterChainConfig {
 
+    private final SecurityCORSConfig corsConfig;
+
     /**
      * 커스텀 컨트롤러나 REST로 인증하려면 Bean 주입 필요.
      */
@@ -47,6 +49,8 @@ public class SecurityFilterChainConfig {
     @Bean
     public SecurityFilterChain securityFilterChains(HttpSecurity http,
                                                     CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) throws Exception {
+        http.cors(cors -> corsConfig.corsFilter()); // CORS 비활성화 필요
+        http.csrf(csrf -> csrf.disable()); // TODO 정책 정해서 동적으로 할 수 있게 바꾸기
         http.authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(antMatcher("/oauth_login")).permitAll()
                         .requestMatchers(antMatcher("/error")).permitAll()
@@ -63,7 +67,6 @@ public class SecurityFilterChainConfig {
                         .requestMatchers(antMatcher("/favicon.ico")).permitAll()
                         .anyRequest().authenticated()
                 )
-                .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(frameOptionsConfig -> frameOptionsConfig.sameOrigin()));
         http.formLogin(formLogin -> formLogin.successHandler(customAuthenticationSuccessHandler))
                 .logout(logout -> logout.logoutUrl("/logout")
@@ -73,8 +76,6 @@ public class SecurityFilterChainConfig {
                 .logout(logout -> logout.logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                         .deleteCookies("SESSION"));
-        http.cors(cors -> cors.disable());
-        http.csrf(csrf -> csrf.disable());
         return http.build();
     }
 

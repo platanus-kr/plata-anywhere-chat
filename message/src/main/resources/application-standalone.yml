@@ -1,17 +1,17 @@
 plataanywherechat:
   web:
     application:
-      host: localhost
-      port: 3120
+      host: ${PAC_WEB_HOST}
+      port: ${PAC_WEB_PORT}
   broker:
     chat:
       message:
-        topic: development.pac.chat.message
+        topic: ${PAC_KAFKA_MESSAGE_TOPIC}
       push:
-        topic: development.pac.chat.push
+        topic: ${PAC_KAFKA_PUSH_TOPIC}
 
 server:
-  port: 3121
+  port: ${PAC_MESSAGE_PORT}
   servlet:
     session:
       cookie:
@@ -22,8 +22,8 @@ spring:
     web-application-type: reactive
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: pac
-      username: localtest
-      password: localtest
+      host: ${PAC_MONGODB_HOST}
+      port: ${PAC_MONGODB_PORT}
+      database: ${PAC_MONGODB_DB}
+      username: ${PAC_MONGODB_USERNAME}
+      password: ${PAC_MONGODB_PASSWORD}
