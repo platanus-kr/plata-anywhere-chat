@@ -28,6 +28,12 @@
 
 ## 프로젝트 소개
 
+### 어플리케이션 아키텍처
+
+<img src="https://user-images.githubusercontent.com/6806008/278873267-75fe93e4-9a8f-42d7-87fd-62ee306d861c.png" alt="Plata anywhere chat application architecture"/>
+
+[🍬 상세 아키텍처 더 보러가기..](https://github.com/platanus-kr/plata-anywhere-chat/issues/2)
+
 ### 서비스 주요 기능
 
 - 채팅 기능 구현 : 채팅방 내 메시지 송수신
@@ -39,18 +45,18 @@
 
 🌐 `web` : 회원, 채팅 저장, 채팅 기록 조회 등 영속성과 관련된 기능 담당
 
-> Spring Boot 3, Spring Web (6.0.11)   
-> Spring Data JPA, Spring Data MongoDB   
-> MariaDB, MongoDB   
-> Spring Security   
-> Spring Session Data Redis   
-> Thymeleaf + Javascript + WebSocket   
+> Spring Boot 3, Spring Web (6.0.11)  
+> Spring Data JPA, Spring Data MongoDB  
+> MariaDB, MongoDB  
+> Spring Security  
+> Spring Session Data Redis  
+> Thymeleaf + Javascript + WebSocket
 
 💬 `message` : 채팅방 구독, 메시지 발행, 메시지 소비 등 채팅과 관련된 주요 기능 담당
 
 > Spring Boot 3, Spring WebFlux (6.0.11)  
-> Reactive WebSocket   
-> Spring Data MongoDB   
+> Reactive WebSocket  
+> Spring Data MongoDB
 
 **프로젝트 패키지 : web**
 
@@ -422,7 +428,7 @@ java -jar -Dspring.profiles.active=kafka message/build/libs/message-0.0.1-SNAPSH
 
 환경변수 설정을 합니다. `docker-compose-kafka`를 사용하는 로컬 기준입니다.
 
-> 환경변수 설정 예시 (Linux)   
+> 환경변수 설정 예시 (Linux)
 
 ```bash
 cat << "EOF" >> ~/.bash_profile
@@ -461,7 +467,7 @@ MariaDB 스키마로 테이블을 생성 합니다.
 mysql -u paclocal -p paclocaldockercompose pac < misc/db/mariadb-schema-pac.sql
 ```
 
-> 빌드 및 실행   
+> 빌드 및 실행
 
 ```bash
 git clone https://github.com/platanus-kr/plata-anywhere-chat.git pac
