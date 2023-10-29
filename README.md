@@ -30,6 +30,7 @@
 
 ### 어플리케이션 아키텍처
 
+
 <img src="https://user-images.githubusercontent.com/6806008/278874850-dba3bd95-fbdb-466e-861d-a4db37ff3cfd.png" alt="Plata anywhere chat application architecture"/>
 
 [🍬 상세 아키텍처 더 보러가기..](https://github.com/platanus-kr/plata-anywhere-chat/issues/2)
