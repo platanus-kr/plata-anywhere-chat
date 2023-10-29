@@ -28,6 +28,10 @@
 
 ## 프로젝트 소개
 
+### 어플리케이션 아키텍처 
+
+<img src="https://user-images.githubusercontent.com/6806008/278873267-75fe93e4-9a8f-42d7-87fd-62ee306d861c.png" alt="Plata anywhere chat application architecture"/>
+
 ### 서비스 주요 기능
 
 - 채팅 기능 구현 : 채팅방 내 메시지 송수신
