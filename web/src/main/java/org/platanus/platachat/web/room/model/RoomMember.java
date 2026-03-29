@@ -28,10 +28,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "ROOMS_MEMBER",
         indexes = {
-                @Index(name = "idx_room_id", columnList = "ROOM_ID")
+            @Index(name = "idx_room_id", columnList = "ROOM_ID")
         },
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"MEMBER_ID", "ROOM_ID"})
+            @UniqueConstraint(columnNames = {"MEMBER_ID", "ROOM_ID"})
         }
 )
 @Entity

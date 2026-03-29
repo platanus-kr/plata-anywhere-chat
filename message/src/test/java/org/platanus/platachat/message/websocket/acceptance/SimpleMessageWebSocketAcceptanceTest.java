@@ -39,10 +39,10 @@ public class SimpleMessageWebSocketAcceptanceTest extends MessageSpringBootTest 
         String sendMessage = WebSocketFixture.getSimpleSubscribeRequest();
 
         webSocketClient.execute(uri, session -> {
-                    WebSocketMessage webSocketMessage = session.textMessage(sendMessage);
+            WebSocketMessage webSocketMessage = session.textMessage(sendMessage);
 
                     // when
-                    return session.send(Mono.just(webSocketMessage))
+            return session.send(Mono.just(webSocketMessage))
                             .thenMany(session.receive().take(1))
                             .doOnNext(message -> {
                                 String payload = message.getPayloadAsText();
@@ -51,7 +51,7 @@ public class SimpleMessageWebSocketAcceptanceTest extends MessageSpringBootTest 
                                 // then
                                 assertEquals("broadcast", WebSocketFixture.getStringFromJsonObject(jsonObject, "command"));
                             }).then();
-                })
+        })
                 .block(Duration.ofSeconds(5));
     }
 

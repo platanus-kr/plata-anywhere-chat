@@ -16,29 +16,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 //@WebMvcTest(controllers = ChatRestControllerV1.class)
 //@MockBeans({
-//		@MockBean(JpaMetamodelMappingContext.class) // JpaAuditing
+//        @MockBean(JpaMetamodelMappingContext.class) // JpaAuditing
 //})
 @Deprecated(since = "새로 만들기")
 public class ChatRestControllerTest {
-	
-	@Autowired
-	private WebApplicationContext context;
-	
-	@Test
-	void 채팅로그_조회_테스트() throws Exception {
-		Member m = Member.builder()
-				.username("testUser")
-				.nickname("nickname")
-				.email("email@gmail.com")
-				.provider(LoginProvider.WEB)
-				.build();
-		MockHttpSession session = new MockHttpSession();
-		session.setAttribute("member", new SessionMemberDto(m, "TEST_SESSION_ID"));
-		MockMvc mvc = MockMvcBuilders.webAppContextSetup(context).build();
-		
-		mvc.perform(get("/api/v1/chat/log/simple/test")
-				.session(session))
-				.andExpect(status().isOk());
-		
-	}
+
+    @Autowired
+    private WebApplicationContext context;
+
+    @Test
+    void 채팅로그_조회_테스트() throws Exception {
+        Member m = Member.builder()
+                .username("testUser")
+                .nickname("nickname")
+                .email("email@gmail.com")
+                .provider(LoginProvider.WEB)
+                .build();
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("member", new SessionMemberDto(m, "TEST_SESSION_ID"));
+        MockMvc mvc = MockMvcBuilders.webAppContextSetup(context).build();
+
+        mvc.perform(get("/api/v1/chat/log/simple/test")
+                        .session(session))
+                .andExpect(status().isOk());
+
+    }
 }

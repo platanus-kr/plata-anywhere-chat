@@ -25,8 +25,8 @@ import org.springframework.web.context.WebApplicationContext;
 @Deprecated(since = "이것도 테스트 다시 작성하기")
 @WebMvcTest(controllers = AuthController.class)
 @MockBeans({
-        @MockBean(JpaMetamodelMappingContext.class), // JpaAuditing
-        @MockBean(CustomOAuth2UserService.class)
+    @MockBean(JpaMetamodelMappingContext.class), // JpaAuditing
+    @MockBean(CustomOAuth2UserService.class)
 })
 public class OAuth2LoginTest {
     @Autowired

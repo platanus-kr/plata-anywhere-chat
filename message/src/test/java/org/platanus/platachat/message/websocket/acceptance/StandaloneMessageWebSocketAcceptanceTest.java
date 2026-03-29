@@ -40,10 +40,10 @@ public class StandaloneMessageWebSocketAcceptanceTest extends MessageSpringBootT
         String sendMessage = WebSocketFixture.getStandaloneSubscribeRequest();
 
         webSocketClient.execute(uri, session -> {
-                    WebSocketMessage webSocketMessage = session.textMessage(sendMessage);
+            WebSocketMessage webSocketMessage = session.textMessage(sendMessage);
 
                     // when
-                    return session.send(Mono.just(webSocketMessage))
+            return session.send(Mono.just(webSocketMessage))
                             .thenMany(session.receive().take(1))
                             .doOnNext(message -> {
                                 String payload = message.getPayloadAsText();
@@ -52,7 +52,7 @@ public class StandaloneMessageWebSocketAcceptanceTest extends MessageSpringBootT
                                 // then
                                 assertEquals("broadcast", WebSocketFixture.getStringFromJsonObject(jsonObject, "command"));
                             }).then();
-                })
+        })
                 .block(Duration.ofSeconds(5));
     }
 
