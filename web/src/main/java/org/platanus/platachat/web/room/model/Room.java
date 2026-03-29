@@ -28,7 +28,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ROOMS", indexes = {
-        @Index(name = "idx_room_public", columnList = "roomPublic, roomStatus")
+    @Index(name = "idx_room_public", columnList = "roomPublic, roomStatus")
 })
 @Entity
 public class Room extends BaseTime {
@@ -74,4 +74,3 @@ public class Room extends BaseTime {
         participates.add(rm);
     }
 }
-

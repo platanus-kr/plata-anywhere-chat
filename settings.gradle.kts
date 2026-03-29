@@ -1,0 +1,3 @@
+rootProject.name = "plata-anywhere-chat"
+include("web")
+include("message")

@@ -18,13 +18,13 @@ import lombok.NoArgsConstructor;
 @Document(collection = "Messages")
 @TypeAlias("MessagePayload")
 public class MessagePayload {
-	@Id
-	private String id;
-	private String roomId;
-	private String userId;
-	private String nickname;
-	private String message;
-	private LocalDateTime timestamp;
-	private MessageType type;
-	
+    @Id
+    private String id;
+    private String roomId;
+    private String userId;
+    private String nickname;
+    private String message;
+    private LocalDateTime timestamp;
+    private MessageType type;
+
 }
