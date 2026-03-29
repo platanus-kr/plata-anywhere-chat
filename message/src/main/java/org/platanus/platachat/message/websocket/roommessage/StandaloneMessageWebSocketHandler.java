@@ -161,7 +161,7 @@ public class StandaloneMessageWebSocketHandler implements MessageWebSocketHandle
                         error -> {
                             log.error("MessageRepository: ", error);
                         }
-                );
+            );
 
         // 채팅방에 있는 모든 사용자에게 메시지를 전달.
         messageBroadcaster.broadcastMessageToSubscribers(metadataDto.getRoomId(), metadataDto.getNickname(), message);

@@ -36,8 +36,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "MEMBERS", indexes = {
-        @Index(name = "idx_username", columnList = "username", unique = true),
-        @Index(name = "idx_provider_id", columnList = "providerId", unique = true)})
+    @Index(name = "idx_username", columnList = "username", unique = true),
+    @Index(name = "idx_provider_id", columnList = "providerId", unique = true)})
 @Entity
 public class Member extends BaseTime implements Serializable {
 

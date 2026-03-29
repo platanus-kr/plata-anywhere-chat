@@ -162,7 +162,7 @@ public class KafkaMessageWebSocketHandler implements MessageWebSocketHandler {
                         error -> {
                             log.error("MessageRepository: ", error);
                         }
-                );
+            );
 
         // 메시지 브로커에 전송
         BrokerChatSendRequest brokerRequest = BrokerChatSendRequest.from(metadataDto, message);
