@@ -22,24 +22,24 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member join(MemberJoinRequest memberJoinRequest) {
-        memberJoinRequest.setEncodedPassword(passwordEncoder.encode(memberJoinRequest.getPassword()));
-        Member member = validateUser(memberJoinRequest);
+        String encodedPassword = passwordEncoder.encode(memberJoinRequest.password());
+        Member member = validateUser(memberJoinRequest, encodedPassword);
         memberRepository.save(member);
         return member;
     }
 
-    private Member validateUser(MemberJoinRequest dto) throws IllegalArgumentException {
-        Member joinRequest = dto.toMember();
+    private Member validateUser(MemberJoinRequest dto, String encodedPassword) throws IllegalArgumentException {
+        Member joinRequest = dto.toMember(encodedPassword);
         Optional<Member> findUserOpt = memberRepository.findByUsername(joinRequest.getUsername());
         if (findUserOpt.isPresent()) {
             Member findUser = findUserOpt.get();
-            if (dto.getEmail().equals(findUser.getEmail())) {
+            if (dto.email().equals(findUser.getEmail())) {
                 throw new IllegalArgumentException(MemberConstant.MEMBER_DUPLICATED_EMAIL_MESSAGE);
             }
-            if (dto.getUsername().equals(findUser.getUsername())) {
+            if (dto.username().equals(findUser.getUsername())) {
                 throw new IllegalArgumentException(MemberConstant.MEMBER_DUPLICATED_USERID_MESSAGE);
             }
-            if (dto.getNickname().equals(findUser.getNickname())) {
+            if (dto.nickname().equals(findUser.getNickname())) {
                 throw new IllegalArgumentException(MemberConstant.MEMBER_DUPLICATED_NICKNAME_MESSAGE);
             }
             if (findUser.getDeleted()) {

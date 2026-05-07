@@ -7,12 +7,8 @@ import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "Rooms")
@@ -27,4 +23,40 @@ public class Room {
     private String owner;
     private List<RoomMember> participates;
     private LocalDateTime created;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public Long getCapacity() {
+        return capacity;
+    }
+
+    public RoomStatus getRoomStatus() {
+        return roomStatus;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public List<RoomMember> getParticipates() {
+        return participates;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
 }

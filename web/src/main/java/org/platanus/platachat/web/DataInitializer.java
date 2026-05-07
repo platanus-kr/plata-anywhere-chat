@@ -47,57 +47,57 @@ public class DataInitializer {
         // 방 만들기
         Member m = memberService.findByEmail("test1@test.com");
 
-        RoomCreateRequest roomCreateRequest = RoomCreateRequest.builder()
-                .capacity(100L)
-                .description("테스트 채팅방")
-                .roomPublic(RoomPublic.AVAILABLE)
-                .roomName("테스트방")
-                .imageUrl("#")
-                .build();
+        RoomCreateRequest roomCreateRequest = new RoomCreateRequest(
+                "테스트방",
+                "테스트 채팅방",
+                "#",
+                100L,
+                RoomPublic.AVAILABLE
+        );
 
         Room createdRoom = roomService.createRoom(roomCreateRequest, m);
 
         for (int i = 1; i <= 5; i++) {
-            RoomCreateRequest requestDto = RoomCreateRequest.builder()
-                    .capacity(100L)
-                    .description("테스트 채팅방" + i + "번째")
-                    .roomPublic(RoomPublic.AVAILABLE)
-                    .roomName("채팅방 " + i + "번째")
-                    .imageUrl("#")
-                    .build();
+            RoomCreateRequest requestDto = new RoomCreateRequest(
+                    "채팅방 " + i + "번째",
+                    "테스트 채팅방" + i + "번째",
+                    "#",
+                    100L,
+                    RoomPublic.AVAILABLE
+            );
             roomService.createRoom(requestDto, m);
         }
 
         for (int i = 6; i <= 10; i++) {
-            RoomCreateRequest requestDto = RoomCreateRequest.builder()
-                    .capacity(100L)
-                    .description("테스트 채팅방" + i + "번째")
-                    .roomPublic(RoomPublic.INVISIBLE)
-                    .roomName("채팅방 " + i + "번째")
-                    .imageUrl("#")
-                    .build();
+            RoomCreateRequest requestDto = new RoomCreateRequest(
+                    "채팅방 " + i + "번째",
+                    "테스트 채팅방" + i + "번째",
+                    "#",
+                    100L,
+                    RoomPublic.INVISIBLE
+            );
             roomService.createRoom(requestDto, m);
         }
 
         for (int i = 11; i <= 15; i++) {
-            RoomCreateRequest requestDto = RoomCreateRequest.builder()
-                    .capacity(100L)
-                    .description("테스트 채팅방" + i + "번째")
-                    .roomPublic(RoomPublic.PRIVATE)
-                    .roomName("채팅방 " + i + "번째")
-                    .imageUrl("#")
-                    .build();
+            RoomCreateRequest requestDto = new RoomCreateRequest(
+                    "채팅방 " + i + "번째",
+                    "테스트 채팅방" + i + "번째",
+                    "#",
+                    100L,
+                    RoomPublic.PRIVATE
+            );
             roomService.createRoom(requestDto, m);
         }
 
         for (int i = 16; i <= 20; i++) {
-            RoomCreateRequest requestDto = RoomCreateRequest.builder()
-                    .capacity(100L)
-                    .description("테스트 채팅방" + i + "번째")
-                    .roomPublic(RoomPublic.OBSERVER)
-                    .roomName("채팅방 " + i + "번째")
-                    .imageUrl("#")
-                    .build();
+            RoomCreateRequest requestDto = new RoomCreateRequest(
+                    "채팅방 " + i + "번째",
+                    "테스트 채팅방" + i + "번째",
+                    "#",
+                    100L,
+                    RoomPublic.OBSERVER
+            );
             roomService.createRoom(requestDto, m);
         }
 
@@ -106,26 +106,27 @@ public class DataInitializer {
         // 메시지 추가
         messageService.deleteAll();
         for (int i = 0; i <= 20; i++) {
-            MessagePayload build = MessagePayload.builder()
-                    .message("테스트 " + i + "번째 메시지")
-                    .nickname("닉네임")
-                    .roomId(createdRoom.getId())
-                    .type(MessageType.TEXT)
-                    .timestamp(LocalDateTime.now())
-                    .userId("test1")
-                    .build();
+            MessagePayload build = new MessagePayload(
+                    null,
+                    createdRoom.getId(),
+                    "test1",
+                    "닉네임",
+                    "테스트 " + i + "번째 메시지",
+                    LocalDateTime.now(),
+                    MessageType.TEXT
+            );
             messageService.saveMessage(build);
         }
     }
 
     private List<MemberJoinRequest> getMemberJoinRequests() {
         List<MemberJoinRequest> lists = List.of(
-                MemberJoinRequest.builder().username("test1").password("test1").email("test1@test.com").nickname("테스트1").build(),
-                MemberJoinRequest.builder().username("test2").password("test2").email("test2@test.com").nickname("테스트2").build(),
-                MemberJoinRequest.builder().username("test3").password("test3").email("test3@test.com").nickname("테스트3").build(),
-                MemberJoinRequest.builder().username("test4").password("test4").email("test4@test.com").nickname("테스트4").build(),
-                MemberJoinRequest.builder().username("test5").password("test5").email("test5@test.com").nickname("테스트5").build(),
-                MemberJoinRequest.builder().username("test6").password("test6").email("test6@test.com").nickname("테스트6").build()
+                new MemberJoinRequest("test1", "test1", "테스트1", "test1@test.com"),
+                new MemberJoinRequest("test2", "test2", "테스트2", "test2@test.com"),
+                new MemberJoinRequest("test3", "test3", "테스트3", "test3@test.com"),
+                new MemberJoinRequest("test4", "test4", "테스트4", "test4@test.com"),
+                new MemberJoinRequest("test5", "test5", "테스트5", "test5@test.com"),
+                new MemberJoinRequest("test6", "test6", "테스트6", "test6@test.com")
         );
         return lists;
     }

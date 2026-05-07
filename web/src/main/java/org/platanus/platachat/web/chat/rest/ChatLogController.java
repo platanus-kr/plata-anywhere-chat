@@ -3,7 +3,7 @@ package org.platanus.platachat.web.chat.rest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.platanus.platachat.web.auth.argumentresolver.HasMember;
-import org.platanus.platachat.web.auth.dto.SessionMemberDto;
+import org.platanus.platachat.web.auth.dto.AuthServiceMemberDto;
 import org.platanus.platachat.web.constants.RoomConstant;
 import org.platanus.platachat.web.message.model.MessagePayload;
 import org.platanus.platachat.web.message.service.MessageService;
@@ -32,12 +32,12 @@ public class ChatLogController {
      * <h3>채팅방 목록 : 회원</h3>
      * GET /api/v1/chat/log
      *
-     * @param sessionMemberDto {@link SessionMemberDto}
+     * @param sessionMemberDto {@link AuthServiceMemberDto}
      * @param page             페이지
      * @return {@link Room} 목록
      */
     @GetMapping
-    public Page<RoomsRetrieveResponse> getChatLogList(@HasMember SessionMemberDto sessionMemberDto,
+    public Page<RoomsRetrieveResponse> getChatLogList(@HasMember AuthServiceMemberDto sessionMemberDto,
                                                       @RequestParam(value = "page", defaultValue = "1") int page) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
             throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);
@@ -45,7 +45,7 @@ public class ChatLogController {
         if (page > 0) {
             page -= 1;
         }
-        return roomService.getRoomDtosByMemberIdAsPaging(sessionMemberDto.getId(), page);
+        return roomService.getRoomDtosByMemberIdAsPaging(sessionMemberDto.id(), page);
     }
 
     /**
@@ -53,13 +53,13 @@ public class ChatLogController {
      * GET /api/v1/chat/log/{roomId}
      *
      * @param roomId           채팅방 식별자
-     * @param sessionMemberDto {@link SessionMemberDto}
+     * @param sessionMemberDto {@link AuthServiceMemberDto}
      * @param page             페이지
      * @return {@link MessagePayload} 목록
      */
     @GetMapping("/{roomId}")
     public Page<MessagePayload> getChatLog(@PathVariable(value = "roomId") String roomId,
-                                           @HasMember SessionMemberDto sessionMemberDto,
+                                           @HasMember AuthServiceMemberDto sessionMemberDto,
                                            @RequestParam(value = "page", defaultValue = "1") int page) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
             throw new IllegalArgumentException(RoomConstant.ROOM_MEMBER_VALIDATE_FAILED_MESSAGE);

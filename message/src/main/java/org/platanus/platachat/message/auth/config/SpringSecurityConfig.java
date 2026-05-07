@@ -14,18 +14,16 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebFluxSecurity
-@Deprecated
 public class SpringSecurityConfig {
 
     @Bean
     public SecurityWebFilterChain configure(ServerHttpSecurity http) {
-        http.authorizeExchange()
-                .pathMatchers("/**").permitAll()
-                .anyExchange().authenticated()
-                .and()
-                .csrf().disable()
-                .httpBasic().disable()
-                .formLogin().disable();
+        http.authorizeExchange(exchange -> exchange
+                        .pathMatchers("/**").permitAll()
+                        .anyExchange().authenticated())
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+                .formLogin(ServerHttpSecurity.FormLoginSpec::disable);
 
         return http.build();
     }

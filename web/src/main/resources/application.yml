@@ -18,12 +18,12 @@ plataanywherechat:
     ws:
       address: ws://localhost:3121
 
+auth-service:
+  jwt:
+    secret: ${AUTH_SERVICE_JWT_SECRET:this-is-a-local-auth-service-secret-32-bytes}
+
 server:
   port: 3120
-  servlet:
-    session:
-      cookie:
-        name: PAC_SESSIONID
 
 spring:
   h2:
@@ -49,26 +49,14 @@ spring:
         show_sql: true
         format_sql: true
         use_sql_comments: true
-  security:
-    oauth2:
-      client:
-        registration:
-          github:
-            client-id: FAKE
-            client-secret: FAKE
   data:
-    redis:
-    host: 127.0.0.1
-    port: 6379
-    repositories:
-        enabled: false
     mongodb:
       host: localhost
       port: 27017
       database: pac
       username: localtest
       password: localtest
-  session:
-    store-type: redis
+    repositories:
+      enabled: false
   main:
     allow-bean-definition-overriding: true

@@ -1,58 +1,20 @@
-### member join test
-POST {{pac-web}}/api/v1/auth/join
-Content-Type: application/json
-
-{
-  "username": "test312",
-  "password": "test1",
-  "nickname": "이름312",
-  "email": "d312@d.com"
-}
-
-### login test
-POST {{pac-web}}/api/v1/auth/login
-Content-Type: application/json
-
-{
-  "username": "test312",
-  "password": "test1"
-}
+### auth-service principal
+GET {{pac-web}}/api/v1/auth-service/me
+Authorization: Bearer {{access_token}}
 
 > {%
-    client.test("getTokenFromResponse", function () {
+    client.test("auth-service principal", function () {
         client.assert(response.status === 200, "Response status is not 200");
         client.assert(response.contentType.mimeType === "application/json", "Expected 'application/json'");
-        client.assert(response.body.token.trim().length > 0);
+        client.assert(response.body.id.trim().length > 0);
     });
 
-    // https://youtrack.jetbrains.com/issue/IDEA-239263/Response-handler-add-API-to-get-set-cookies
-    client.log(response.body.token);
-    client.global.set("access_token", response.body.token);
     client.global.set("room_owner", response.body.id);
-
 %}
-
-
-### validate web authorization
-GET {{pac-web}}/api/v1/auth/endpoint/check
-
-### logout suthorize
-GET {{pac-web}}/logout
-
-### validate session
-POST {{pac-web}}/api/v1/auth/validate
-Content-Type: application/json
-
-{
-  "sessionId" : "{{access_token}}",
-  "roomId" : "test"
-}
-
-
-
 
 ### chat public room list
 GET {{pac-web}}/api/v1/room/list?page=1
+Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
 > {%
@@ -62,6 +24,7 @@ Content-Type: application/json
 
 ### room create
 POST {{pac-web}}/api/v1/room
+Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
 {
@@ -72,23 +35,18 @@ Content-Type: application/json
   "roomPublic": "AVAILABLE"
 }
 
-### chat public room list
-GET {{pac-web}}/api/v1/room/list
+### chat own room list
+GET {{pac-web}}/api/v1/room/own/list?page=1
+Authorization: Bearer {{access_token}}
 Content-Type: application/json
-
-### chat own room list (paging)
-GET {{pac-web}}/api/v1/room/own/list?page=2
-Content-Type: application/json
-
-{
-  "sessionId" : "{{access_token}}"
-}
 
 ### retrieve chat room info
 GET {{pac-web}}/api/v1/room/{{public_room}}
+Authorization: Bearer {{access_token}}
 
 ### change chat room info
 PUT {{pac-web}}/api/v1/room/{{public_room}}
+Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
 {
@@ -99,26 +57,17 @@ Content-Type: application/json
   "description": "변경된 채팅방 설명",
   "imageUrl": "#",
   "capacity": 312,
-  "ownerMemberId" : "{{room_owner}}"
+  "ownerMemberId": "{{room_owner}}"
 }
-
-### exit chat room
-POST {{pac-web}}/api/v1/room/{{public_room}}/exit
 
 ### join chat room
 POST {{pac-web}}/api/v1/room/{{public_room}}/join
+Authorization: Bearer {{access_token}}
 
-
+### exit chat room
+POST {{pac-web}}/api/v1/room/{{public_room}}/exit
+Authorization: Bearer {{access_token}}
 
 ### chat logs
-GET {{pac-web}}/api/v1/chat/log/simple/7394e567-daab-4d48-81f8-ecc0c482e94e?page=2
-
-
-
-
-### #Cookie: PAC_SESSIONID=NWRiYjY2ZDQtMTk3NC00MjBkLWIxZDItZTU1NTdmMzEyMWQ3;
-
-
-
-
-
+GET {{pac-web}}/api/v1/chat/log/simple/{{public_room}}?page=1
+Authorization: Bearer {{access_token}}

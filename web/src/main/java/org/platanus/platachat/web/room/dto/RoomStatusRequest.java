@@ -1,31 +1,23 @@
 package org.platanus.platachat.web.room.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
 import org.platanus.platachat.web.room.model.RoomPublic;
 import org.platanus.platachat.web.room.model.RoomStatus;
 
-@Getter
-@Builder
-@ToString
-public class RoomStatusRequest {
+public record RoomStatusRequest(
 
-    private String name;
+    String name,
 
-    @JsonProperty("status")
-    private RoomStatus roomStatus;
+    @JsonProperty("status") RoomStatus roomStatus,
 
-    @JsonProperty("public")
-    private RoomPublic roomPublic;
+    @JsonProperty("public") RoomPublic roomPublic,
 
-    private String description;
+    String description,
 
-    private String imageUrl;
+    String imageUrl,
 
-    private Long capacity;
+    Long capacity,
 
-    private String ownerMemberId;
-
+    String ownerMemberId
+) {
 }

@@ -5,3 +5,7 @@ logging:
         web:
           filter: DEBUG
         security: DEBUG
+
+auth-service:
+  jwt:
+    secret: this-is-a-local-auth-service-secret-32-bytes

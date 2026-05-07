@@ -16,10 +16,6 @@ public class ExceptionRoomController {
     @ResponseBody
     public RoomErrorResponse roomException(Exception e) {
         log.error("RestExceptionHandler", e);
-        return RoomErrorResponse.builder()
-            .errorId(999L)
-            .errorCode("ERROR")
-            .errorMessage(e.getMessage())
-            .build();
+        return new RoomErrorResponse(999L, "ERROR", e.getMessage());
     }
 }

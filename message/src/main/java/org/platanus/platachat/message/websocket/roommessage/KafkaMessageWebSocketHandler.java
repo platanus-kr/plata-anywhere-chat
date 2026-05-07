@@ -82,24 +82,30 @@ public class KafkaMessageWebSocketHandler implements MessageWebSocketHandler {
                                      AtomicReference<WebSocketMessageMetadata> atomicMetadata) {
         try {
             WebSocketRequest webSocketRequest = objectMapper.readValue(payload, WebSocketRequest.class);
-            CommandType command = webSocketRequest.getCommand();
-            Identifier identifier = webSocketRequest.getIdentifier();
-            WebSocketMessageMetadata metadataDto = WebSocketMessageMetadata.builder()
-                    .roomId(identifier.getChannel())
-                    .memberId(identifier.getMemberId())
-                    .nickname(identifier.getNickname())
-                    .sessionId(identifier.getToken())
-                    .build();
-            atomicMetadata.set(metadataDto);
+            CommandType command = webSocketRequest.command();
+            Identifier identifier = webSocketRequest.identifier();
+            WebSocketMessageMetadata metadataDto = new WebSocketMessageMetadata(
+                    identifier.channel(),
+                    identifier.memberId(),
+                    identifier.nickname(),
+                    identifier.token()
+            );
 
             if (command.equals(CommandType.SUBSCRIBE)) {
-                validSessionHealth(metadataDto);
-                return processSubscribeCommand(metadataDto, session);
+                return validSessionHealth(metadataDto)
+                        .flatMap(verifiedMetadata -> {
+                            atomicMetadata.set(verifiedMetadata);
+                            return processSubscribeCommand(verifiedMetadata, session);
+                        });
             } else if (command.equals(CommandType.MESSAGE)) {
-                if (webSocketRequest.getMessage().length() < 1) {
+                if (webSocketRequest.message().length() < 1) {
                     return Mono.empty();
                 }
-                return processMessageCommand(metadataDto, webSocketRequest.getMessage());
+                WebSocketMessageMetadata verifiedMetadata = atomicMetadata.get();
+                if (verifiedMetadata == null) {
+                    return Mono.error(new IllegalArgumentException("WebSocket subscription is not authenticated"));
+                }
+                return processMessageCommand(verifiedMetadata, webSocketRequest.message());
             }
         } catch (IOException e) {
             log.error("Error parsing WebSocket message", e);
@@ -110,17 +116,18 @@ public class KafkaMessageWebSocketHandler implements MessageWebSocketHandler {
         return Mono.error(new IllegalArgumentException("Invalid WebSocket message"));
     }
 
-    private void validSessionHealth(WebSocketMessageMetadata metadataDto) {
-        authService.getSessionHealth(metadataDto.getSessionId(), metadataDto.getRoomId())
-                // 채팅방 구현하면서 다시 손볼것.
-                .onErrorResume(error -> {
-                    throw new IllegalArgumentException(error.getMessage());
-                })
-                .subscribeOn(Schedulers.boundedElastic())
-                .subscribe(response -> {
-                    if (!response.getIsAdmission() || !response.getIsLogin()) {
-                        throw new IllegalArgumentException(response.getMessage());
+    private Mono<WebSocketMessageMetadata> validSessionHealth(WebSocketMessageMetadata metadataDto) {
+        return authService.getSessionHealth(metadataDto.accessToken(), metadataDto.roomId())
+                .map(response -> {
+                    if (!response.isAdmission() || !response.authenticated()) {
+                        throw new IllegalArgumentException(response.message());
                     }
+                    return new WebSocketMessageMetadata(
+                            metadataDto.roomId(),
+                            response.message(),
+                            response.nickname(),
+                            metadataDto.accessToken()
+                    );
                 });
     }
 
@@ -132,8 +139,8 @@ public class KafkaMessageWebSocketHandler implements MessageWebSocketHandler {
      * @return 구독 추가 후 Mono.empty()
      */
     private Mono<Void> processSubscribeCommand(WebSocketMessageMetadata metadataDto, WebSocketSession session) {
-        subscriptionManager.addSubscription(metadataDto.getRoomId(), session);
-        log.info(metadataDto.getRoomId() + " 채널에 " + metadataDto.getNickname() + " 님이 입장하셨습니다.");
+        subscriptionManager.addSubscription(metadataDto.roomId(), session);
+        log.info(metadataDto.roomId() + " 채널에 " + metadataDto.nickname() + " 님이 입장하셨습니다.");
         kafkaChatPublishAdaptor.sendMessage(BrokerChatSendRequest.forSubscribeFrom(metadataDto));
         return Mono.empty();
     }
@@ -149,13 +156,15 @@ public class KafkaMessageWebSocketHandler implements MessageWebSocketHandler {
         String message = XSSFilter.filterXSS(messageText);
 
         // 수신된 메시지를 저장.
-        MessagePayload payload = MessagePayload.builder()
-                .roomId(metadataDto.getRoomId())
-                .userId(metadataDto.getMemberId())
-                .nickname(metadataDto.getNickname())
-                .message(message)
-                .timestamp(LocalDateTime.now())
-                .build();
+        MessagePayload payload = new MessagePayload(
+                null,
+                metadataDto.roomId(),
+                metadataDto.memberId(),
+                metadataDto.nickname(),
+                message,
+                LocalDateTime.now(),
+                null
+        );
         messagesRepository.save(payload)
                 .subscribeOn(Schedulers.boundedElastic()) // 별도의 스레드 풀에서 수행
                 .subscribe(null,
@@ -190,7 +199,7 @@ public class KafkaMessageWebSocketHandler implements MessageWebSocketHandler {
             WebSocketMessageMetadata channelSub = atomicMetadata.get();
             if (channelSub == null) return;
             kafkaChatPublishAdaptor.sendMessage(BrokerChatSendRequest.forLeaveFrom(channelSub));
-            subscriptionManager.removeSubscription(channelSub.getRoomId(), session);
+            subscriptionManager.removeSubscription(channelSub.roomId(), session);
         }
     }
 

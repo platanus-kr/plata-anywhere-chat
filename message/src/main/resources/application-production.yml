@@ -1,8 +1,4 @@
 plataanywherechat:
-  web:
-    application:
-      host: ${PAC_WEB_HOST}
-      port: ${PAC_WEB_PORT}
   broker:
     chat:
       message:
@@ -10,12 +6,12 @@ plataanywherechat:
       push:
         topic: ${PAC_KAFKA_PUSH_TOPIC}
 
+auth-service:
+  jwt:
+    secret: ${AUTH_SERVICE_JWT_SECRET}
+
 server:
   port: ${PAC_MESSAGE_PORT}
-  servlet:
-    session:
-      cookie:
-        name: PAC_SESSIONID
 
 spring:
   main:

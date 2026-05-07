@@ -22,7 +22,7 @@ public class KafkaChatPublishAdaptor {
     private final KafkaTemplate<String, BrokerChatMessage> chatMessageKafkaTemplate;
 
     public void sendMessage(BrokerChatSendRequest request) {
-        final String channel = request.getRoomId();
+        final String channel = request.roomId();
         BrokerChatMessage message = BrokerChatMessage.from(request);
         chatMessageKafkaTemplate.send(chatMessageTopic, channel, message);
     }

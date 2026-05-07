@@ -1,8 +1,5 @@
 package org.platanus.platachat.web.room.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
 import org.platanus.platachat.web.room.model.Room;
 import org.platanus.platachat.web.room.model.RoomMember;
 import org.platanus.platachat.web.room.model.RoomPublic;
@@ -14,31 +11,29 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Builder
-@ToString
-public class RoomRetrieveResponse {
-    private String roomId;
+public record RoomRetrieveResponse(
+        String roomId,
 
-    private String name;
+        String name,
 
-    private String description;
+        String description,
 
-    private String imageUrl;
+        String imageUrl,
 
-    private Long capacity;
+        Long capacity,
 
-    private Integer roomMembersCount;
+        Integer roomMembersCount,
 
-    private RoomStatus roomStatus;
+        RoomStatus roomStatus,
 
-    private RoomPublic roomPublic;
+        RoomPublic roomPublic,
 
-    private List<RoomMemberResponse> participates;
+        List<RoomMemberResponse> participates,
 
-    private RoomMemberResponse owner;
+        RoomMemberResponse owner,
 
-    private LocalDateTime createdAt;
+        LocalDateTime createdAt
+) {
 
     public static List<RoomRetrieveResponse> from(List<Room> list) {
         List<RoomRetrieveResponse> dtos = new ArrayList<>();
@@ -57,19 +52,19 @@ public class RoomRetrieveResponse {
     }
 
     public static RoomRetrieveResponse from(Room rm) {
-        return RoomRetrieveResponse.builder()
-                .roomId(rm.getId())
-                .name(rm.getName())
-                .description(rm.getDescription())
-                .imageUrl(rm.getImageUrl())
-                .capacity(rm.getCapacity())
-//                .roomMembersCount(rm.getParticipates().size())
-                .roomStatus(rm.getRoomStatus())
-                .roomPublic(rm.getRoomPublic())
-//                .participates(null)
-//                .owner(RoomMemberResponseDto.from(rm.getOwner())) // select 발생 지점
-                .createdAt(rm.getCreated())
-                .build();
+        return new RoomRetrieveResponse(
+                rm.getId(),
+                rm.getName(),
+                rm.getDescription(),
+                rm.getImageUrl(),
+                rm.getCapacity(),
+                null,
+                rm.getRoomStatus(),
+                rm.getRoomPublic(),
+                null,
+                null,
+                rm.getCreated()
+        );
     }
 
     public static RoomRetrieveResponse withEntityGraphFrom(Room rm) {
@@ -77,18 +72,18 @@ public class RoomRetrieveResponse {
         for (RoomMember participate : rm.getParticipates()) {
             participates.add(RoomMemberResponse.from(participate));
         }
-        return RoomRetrieveResponse.builder()
-                .roomId(rm.getId())
-                .name(rm.getName())
-                .description(rm.getDescription())
-                .imageUrl(rm.getImageUrl())
-                .capacity(rm.getCapacity())
-                .roomMembersCount(rm.getParticipates().size())
-                .roomStatus(rm.getRoomStatus())
-                .roomPublic(rm.getRoomPublic())
-                .participates(participates)
-                .owner(RoomMemberResponse.from(rm.getOwner()))
-                .createdAt(rm.getCreated())
-                .build();
+        return new RoomRetrieveResponse(
+                rm.getId(),
+                rm.getName(),
+                rm.getDescription(),
+                rm.getImageUrl(),
+                rm.getCapacity(),
+                rm.getParticipates().size(),
+                rm.getRoomStatus(),
+                rm.getRoomPublic(),
+                participates,
+                RoomMemberResponse.from(rm.getOwner()),
+                rm.getCreated()
+        );
     }
 }

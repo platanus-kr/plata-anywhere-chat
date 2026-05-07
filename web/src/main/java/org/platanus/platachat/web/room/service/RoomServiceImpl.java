@@ -2,7 +2,7 @@ package org.platanus.platachat.web.room.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.platanus.platachat.web.auth.dto.SessionMemberDto;
+import org.platanus.platachat.web.auth.dto.AuthServiceMemberDto;
 import org.platanus.platachat.web.constants.RoomConstant;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.service.MemberService;
@@ -37,24 +37,30 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Room createRoom(RoomCreateRequest roomReqDto, Member m) {
         // 채팅방 생성
-        Room r = Room.builder()
-                .name(roomReqDto.getRoomName())
-                .description(roomReqDto.getDescription())
-                .imageUrl(roomReqDto.getImageUrl())
-                .capacity(roomReqDto.getCapacity())
-                .roomPublic(roomReqDto.getRoomPublic())
-                .roomStatus(RoomStatus.ALIVE)
-                .owner(m)
-                .build();
+        Room r = new Room(
+                null,
+                roomReqDto.roomName(),
+                roomReqDto.description(),
+                roomReqDto.imageUrl(),
+                roomReqDto.capacity(),
+                RoomStatus.ALIVE,
+                roomReqDto.roomPublic(),
+                null,
+                m
+        );
         Room toRoom = createRoom(r);
 
         // 채팅방 초기 맴버 생성 (채팅방 오너)
-        RoomMember rm = RoomMember.builder()
-                .member(m)
-                .role(RoomRole.SYSOP)
-                .status(RoomMemberStatus.ALIVE)
-                .room(toRoom)
-                .build();
+        RoomMember rm = new RoomMember(
+                null,
+                m,
+                null,
+                null,
+                RoomRole.SYSOP,
+                RoomMemberStatus.ALIVE,
+                null,
+                toRoom
+        );
         addRoomMember(rm);
         toRoom.addRoomMember(rm);
 
@@ -81,7 +87,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room getRoomById(String id, SessionMemberDto sessionMemberDto) {
+    public Room getRoomById(String id, AuthServiceMemberDto sessionMemberDto) {
         // owner, participates
         Room room = roomRepository.findWithRoomById(id)
                 .orElseThrow(() -> new IllegalArgumentException(RoomConstant.ROOM_NOT_FOUND_ROOM_MESSAGE));
@@ -91,7 +97,7 @@ public class RoomServiceImpl implements RoomService {
         // 비공개 방인 경우 방에 참여한 사용자만 가능
         if (room.getRoomPublic() == RoomPublic.INVISIBLE) {
             room.getParticipates().stream()
-                    .filter(rm -> StringUtils.equals(rm.getMember().getId(), sessionMemberDto.getId()))
+                    .filter(rm -> StringUtils.equals(rm.getMember().getId(), sessionMemberDto.id()))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException(RoomConstant.ROOM_NOT_FOUND_ROOM_MESSAGE));
 //            if (!StringUtils.equals(room.getOwner().getId(), sessionMemberDto.getId())) {
@@ -106,10 +112,10 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Room changeRoomInformation(String roomId,
                                       RoomStatusRequest requestDto,
-                                      SessionMemberDto sessionMemberDto) {
+                                      AuthServiceMemberDto sessionMemberDto) {
         validateDto(roomId, requestDto);
 
-        Member requestMember = memberService.findById(sessionMemberDto.getId());
+        Member requestMember = memberService.findById(sessionMemberDto.id());
         Member roomOwner = roomRepository.findWithOwnerById(roomId).getOwner();
 
         // 채팅방 소유자만 변경 가능
@@ -117,28 +123,29 @@ public class RoomServiceImpl implements RoomService {
             throw new IllegalArgumentException(RoomConstant.ROOM_NOT_OWNER_VALIDATE_FAILED_MESSAGE);
         }
 
-        Room build = Room.builder()
-                .id(roomId)
-                .name(requestDto.getName())
-                .roomStatus(requestDto.getRoomStatus())
-                .roomPublic(requestDto.getRoomPublic())
-                .description(requestDto.getDescription())
-                .imageUrl(requestDto.getImageUrl())
-                .capacity(requestDto.getCapacity())
-                .owner(requestMember)
-                .build();
+        Room build = new Room(
+                roomId,
+                requestDto.name(),
+                requestDto.description(),
+                requestDto.imageUrl(),
+                requestDto.capacity(),
+                requestDto.roomStatus(),
+                requestDto.roomPublic(),
+                null,
+                requestMember
+        );
         return roomRepository.save(build);
     }
 
     @Override
     public Room changeRoomOwner(String roomId,
                                 RoomStatusRequest requestDto,
-                                SessionMemberDto sessionMemberDto) {
+                                AuthServiceMemberDto sessionMemberDto) {
         validateDto(roomId, requestDto);
 
-        Member requestMember = memberService.findById(sessionMemberDto.getId());
+        Member requestMember = memberService.findById(sessionMemberDto.id());
         Member roomOwner = roomRepository.findWithOwnerById(roomId).getOwner();
-        String ownerMemberId = requestDto.getOwnerMemberId();
+        String ownerMemberId = requestDto.ownerMemberId();
 
         // 채팅방 소유자만 변경 가능
         if (!StringUtils.equals(requestMember.getId(), roomOwner.getId())) {
@@ -152,16 +159,17 @@ public class RoomServiceImpl implements RoomService {
 
         Member changedOwner = memberService.findById(ownerMemberId);
 
-        Room build = Room.builder()
-                .id(roomId)
-                .name(requestDto.getName())
-                .roomStatus(requestDto.getRoomStatus())
-                .roomPublic(requestDto.getRoomPublic())
-                .description(requestDto.getDescription())
-                .imageUrl(requestDto.getImageUrl())
-                .capacity(requestDto.getCapacity())
-                .owner(changedOwner)
-                .build();
+        Room build = new Room(
+                roomId,
+                requestDto.name(),
+                requestDto.description(),
+                requestDto.imageUrl(),
+                requestDto.capacity(),
+                requestDto.roomStatus(),
+                requestDto.roomPublic(),
+                null,
+                changedOwner
+        );
         return roomRepository.save(build);
     }
 
@@ -211,8 +219,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void exitRoom(String roomId, SessionMemberDto sessionMemberDto) {
-        RoomMember roomMember = roomMemberRepository.findByRoomIdAndMemberId(roomId, sessionMemberDto.getId())
+    public void exitRoom(String roomId, AuthServiceMemberDto sessionMemberDto) {
+        RoomMember roomMember = roomMemberRepository.findByRoomIdAndMemberId(roomId, sessionMemberDto.id())
                 .orElseThrow(() -> new IllegalArgumentException(RoomConstant.ROOM_NOT_FOUND_ROOM_MEMBER_MESSAGE));
         if (roomMember.getRole() == RoomRole.SYSOP) {
             throw new IllegalArgumentException(RoomConstant.ROOM_NOT_EXIT_OWNER_MESSAGE);
@@ -226,12 +234,12 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void joinRoom(String roomId, SessionMemberDto sessionMemberDto) {
-        Optional<RoomMember> opt = roomMemberRepository.findByRoomIdAndMemberId(roomId, sessionMemberDto.getId());
+    public void joinRoom(String roomId, AuthServiceMemberDto sessionMemberDto) {
+        Optional<RoomMember> opt = roomMemberRepository.findByRoomIdAndMemberId(roomId, sessionMemberDto.id());
         if (opt.isPresent()) {
             throw new IllegalArgumentException(RoomConstant.ROOM_ALREADY_JOIN_ROOM_MESSAGE);
         }
-        Member m = memberService.findById(sessionMemberDto.getId());
+        Member m = memberService.findById(sessionMemberDto.id());
 
         Room toRoom = roomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException(RoomConstant.ROOM_NOT_FOUND_ROOM_MESSAGE));
@@ -248,17 +256,21 @@ public class RoomServiceImpl implements RoomService {
             roomRole = RoomRole.OBSERVER;
         }
 
-        RoomMember rm = RoomMember.builder()
-                .member(m)
-                .role(roomRole)
-                .status(roomMemberStatus)
-                .room(toRoom)
-                .build();
+        RoomMember rm = new RoomMember(
+                null,
+                m,
+                null,
+                null,
+                roomRole,
+                roomMemberStatus,
+                null,
+                toRoom
+        );
         addRoomMember(rm);
     }
 
     @Override
-    public Room validateChatSessionAsPublic(String roomId, SessionMemberDto sessionMemberDto) {
+    public Room validateChatSessionAsPublic(String roomId, AuthServiceMemberDto sessionMemberDto) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException(RoomConstant.ROOM_NOT_FOUND_ROOM_MESSAGE));
         if (room.getRoomPublic().equals(RoomPublic.INVISIBLE)) {
@@ -284,10 +296,10 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void endChat(String roomId, SessionMemberDto sessionMemberDto) {
+    public void endChat(String roomId, AuthServiceMemberDto sessionMemberDto) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException(RoomConstant.ROOM_NOT_FOUND_ROOM_MESSAGE));
-        if (!room.getOwner().getId().equals(sessionMemberDto.getId())) {
+        if (!room.getOwner().getId().equals(sessionMemberDto.id())) {
             throw new IllegalArgumentException(RoomConstant.ROOM_END_CHAT_VALIDATE_OWNER_MESSAGE);
         }
         room.setRoomStatus(RoomStatus.ENDED);
@@ -301,19 +313,19 @@ public class RoomServiceImpl implements RoomService {
         if (StringUtils.isBlank(roomId)) {
             throw new IllegalArgumentException(RoomConstant.ROOM_VALIDATE_ROOM_ID_IS_BLANK_MESSAGE);
         }
-        if (StringUtils.isBlank(dto.getName())) {
+        if (StringUtils.isBlank(dto.name())) {
             throw new IllegalArgumentException(RoomConstant.ROOM_VALIDATE_ROOM_NAME_IS_BLANK_MESSAGE);
         }
-        if (StringUtils.isBlank(dto.getOwnerMemberId())) {
+        if (StringUtils.isBlank(dto.ownerMemberId())) {
             throw new IllegalArgumentException(RoomConstant.ROOM_VALIDATE_OWNER_IS_BLANK_MESSAGE);
         }
-        if (dto.getRoomStatus() == null) {
+        if (dto.roomStatus() == null) {
             throw new IllegalArgumentException(RoomConstant.ROOM_VALIDATE_STATUS_IS_BLANK_MESSAGE);
         }
-        if (dto.getRoomPublic() == null) {
+        if (dto.roomPublic() == null) {
             throw new IllegalArgumentException(RoomConstant.ROOM_VALIDATE_PUBLIC_IS_BLANK_MESSAGE);
         }
-        if (dto.getCapacity() == null || dto.getCapacity() < 1L) {
+        if (dto.capacity() == null || dto.capacity() < 1L) {
             throw new IllegalArgumentException(RoomConstant.ROOM_VALIDATE_CAPACITY_IS_BLANK_MESSAGE);
         }
 //        if (dto.getCapacity() > 100L) {

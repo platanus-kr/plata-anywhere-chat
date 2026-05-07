@@ -1,7 +1,7 @@
 package org.platanus.platachat.web.room.service;
 
 
-import org.platanus.platachat.web.auth.dto.SessionMemberDto;
+import org.platanus.platachat.web.auth.dto.AuthServiceMemberDto;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.room.dto.RoomCreateRequest;
 import org.platanus.platachat.web.room.dto.RoomsRetrieveResponse;
@@ -22,11 +22,11 @@ public interface RoomService {
 
     List<Room> getRoomsByMemberId(String memberId);
 
-    Room getRoomById(String id, SessionMemberDto sessionMemberDto);
+    Room getRoomById(String id, AuthServiceMemberDto sessionMemberDto);
 
-    Room changeRoomInformation(String roomId, RoomStatusRequest roomReqDto, SessionMemberDto sessionMemberDto);
+    Room changeRoomInformation(String roomId, RoomStatusRequest roomReqDto, AuthServiceMemberDto sessionMemberDto);
 
-    Room changeRoomOwner(String roomId, RoomStatusRequest requestDto, SessionMemberDto sessionMemberDto);
+    Room changeRoomOwner(String roomId, RoomStatusRequest requestDto, AuthServiceMemberDto sessionMemberDto);
 
     Page<Room> getRoomsByVisibleAsPaging(int page);
 
@@ -40,13 +40,13 @@ public interface RoomService {
 
     Page<RoomsRetrieveResponse> getRoomDtosByMemberIdAsPaging(String memberId, int page, int size);
 
-    void exitRoom(String roomId, SessionMemberDto sessionMemberDto);
+    void exitRoom(String roomId, AuthServiceMemberDto sessionMemberDto);
 
-    void joinRoom(String roomId, SessionMemberDto sessionMemberDto);
+    void joinRoom(String roomId, AuthServiceMemberDto sessionMemberDto);
 
     boolean validateRoomMemberInChat(String roomId, String memberId);
 
-    void endChat(String roomId, SessionMemberDto sessionMemberDto);
+    void endChat(String roomId, AuthServiceMemberDto sessionMemberDto);
 
-    Room validateChatSessionAsPublic(String roomId, SessionMemberDto sessionMemberDto);
+    Room validateChatSessionAsPublic(String roomId, AuthServiceMemberDto sessionMemberDto);
 }

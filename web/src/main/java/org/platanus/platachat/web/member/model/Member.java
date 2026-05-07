@@ -15,24 +15,19 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.experimental.SuperBuilder;
-import org.platanus.platachat.web.auth.dto.LoginProvider;
+import org.platanus.platachat.web.auth.dto.AuthProvider;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.springframework.util.StringUtils;
+
 /**
  * 어플리케이션 회원 Entity
  */
-@Getter
-@SuperBuilder
-@ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "MEMBERS", indexes = {
@@ -51,13 +46,12 @@ public class Member extends BaseTime implements Serializable {
     private String providerId;
 
     @Enumerated(value = EnumType.STRING)
-    private LoginProvider provider;
+    private AuthProvider provider;
 
     @NotBlank
     @Column(unique = true, nullable = false)
     private String username;
 
-    @Setter
     @NotBlank
     private String password;
 
@@ -85,7 +79,9 @@ public class Member extends BaseTime implements Serializable {
     @PrePersist
     public void generateId() {
         // https://developer111.tistory.com/83
-        this.id = UUID.randomUUID().toString();
+        if (!StringUtils.hasText(this.id)) {
+            this.id = UUID.randomUUID().toString();
+        }
     }
 
     public Member update(Member m) {
@@ -95,5 +91,57 @@ public class Member extends BaseTime implements Serializable {
         this.htmlUrl = m.getHtmlUrl();
         this.email = m.getEmail();
         return this;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public AuthProvider getProvider() {
+        return provider;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public String getHtmlUrl() {
+        return htmlUrl;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public AppRole getAppRole() {
+        return appRole;
+    }
+
+    public LocalDateTime getLastActivated() {
+        return lastActivated;
     }
 }

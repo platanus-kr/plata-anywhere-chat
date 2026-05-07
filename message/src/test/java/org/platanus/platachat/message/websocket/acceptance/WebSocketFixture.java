@@ -5,15 +5,17 @@ import org.json.JSONObject;
 
 public class WebSocketFixture {
     public static String getStandaloneSubscribeRequest() {
+        String token = AuthServiceTokenFixture.accessToken("TEST_ID", "TEST1");
         return "{\"command\" : \"SUBSCRIBE\"," +
-                "\"identifier\" : {\"channel\" : \"ROOM_ID\" , \"memberId\" : \"TEST_ID\", \"nickname\" : \"TEST1\", \"token\" : \"ABCD1234\"}" +
+                "\"identifier\" : {\"channel\" : \"ROOM_ID\" , \"memberId\" : \"TEST_ID\", \"nickname\" : \"TEST1\", \"token\" : \"" + token + "\"}" +
                 "}";
     }
 
     public static String getStandaloneMessageRequest() {
+        String token = AuthServiceTokenFixture.accessToken("TEST_ID", "TEST1");
         return "{\"command\" : \"MESSAGE\"," +
                 "\"message\" : \"안녕하세요\"," +
-                "\"identifier\" : {\"channel\" : \"ROOM_ID\" , \"memberId\" : \"TEST_ID\", \"nickname\" : \"TEST1\", \"token\" : \"ABCD1234\"}" +
+                "\"identifier\" : {\"channel\" : \"ROOM_ID\" , \"memberId\" : \"TEST_ID\", \"nickname\" : \"TEST1\", \"token\" : \"" + token + "\"}" +
                 "}";
     }
 

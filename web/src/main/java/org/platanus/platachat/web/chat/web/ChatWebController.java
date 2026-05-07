@@ -1,11 +1,9 @@
 package org.platanus.platachat.web.chat.web;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.platanus.platachat.web.auth.argumentresolver.HasMember;
-import org.platanus.platachat.web.auth.dto.LoginProvider;
-import org.platanus.platachat.web.auth.dto.SessionMemberDto;
+import org.platanus.platachat.web.auth.dto.AuthServiceMemberDto;
 import org.platanus.platachat.web.constants.RoomConstant;
 import org.platanus.platachat.web.member.model.Member;
 import org.platanus.platachat.web.member.service.MemberService;
@@ -15,7 +13,6 @@ import org.platanus.platachat.web.room.model.RoomMemberStatus;
 import org.platanus.platachat.web.room.model.RoomRole;
 import org.platanus.platachat.web.room.service.RoomService;
 import org.platanus.platachat.web.util.URLAddressFactory;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -33,7 +30,6 @@ public class ChatWebController {
     private final URLAddressFactory URLAddressFactory;
     private final RoomService roomService;
     private final MemberService memberService;
-    private final Environment env;
 
     /**
      * <h3>채팅방 목록 </h3>
@@ -46,18 +42,9 @@ public class ChatWebController {
      */
     @GetMapping("/lobby")
     public String chatFront(Model model,
-                            @HasMember SessionMemberDto member,
+                            @HasMember AuthServiceMemberDto member,
                             HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        String sessionId = null;
-        if (session != null) {
-            sessionId = session.getId();
-        }
-        if (!member.getProvider().equals(LoginProvider.WEB)) {
-            model.addAttribute("pacsessionid", sessionId);
-        } else {
-            model.addAttribute("pacsessionid", member.getToken());
-        }
+        model.addAttribute("pacsessionid", member.token());
         final String messageApplicationServer = getMessageApplicationServerLocation();
         model.addAttribute("member", member);
         model.addAttribute("messageServer", messageApplicationServer);
@@ -65,7 +52,7 @@ public class ChatWebController {
     }
 
     @GetMapping("/room/create")
-    public String createRoom(@HasMember SessionMemberDto sessionMemberDto,
+    public String createRoom(@HasMember AuthServiceMemberDto sessionMemberDto,
                              HttpServletRequest request) {
         return "chat/create";
     }
@@ -74,7 +61,7 @@ public class ChatWebController {
     @GetMapping("/room/modify/{roomId}")
     public String modifyRoom(Model model,
                              @PathVariable(required = true) String roomId,
-                             @HasMember SessionMemberDto sessionMemberDto,
+                             @HasMember AuthServiceMemberDto sessionMemberDto,
                              HttpServletRequest request) {
         return "chat/modify";
     }
@@ -94,14 +81,14 @@ public class ChatWebController {
      *
      * @param model            {@link Model}
      * @param roomId           채팅방 식별자
-     * @param sessionMemberDto {@link SessionMemberDto}
+     * @param sessionMemberDto {@link AuthServiceMemberDto}
      * @param request          {@link HttpServletRequest}
      * @return 채팅방 페이지
      */
     @GetMapping("/room/{roomId}")
     public String chatInRoom(Model model,
                              @PathVariable(required = true) String roomId,
-                             @HasMember SessionMemberDto sessionMemberDto,
+                             @HasMember AuthServiceMemberDto sessionMemberDto,
                              HttpServletRequest request) {
 
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
@@ -110,15 +97,7 @@ public class ChatWebController {
             return "chat/lobby";
         }
 
-        // 세션 분기
-        String sessionId = null;
-        if (sessionMemberDto.getProvider().equals(LoginProvider.WEB)) {
-            sessionId = sessionMemberDto.getToken();
-        }
-        if (!sessionMemberDto.getProvider().equals(LoginProvider.WEB)) {
-            HttpSession session = request.getSession(false);
-            sessionId = session.getId();
-        }
+        String accessToken = sessionMemberDto.token();
 
         // 방 상태 확인
         Room roomById;
@@ -133,7 +112,7 @@ public class ChatWebController {
         // 회원 확인
         Member memberBySession;
         try {
-            memberBySession = memberService.findById(sessionMemberDto.getId());
+            memberBySession = memberService.findById(sessionMemberDto.id());
         } catch (IllegalArgumentException e) {
             model.addAttribute("isChatSessionValid", false);
             model.addAttribute("sessionValidErrorMessage", e.getMessage());
@@ -141,19 +120,22 @@ public class ChatWebController {
         }
 
         // 회원을 방에 추가
-        RoomMember roomMember = RoomMember.builder()
-                .room(roomById)
-                .role(RoomRole.MEMBER)
-                .member(memberBySession)
-                .joinDateTime(LocalDateTime.now())
-                .status(RoomMemberStatus.ALIVE)
-                .build();
+        RoomMember roomMember = new RoomMember(
+                null,
+                memberBySession,
+                LocalDateTime.now(),
+                null,
+                RoomRole.MEMBER,
+                RoomMemberStatus.ALIVE,
+                null,
+                roomById
+        );
         roomService.addRoomMember(roomMember);
 
         final String messageApplicationServer = getMessageApplicationServerLocation();
 
-        model.addAttribute("pacSessionId", sessionId);
-        model.addAttribute("pacSessionMember", sessionMemberDto);
+        model.addAttribute("pacSessionId", accessToken);
+        model.addAttribute("pacAuthServiceMember", sessionMemberDto);
         model.addAttribute("pacMessageServer", messageApplicationServer);
         model.addAttribute("pacRoomId", roomById.getId());
         model.addAttribute("pacRoomName", roomById.getName());
@@ -166,11 +148,11 @@ public class ChatWebController {
      * <h3>채팅 로그 목록</h3>
      * GET /chat/log
      *
-     * @param sessionMemberDto {@link SessionMemberDto}
+     * @param sessionMemberDto {@link AuthServiceMemberDto}
      * @return 채팅 로그 목록 view
      */
     @GetMapping("/log")
-    public String chatLogList(@HasMember SessionMemberDto sessionMemberDto) {
+    public String chatLogList(@HasMember AuthServiceMemberDto sessionMemberDto) {
         if (ObjectUtils.isEmpty(sessionMemberDto)) {
             return "/"; //TODO: ExceptionHandler
         }
@@ -183,19 +165,19 @@ public class ChatWebController {
      *
      * @param model            {@link Model}
      * @param roomId           채팅방 식별자
-     * @param sessionMemberDto {@link SessionMemberDto}
+     * @param sessionMemberDto {@link AuthServiceMemberDto}
      * @param request          {@link HttpServletRequest}
      * @return 채팅 로그 상세 view
      */
     @GetMapping("/log/{roomId}")
     public String retrieveChatLog(Model model,
                                   @PathVariable String roomId,
-                                  @HasMember SessionMemberDto sessionMemberDto,
+                                  @HasMember AuthServiceMemberDto sessionMemberDto,
                                   HttpServletRequest request) {
 
         // roomMember 유효성 검증
         try {
-            roomService.validateRoomMemberInChat(roomId, sessionMemberDto.getId());
+            roomService.validateRoomMemberInChat(roomId, sessionMemberDto.id());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(e); // TODO: ExceptionHandler 구축
         }

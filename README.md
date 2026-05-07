@@ -1,480 +1,143 @@
-# Plata Anywhere Chat
+# plata-anywhere-chat
 
-[![Project use](https://skillicons.dev/icons?i=java,gradle,spring,mysql,mongodb,redis,kafka,docker&theme=dark)](#)
+Reactive WebSocket 기반 실시간 채팅 애플리케이션입니다.
 
-[//]: # "> Scalable and Reactive WebSocket Backend application   "
-[//]: # "> 확장 가능하고 리액티브한 웹소켓 백엔드 애플리케이션"
+Gradle 멀티모듈 구조로 `web`과 `message` 두 모듈을 제공합니다.
 
-> Reactive WebSocket Backend application  
-> 리액티브 웹소켓 백엔드 애플리케이션
+## 기술 스택
 
-## 프로젝트 목표
+- Java 21, Spring Boot 3.4.1, Gradle Kotlin DSL
+- `web`: Spring Web, Spring Data JPA, Spring Data MongoDB, Spring Security, Thymeleaf
+- `message`: Spring WebFlux, Reactive WebSocket, Spring Data MongoDB Reactive, Kafka 선택 구성
+- 인증: 외부 `auth-service` access token 프로토콜
 
-- [x] WebSocket과 HTTP의 차이에 대한 경험
-- [x] Reactive WebSocket 를 사용한 웹소켓 백엔드 서비스 구현
-- [x] Spring Security를 사용한 OAuth, REST API, formLogin 3가지 로그인의 구현
-- [x] Message Broker를 이용한 스케일러블 어플리케이션 구현
-- [ ] Backpressure, Rate Limit/Backoff 적용
-- [ ] Docker Container 이미지 배포
-- [x] (실패) ~~Redis를 사용한 세션 클러스터링 구축 및 어플리케이션 간 세션 공유~~
+## 모듈
 
-🤫 **그 외 엄청 중요하거나 목표한 바는 아니지만..**
-
-- RDB 모델링 및 JPA의 fetch 전략
-- Gradle 멀티모듈
-- Thymeleaf의 레이아웃 사용, JavaScript WebSocket 사용
-- nginx dynamic reverse proxy (L4)
-- ✨ **완전한 1인 프로젝트** ⇢ 감수X, 멘토링X, 부트캠프X
-
-## 프로젝트 소개
-
-### 서비스 주요 기능
-
-- 채팅 기능 구현 : 채팅방 내 메시지 송수신
-- 채팅방 기능 구현 : 채팅방 입장, 채팅방 생성
-- 채팅 메시지 조회 : 채팅 저장 후 조회 기능
-- 회원 가입 기능 : 어플리케이션 회원가입, OAtuh2 회원가입
-
-### 프로젝트 패키지 안내
-
-🌐 `web` : 회원, 채팅 저장, 채팅 기록 조회 등 영속성과 관련된 기능 담당
-
-> Spring Boot 3, Spring Web (6.0.11)   
-> Spring Data JPA, Spring Data MongoDB   
-> MariaDB, MongoDB   
-> Spring Security   
-> Spring Session Data Redis   
-> Thymeleaf + Javascript + WebSocket   
-
-💬 `message` : 채팅방 구독, 메시지 발행, 메시지 소비 등 채팅과 관련된 주요 기능 담당
-
-> Spring Boot 3, Spring WebFlux (6.0.11)  
-> Reactive WebSocket   
-> Spring Data MongoDB   
-
-**프로젝트 패키지 : web**
-
-<details>
-<summary>
-<code>web</code> 🔐 인증
-</summary>
-<pre>
-├── auth : 어플리케이션 인증
-│   ├── app : 어플리케이션 자체 인증 설정
-│   │   ├── CustomAuthenticationProvider.java
-│   │   ├── CustomAuthenticationSuccessHandler.java
-│   │   ├── CustomUserDetailsService.java
-│   │   ├── CustomUserDetailsUserAdaptor.java
-│   │   └── PasswordEncoderConfig.java
-│   ├── argumentresolver
-│   │   ├── HasMember.java
-│   │   └── LoginMemberArgumentResolver.java
-│   ├── config
-│   │   └── SpringSecurityConfig.java
-│   ├── dto : 세션에 인증 정보를 담기 위한 DTO
-│   │   ├── AuthValidRetrieveRequest.java
-│   │   ├── AuthValidRetrieveResponse.java
-│   │   ├── CustomOAuth2Member.java
-│   │   └── SessionMember.java
-│   ├── exception
-│   │   ├── CustomAuthException.java
-│   │   └── ExceptionAuthController.java
-│   ├── oauth2 : OAuth2 인증 설정
-│   │   └── CustomOAuth2UserService.java
-│   ├── rest
-│   │   └── AuthController.java
-│   ├── session
-│   │   └── SpringHttpSessionClusterConfig.java : 세션 스토리지 REDIS 설정
-│   └── web
-│       └── AuthWebController.java
-</pre>
-</details>
-
-<details>
-<summary>
-<code>web</code> 👤 회원
-</summary>
-<pre>
-└── member
-    ├── dto
-    │   ├── MemberJoinRequest.java
-    │   ├── MemberJoinResponse.java
-    │   ├── MemberLoginRequest.java
-    │   └── MemberLoginResponse.java
-    ├── model
-    │   ├── AppRole.java
-    │   ├── BaseTime.java
-    │   └── Member.java : 회원 엔티티
-    ├── repository
-    │   ├── MemberRepository.java
-    │   └── jpa
-    │       └── MemberJpaRepository.java
-    └── service
-        ├── MemberService.java
-        └── MemberServiceImpl.java
-</pre>
-</details>
-
-<details>
-<summary>
-<code>web</code> 🗣️ 채팅
-</summary>
-<pre>
-├── chat
-│   ├── dto
-│   │   └── ChatExceptionResponse.java
-│   ├── exception
-│   │   ├── CustomChatException.java
-│   │   ├── ExceptionChatRestControllerV1.java
-│   │   └── ExceptionChatWebController.java
-│   ├── rest
-│   │   └── ChatLogController.java : 채팅 로그 조회 REST API 컨트롤러
-│   └── web
-│       └── ChatWebController.java : 채팅, 채팅방, 채팅 로그 view 용도 컨트롤러
-├── message
-│   ├── model
-│   │   ├── MessagePayload.java : 채팅 메시지 엔티티
-│   │   └── MessageType.java
-│   ├── repository
-│   │   ├── MessageRepository.java
-│   │   └── mongodb
-│   │       └── MessageMongoRepository.java
-│   └── service
-│       ├── MessageService.java
-│       └── MessageServiceImpl.java
-└── room
-    ├── dto
-    │   ├── RoomCreateRequest.java
-    │   ├── RoomCreateResponse.java
-    │   ├── RoomMemberResponse.java
-    │   ├── RoomRetrieveResponse.java
-    │   ├── RoomStatusRequest.java
-    │   ├── RoomStatusResponse.java
-    │   └── RoomsRetrieveResponse.java
-    ├── exception
-    │   ├── ExceptionRoomController.java
-    │   ├── RoomError.java
-    │   └── RoomException.java
-    ├── model
-    │   ├── Room.java : 채팅방 엔티티
-    │   ├── RoomMember.java : 채팅방 사용자 엔티티 
-    │   ├── RoomMemberStatus.java
-    │   ├── RoomPublic.java
-    │   ├── RoomRole.java
-    │   └── RoomStatus.java
-    ├── repository
-    │   ├── RoomMemberRepository.java
-    │   ├── RoomRepository.java
-    │   └── jpa
-    │       ├── RoomJpaRepository.java
-    │       └── RoomMemberJpaRepository.java
-    ├── rest
-    │   └── RoomController.java : 채팅방 REST API 컨트롤러 
-    └── service
-        ├── RoomService.java
-        └── RoomServiceImpl.java
-</pre>
-</details>
-
-**프로젝트 패키지 : message**
-
-<details>
-<summary>
-<code>message</code> 🗣️ 채팅
-</summary>
-<pre>
-├── auth : 채팅방 입장을 위한 회원 기본 인증 통신
-│   ├── config
-│   │   └── SpringSecurityConfig.java
-│   ├── dto
-│   │   ├── AuthValidRetrieveRequest.java
-│   │   └── AuthValidRetrieveResponse.java
-│   └── service
-│       ├── AuthService.java
-│       └── AuthServiceImpl.java
-├── broker
-│   ├── config
-│   │   ├── KafkaConsumerConfig.java
-│   │   └── KafkaProducerConfig.java
-│   ├── dto
-│   │   ├── BrokerChatMessage.java : 카프카로 송수신하는 DTO
-│   │   └── BrokerChatSendRequest.java : 외부에서 카프카로 전송 요청하는 DTO
-│   └── kafka
-│       ├── KafkaChatConsumerAdaptor.java
-│       └── KafkaChatPublishAdaptor.java
-├── chat : 채팅을 위한 payload
-│   ├── ChatService.java
-│   ├── dto
-│   │   ├── BrokerRequest.java
-│   │   ├── ChannelSubscribe.java
-│   │   ├── Identifier.java
-│   │   ├── MessageRequest.java
-│   │   └── MessageResponse.java
-│   └── model
-│       ├── MessagePayload.java
-│       └── MessageType.java
-├── message
-│   ├── model
-│   │   ├── MessagePayload.java
-│   │   └── MessageType.java
-│   └── repository : 채팅 메시지 저장을 위한 MongoRepository 인터페이스 
-│       ├── MessageRepository.java
-│       └── mongo
-│           └── MessageCrudRepository.java
-├── contants
-│   ├── AuthConstant.java
-│   └── SimpleConfigConstant.java
-├── utils
-│   └── XSSFilter.java
-└── websocket
-    ├── MessageWebSocketHandler.java
-    ├── broadcaster
-    │   ├── MessageBroadcaster.java  : 메시지 브로드캐스터
-    │   └── MessageFlux.java : 채널과 세션을 관리하는 FluxSink
-    ├── config
-    │   └── CustomWebSocketConfig.java  : WebSocketHandler 구현
-    ├── dto
-    │   ├── CommandType.java
-    │   ├── Identifier.java
-    │   ├── WebSocketMessageMetadata.java
-    │   ├── WebSocketRequest.java
-    │   └── WebSocketResponse.java
-    ├── roommessage
-    │   ├── KafkaMessageWebSocketHandler.java : 카프카를 백엔드로 두는 웹소켓 핸들러 구현
-    │   └── StandaloneMessageWebSocketHandler.java : 단독으로 메시지를 송수신 처리하는 웹소켓 핸들러 구현
-    └── subscription
-        └── SubscriptionManager.java : 채팅방 입장 관리
-</pre>
-</details>
-
-## 채팅 파이프라인 및 생명주기 소개
-
-> standalone 모드 기준
-
-### 채팅방 입장 프로세스
-
-🚪 채팅방 입장 ⇢ `웹소켓 세션 관리`
-
-```
- +---------+
- | web 모듈 |
- +---------+
-      |
-      | (웹소켓 세션 생성)
-      v
-+----------------+
-|WebSocketSession|
-+----------------+
-      |
-      | (구독 요청: CommandType.SUBSCRIBE)
-      v
-+----------------------+                   +-----------------------------------------+
-|SubscriptionManager   | --------------->  | Map<String,     Set<WebSocketSession>>  |
-|----------------------| (채팅방과 세션 저장)   |     채팅방 식별자,  웹소켓 세션               |
-|addSubscription()     | <---------------  +-----------------------------------------+
-+----------------------+
-      |
-      | (세션 정보 저장)
-      v
-+------------+       +------------+       +-----------+
-|WebSocket   |------>|MessageFlux |------>|FluxSink   |
-|Session     |       |addSink()   |       |create()   |
-+------------+       +------------+       +-----------+
+```text
+plata-anywhere-chat/
+├── web/       # REST API, 채팅방/회원 로컬 프로젝션, 채팅 로그 조회
+├── message/   # WebSocket, 브로드캐스트, 메시지 저장, Kafka 선택 연동
+└── misc/      # 로컬 Docker Compose, DB 초기화, 운영 문서
 ```
 
-### 채팅 메시지 전송 프로세스
+## 인증 프로토콜
 
-🕊️ 채팅 메시지 전송 ⇢ `웹소켓 Flux 콜백`
+이 저장소는 자체 로그인, OAuth provider 연동, 서버 세션 인증을 제공하지 않습니다.
+클라이언트는 별도 인증 서비스에서 발급받은 access token을 이 서비스에 전달합니다.
 
-```
- +---------+
- | web 모듈 |
- +---------+
-      |
-      | (메시지 발송)
-      v
-+----------------+
-|WebSocketSession|
-+----------------+
-      |
-      | (메시지 발송 요청: CommandType.MESSAGE)
-      v
-+--------------------------------+                                         +-------------------------+
-|MessageBroadcaster              | ------------------------------------->  |SubscriptionManager      |
-|--------------------------------|     (채팅방 식별자로 같은 채팅방의 세션획득)      |-------------------------|
-|broadcastMessageToSubscribers() | <-------------------------------------  |getSubscriptions(channel)|
-+--------------------------------+                                         +-------------------------+
-      |
-      | (채팅방 내 세션에 대한 각 메시지 전송)
-      v
-+------------+       +-----------+                 +-----------+
-|WebSocket   |------>|MessageFlux|---------------->|FluxSink   |
-|Session     |       |getSink()  |   (Flux 콜백)    |next()     |
-+------------+       +-----------+                 +-----------+
-```
+지원 방식:
 
-### 세션 생명주기
+- HTTP API: `Authorization: Bearer <access_token>`
+- 서버 렌더링 화면 보조: `PAC_ACCESS_TOKEN` 쿠키 또는 `access_token` query parameter
+- WebSocket: 최초 `SUBSCRIBE` 메시지의 `identifier.token`에 access token 전달
 
-🐤 채팅방 세션 ⇢ `웹소켓 세션 생명주기`
+검증 규칙:
 
-```
-                      +---------+
-                      | web 모듈 |
-                      +---------+
-                           |
-                           v
-                   +----------------+
-                   |WebSocketSession|
-                   +----------------+
-                           |
-                           v
-                 +---------------------+
-                 |SubscriptionManager  |  (웹소켓 세션 생성 & 채팅방 입장)
-                 |addSubscription()    |
-                 +---------------------+
-                           |
-   +-----------------------|------------------------------+
-   |                       |                              |
-   |                       v                              |
-   |                +--------------+           +---------------------+
-   |                |MessageFlux   |           |SubscriptionManager  |
-   |                |broadcast()   |           |removeSession()      |
-   |                +--------------+           +---------------------+
-   |                       |                              |
-   |                       v                              |
-   |          +--------------------------------+          |
-   |          |MessageBroadcaster              |          |
-   |          |broadcastMessageToSubscribers() |          |
-   |          +--------------------------------+          |
-   |                                                      |
-   +------------------------------------------------------+
-                           |
-                           | (채팅방 퇴장 or 세션 종료)
-                           v
-                        +-------+
-                        |  End  |
-                        +-------+
-```
+- JWT `alg`는 `HS256`
+- `type` 클레임은 `access`
+- `enabled` 클레임은 `true`
+- 사용자 식별자는 `sub`
+- 역할은 `role` (`USER`, `ADMIN`)
 
-### 로컬 실행
-
-🧪 **실행 환경**
-
-- 어플리케이션 환경 사양 : Java 17, Docker를 사용합니다.
-- OAuth 로그인을 하기 위해서는 `web/src/main/resources/application.properties` 에 OAuth 정보 입력이 필요합니다
-
-```
-### Spring Security OAuth
-spring.security.oauth2.client.registration.github.client-id=
-spring.security.oauth2.client.registration.github.client-secret=
-```
-
-- 실행 이후 웹브라우저에서 `localhost:3120` 으로 접속합니다.
-
-🧍‍♂️ **`standalone` 단독 실행 프로파일 (메시지 브로커 비활성)**
+필수 환경변수:
 
 ```bash
-git clone https://github.com/platanus-kr/plata-anywhere-chat.git pac
-cd pac
+export AUTH_SERVICE_JWT_SECRET='this-is-a-local-auth-service-secret-32-bytes'
+```
 
-cd misc
-docker-compose -f docker-compose-standalone.yml up -d
-docker container ps
-cd ..
+## 로컬 인프라
 
+```bash
+docker compose -f misc/docker-compose-standalone.yml up -d
+```
+
+구성 서비스:
+
+| 서비스 | 포트 | 용도 |
+| --- | --- | --- |
+| MongoDB 6.0 | 27017 | 채팅 메시지 저장 |
+| Redis Alpine | 6379 | 로컬 보조 서비스 |
+| MariaDB 10.11 | 33306 -> 3306 | production 프로필용 |
+
+MongoDB 인증: `localtest` / `localtest` (DB: `pac`)
+
+## 빌드
+
+```bash
 ./gradlew web:bootJar
 ./gradlew message:bootJar
-
-java -jar web/build/libs/web-0.0.1-SNAPSHOT.jar &
-java -jar -Dspring.profiles.active=standalone message/build/libs/message-0.0.1-SNAPSHOT.jar &
 ```
 
-- 단독 실행시 docker compose에는 필수 실행을 위한 redis, mariadb, mongodb 가 포함됩니다.  
-  만약 docker 사용을 원하지 않으면 각각 별도 구축이 필요합니다.
-- 단독 모드에서는 kafka, zookeeper, kafka-ui가 제외됩니다.  
-  이 어플리케이션은 메시지 송수신을 위한 기능이 자체적으로 구현되어있는 어플리케이션으로 kafka 없이 단독으로 모든 기능이 사용가능합니다.
-
-👫 **`kafka` Kafka 를 사용하는 실행 프로파일 (메시지 브로커 활성)**
+## 실행
 
 ```bash
-git clone https://github.com/platanus-kr/plata-anywhere-chat.git pac
-cd pac
+export AUTH_SERVICE_JWT_SECRET='this-is-a-local-auth-service-secret-32-bytes'
 
-cd misc
-docker-compose -f docker-compose-kafka.yml up -d
-docker container ps
-cd ..
-
-./gradlew web:bootJar
-./gradlew message:bootJar
-
-java -jar web/build/libs/web-0.0.1-SNAPSHOT.jar &
-java -jar -Dspring.profiles.active=kafka message/build/libs/message-0.0.1-SNAPSHOT.jar &
+java -jar web/build/libs/web-1.0-SNAPSHOT.jar
+java -jar -Dspring.profiles.active=standalone message/build/libs/message-1.0-SNAPSHOT.jar
 ```
 
-- 메시지 브로커를 사용하는 프로파일의 경우 1개 노드로 구성된 카프카 클러스터와 이를 보조하는 kafka-ui, zookeeper가 포함됩니다.  
-  kraft 모드를 원하는 경우 직접 구축해야 합니다.
-- 또한 `message/src/main/resources/application-kafka.properties`의 `spring.kafka.consumer.bootstrap-servers` 항목에 모든 kafka 노드를 추가해야합니다.
+접속:
 
-### 실제 환경 실행
+- 웹 UI: http://localhost:3120
+- H2 콘솔: http://localhost:3120/h2-console
+- message WebSocket: ws://localhost:3121/message
 
-🎉 **`production` 실제 운영 환경 (메시지 브로커 활성)**
+로컬 개발 전용 토큰 쿠키 발급:
 
-환경변수 설정을 합니다. `docker-compose-kafka`를 사용하는 로컬 기준입니다.
+```text
+http://localhost:3120/dev/auth-service/login
+```
 
-> 환경변수 설정 예시 (Linux)   
+이 경로는 production 프로필에서는 활성화되지 않습니다. 기본 redirect는 `/chat/lobby`입니다.
+
+## 주요 API
+
+인증 확인:
 
 ```bash
-cat << "EOF" >> ~/.bash_profile
-export PAC_MESSAGE_HOST=localhost
-export PAC_MESSAGE_PORT=3121
-export PAC_MESSAGE_FQDN=message.fqdn.com
-export PAC_WEB_HOST=localhost
-export PAC_WEB_PORT=3120
-export PAC_WEB_FQDN=web.fqdn.com
-export PAC_MARIADB_DB=jdbc:mariadb://localhost:33306/pac
-export PAC_MARIADB_ID=paclocal
-export PAC_MARIADB_PASSWORD=paclocaldockercompose
-export PAC_KAFKA_MESSAGE_TOPIC=development.pac.chat.message
-export PAC_KAFKA_PUSH_TOPIC=development.pac.chat.push
-export PAC_KAFKA_KRAFT_NODE=localhost:29092
-export PAC_MONGODB_HOST=localhost
-export PAC_MONGODB_PORT=27017
-export PAC_MONGODB_DB=pac
-export PAC_MONGODB_USERNAME=localtest
-export PAC_MONGODB_PASSWORD=localtest
-export PAC_REDIS_HOST=localhost
-export PAC_REDIS_PORT=6379
-export PAC_GITHUB_CLIENT_ID=AAAA
-export PAC_GITHUB_SECRET=AAAA
-EOF
-source ~/.bash_profile
-
-# Kafka, MongoDB, Redis, MariaDB 구축은 생략합니다.
+curl -H "Authorization: Bearer $ACCESS_TOKEN" \
+  http://localhost:3120/api/v1/auth-service/me
 ```
 
-MariaDB 스키마로 테이블을 생성 합니다.
-
-> 테이블 생성은 1회만 합니다.
+채팅방 목록:
 
 ```bash
-mysql -u paclocal -p paclocaldockercompose pac < misc/db/mariadb-schema-pac.sql
+curl -H "Authorization: Bearer $ACCESS_TOKEN" \
+  'http://localhost:3120/api/v1/room/list?page=1'
 ```
 
-> 빌드 및 실행   
+WebSocket `SUBSCRIBE` 예시:
+
+```json
+{
+  "command": "SUBSCRIBE",
+  "identifier": {
+    "channel": "ROOM_ID",
+    "memberId": "CLIENT_VALUE_IGNORED",
+    "nickname": "CLIENT_VALUE_IGNORED",
+    "token": "<access_token>"
+  }
+}
+```
+
+구독 성공 후 서버는 token의 검증된 사용자 식별자와 표시명을 사용합니다.
+
+## 실행 프로필
+
+| 프로필 | web 모듈 | message 모듈 | 비고 |
+| --- | --- | --- | --- |
+| 기본 | H2 + MongoDB | MongoDB | Kafka 없이 로컬 개발 |
+| standalone | - | 환경변수 기반 | `docker-compose-standalone` 사용 |
+| kafka | - | Kafka 브로커 포함 | `docker-compose-kafka` 사용 |
+| production | MariaDB + 환경변수 | Kafka + 환경변수 | `PAC_*`, `AUTH_SERVICE_JWT_SECRET` 필요 |
+
+## 테스트
+
+전체 테스트 스위트 대신 변경 지점에 맞춘 테스트만 실행합니다.
 
 ```bash
-git clone https://github.com/platanus-kr/plata-anywhere-chat.git pac
-cd pac
-
-./gradlew web:bootJar
-./gradlew message:bootJar
-
-java -jar -Dspring.profiles.active=production web/build/libs/web-0.0.1-SNAPSHOT.jar &
-java -jar -Dspring.profiles.active=production message/build/libs/message-0.0.1-SNAPSHOT.jar &
+./gradlew web:test --tests "org.platanus.platachat.web.auth.service.AuthServiceJwtVerifierTest"
+./gradlew message:test --tests "org.platanus.platachat.message.auth.service.AuthServiceJwtVerifierTest"
+./gradlew message:test --tests "org.platanus.platachat.message.websocket.acceptance.StandaloneMessageWebSocketAcceptanceTest"
 ```
-
-🪄 **스케일아웃 하기**
-
-- [카프카를 사용하지 않는 배포](misc/docs/HOW_TO_DEPLOY_WITHOUT_KAFKA.md)
-- [문서 참조(작성중)](misc/docs/HOW_TO_SCALABLE.md)

@@ -7,12 +7,8 @@ import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "Messages")
@@ -27,4 +23,31 @@ public class MessagePayload {
     private LocalDateTime timestamp;
     private MessageType type;
 
+    public String getId() {
+        return id;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public MessageType getType() {
+        return type;
+    }
 }

@@ -10,12 +10,12 @@ plataanywherechat:
       push:
         topic: development.pac.chat.push
 
+auth-service:
+  jwt:
+    secret: ${AUTH_SERVICE_JWT_SECRET:this-is-a-local-auth-service-secret-32-bytes}
+
 server:
   port: 3121
-  servlet:
-    session:
-      cookie:
-        name: PAC_SESSIONID
 
 spring:
   main:

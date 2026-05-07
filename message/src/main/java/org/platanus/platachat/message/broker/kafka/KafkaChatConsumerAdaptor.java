@@ -22,6 +22,6 @@ public class KafkaChatConsumerAdaptor {
             containerFactory = "chatMessageListener")
     public void consume(BrokerChatMessage chatMessage) {
         log.info("Consume raw : " + chatMessage);
-        messageBroadcaster.broadcastMessageToSubscribers(chatMessage.getRoomId(), chatMessage.getNickname(), chatMessage.getMessage());
+        messageBroadcaster.broadcastMessageToSubscribers(chatMessage.roomId(), chatMessage.nickname(), chatMessage.message());
     }
 }

@@ -26,15 +26,11 @@ public class MemberTest {
     @Order(100)
     @Test
     void 웹회원_가입() {
-        final Member member = Member.builder()
-                .username("testUser")
-                .password("testPassword")
-                .nickname("testNickname")
-                .email("testUser@gmail.com")
-                .appRole(null)
-                .deleted(Boolean.FALSE)
-                .lastActivated(LocalDateTime.now())
-                .build();
+        final Member member = new Member(
+                null, null, null,
+                "testUser", "testPassword", "testNickname",
+                null, null, "testUser@gmail.com",
+                Boolean.FALSE, null, LocalDateTime.now());
 
         memberRepository.save(member);
 
@@ -46,25 +42,17 @@ public class MemberTest {
     @Order(200)
     @Test
     void 웹회원_가입_아이디중복_예외() { //TODO : 손보기
-        final Member member1 = Member.builder()
-                .username("testUser")
-                .password("testPassword")
-                .nickname("testNickname")
-                .email("testUser@gmail.com")
-                .appRole(null)
-                .deleted(Boolean.FALSE)
-                .lastActivated(LocalDateTime.now())
-                .build();
+        final Member member1 = new Member(
+                null, null, null,
+                "testUser", "testPassword", "testNickname",
+                null, null, "testUser@gmail.com",
+                Boolean.FALSE, null, LocalDateTime.now());
 
-        final Member member2 = Member.builder()
-                .username("testUser")
-                .password("testPassword")
-                .nickname("testNickname")
-                .email("testUser@gmail.com")
-                .appRole(null)
-                .deleted(Boolean.FALSE)
-                .lastActivated(LocalDateTime.now())
-                .build();
+        final Member member2 = new Member(
+                null, null, null,
+                "testUser", "testPassword", "testNickname",
+                null, null, "testUser@gmail.com",
+                Boolean.FALSE, null, LocalDateTime.now());
 
         memberRepository.save(member1);
         assertThatThrownBy(() -> memberRepository.save(member2)).isInstanceOf(DataIntegrityViolationException.class);
@@ -73,32 +61,22 @@ public class MemberTest {
     @Order(300)
     @Test
     void 웹회원_수정() {
-        final Member member = Member.builder()
-                .username("testUser")
-                .password("testPassword")
-                .nickname("testNickname")
-                .email("testUser@gmail.com")
-                .appRole(null)
-                .deleted(Boolean.FALSE)
-                .lastActivated(LocalDateTime.now())
-                .build();
+        final Member member = new Member(
+                null, null, null,
+                "testUser", "testPassword", "testNickname",
+                null, null, "testUser@gmail.com",
+                Boolean.FALSE, null, LocalDateTime.now());
 
         memberRepository.save(member);
 
         Member findByUsername = memberRepository.findByUsername("testUser").orElseGet(Assertions::fail);
         System.out.println(findByUsername);
-        Member modifyMember = Member.builder()
-                .id(findByUsername.getId())
-                .username(findByUsername.getUsername())
-                .password(findByUsername.getPassword())
-                .nickname("newNickname")
-                .appRole(findByUsername.getAppRole())
-                .deleted(findByUsername.getDeleted())
-                .lastActivated(findByUsername.getLastActivated())
-                .email(findByUsername.getEmail())
-                .created(findByUsername.getCreated())
-                .updated(LocalDateTime.now())
-                .build();
+        Member modifyMember = new Member(
+                findByUsername.getId(), null, null,
+                findByUsername.getUsername(), findByUsername.getPassword(), "newNickname",
+                null, null, findByUsername.getEmail(),
+                findByUsername.getDeleted(), findByUsername.getAppRole(),
+                findByUsername.getLastActivated());
 
         Member save = memberRepository.save(modifyMember);
 
@@ -109,15 +87,11 @@ public class MemberTest {
     @Order(400)
     @Test
     void 회원_아이디_검색() {
-        final Member member = Member.builder()
-                .username("testUser")
-                .password("testPassword")
-                .nickname("testNickname")
-                .email("testUser@gmail.com")
-                .appRole(null)
-                .deleted(Boolean.FALSE)
-                .lastActivated(LocalDateTime.now())
-                .build();
+        final Member member = new Member(
+                null, null, null,
+                "testUser", "testPassword", "testNickname",
+                null, null, "testUser@gmail.com",
+                Boolean.FALSE, null, LocalDateTime.now());
 
         memberRepository.save(member);
 

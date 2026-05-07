@@ -13,17 +13,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.platanus.platachat.web.member.model.Member;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Builder
-@ToString(exclude = {"member", "room"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ROOMS_MEMBER",
@@ -67,5 +61,37 @@ public class RoomMember {
 
     public void setRoomMemberStatus(RoomMemberStatus rms) {
         status = rms;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public LocalDateTime getJoinDateTime() {
+        return joinDateTime;
+    }
+
+    public LocalDateTime getExitDateTime() {
+        return exitDateTime;
+    }
+
+    public RoomRole getRole() {
+        return role;
+    }
+
+    public RoomMemberStatus getStatus() {
+        return status;
+    }
+
+    public LocalDateTime getVoidEndDateTime() {
+        return voidEndDateTime;
+    }
+
+    public Room getRoom() {
+        return room;
     }
 }

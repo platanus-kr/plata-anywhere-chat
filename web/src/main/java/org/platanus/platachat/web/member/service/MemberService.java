@@ -27,7 +27,7 @@ public interface MemberService {
     /**
      * 회원 찾기
      *
-     * @param providerId OAuth2 고유번호
+     * @param providerId 외부 인증 사용자 식별자
      * @return 검색완료 회원
      */
     Member findByProviderId(String providerId);

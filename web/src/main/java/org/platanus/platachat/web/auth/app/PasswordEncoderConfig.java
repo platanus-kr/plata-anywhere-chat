@@ -8,8 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class PasswordEncoderConfig {
 
     /**
-     * BCrypt 암호화를 사용하기 위한 PasswordEncoder
-     * 가입, 로그인, OAuth2에 사용됨.
+     * BCrypt 암호화를 사용하기 위한 PasswordEncoder.
      *
      * @return BCrypt 사용
      */

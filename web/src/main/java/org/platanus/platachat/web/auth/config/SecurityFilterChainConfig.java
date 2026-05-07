@@ -1,14 +1,14 @@
 package org.platanus.platachat.web.auth.config;
 
 import lombok.RequiredArgsConstructor;
-import org.platanus.platachat.web.auth.app.CustomAuthenticationSuccessHandler;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
@@ -20,19 +20,10 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 public class SecurityFilterChainConfig {
 
     private final SecurityCORSConfig corsConfig;
+    private final AuthServiceAuthenticationFilter authServiceAuthenticationFilter;
 
-    /**
-     * 커스텀 컨트롤러나 REST로 인증하려면 Bean 주입 필요.
-     */
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
-    public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler() {
-        return new CustomAuthenticationSuccessHandler();
-    }
+    private final AuthenticationEntryPoint unauthorizedEntryPoint =
+            (request, response, authException) -> response.sendError(401);
 
     /**
      * securityFilterChains 변경사항
@@ -47,19 +38,14 @@ public class SecurityFilterChainConfig {
      * </pre>
      */
     @Bean
-    public SecurityFilterChain securityFilterChains(HttpSecurity http,
-                                                    CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) throws Exception {
+    public SecurityFilterChain securityFilterChains(HttpSecurity http) throws Exception {
         http.cors(cors -> corsConfig.corsFilter()); // CORS 비활성화 필요
         http.csrf(csrf -> csrf.disable()); // TODO 정책 정해서 동적으로 할 수 있게 바꾸기
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(antMatcher("/oauth_login")).permitAll()
                         .requestMatchers(antMatcher("/error")).permitAll()
+                        .requestMatchers(antMatcher("/dev/auth-service/**")).permitAll()
                         .requestMatchers(antMatcher("/h2-console/**")).permitAll()
-                        .requestMatchers(antMatcher("/member/join/**")).permitAll()
-                        .requestMatchers(antMatcher("/member/login/**")).permitAll()
-                        .requestMatchers(antMatcher("/api/v1/auth/join")).permitAll()
-                        .requestMatchers(antMatcher("/api/v1/auth/login")).permitAll()
-                        .requestMatchers(antMatcher("/api/v1/auth/validate")).permitAll()
                         .requestMatchers(antMatcher("/chat/room/random")).permitAll()
                         .requestMatchers(antMatcher("/css/**")).permitAll()
                         .requestMatchers(antMatcher("/images/**")).permitAll()
@@ -67,15 +53,12 @@ public class SecurityFilterChainConfig {
                         .requestMatchers(antMatcher("/favicon.ico")).permitAll()
                         .anyRequest().authenticated()
                 )
-                .headers(headers -> headers.frameOptions(frameOptionsConfig -> frameOptionsConfig.sameOrigin()));
-        http.formLogin(formLogin -> formLogin.successHandler(customAuthenticationSuccessHandler))
-                .logout(logout -> logout.logoutUrl("/logout")
-                        .logoutSuccessUrl("/")
-                        .deleteCookies("SESSION"));
-        http.oauth2Login(oauth2Login -> oauth2Login.successHandler(customAuthenticationSuccessHandler))
-                .logout(logout -> logout.logoutUrl("/logout")
-                        .logoutSuccessUrl("/")
-                        .deleteCookies("SESSION"));
+                .headers(headers -> headers.frameOptions(frameOptionsConfig -> frameOptionsConfig.sameOrigin()))
+                .addFilterBefore(authServiceAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedEntryPoint))
+                .formLogin(formLogin -> formLogin.disable())
+                .httpBasic(httpBasic -> httpBasic.disable())
+                .logout(logout -> logout.disable());
         return http.build();
     }
 

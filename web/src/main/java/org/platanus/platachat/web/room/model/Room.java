@@ -13,8 +13,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.platanus.platachat.web.member.model.BaseTime;
 import org.platanus.platachat.web.member.model.Member;
@@ -23,8 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ROOMS", indexes = {
@@ -72,5 +68,41 @@ public class Room extends BaseTime {
             this.participates = new ArrayList<>();
         }
         participates.add(rm);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public Long getCapacity() {
+        return capacity;
+    }
+
+    public RoomStatus getRoomStatus() {
+        return roomStatus;
+    }
+
+    public RoomPublic getRoomPublic() {
+        return roomPublic;
+    }
+
+    public List<RoomMember> getParticipates() {
+        return participates;
+    }
+
+    public Member getOwner() {
+        return owner;
     }
 }

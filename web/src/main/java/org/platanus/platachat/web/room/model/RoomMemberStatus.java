@@ -1,10 +1,8 @@
 package org.platanus.platachat.web.room.model;
 
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Getter
 @RequiredArgsConstructor
 public enum RoomMemberStatus {
     ALIVE("ALIVE", "채팅중"),
@@ -13,4 +11,12 @@ public enum RoomMemberStatus {
     EXITED("EXITED", "퇴장");
     private final String key;
     private final String name;
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

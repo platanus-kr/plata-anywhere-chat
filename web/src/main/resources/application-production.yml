@@ -18,12 +18,12 @@ plataanywherechat:
     ws:
       address: ${PAC_MESSAGE_FQDN}
 
+auth-service:
+  jwt:
+    secret: ${AUTH_SERVICE_JWT_SECRET}
+
 server:
   port: ${PAC_WEB_PORT}
-  servlet:
-    session:
-      cookie:
-        name: PAC_SESSIONID
 
 spring:
   h2:
@@ -49,26 +49,14 @@ spring:
         use_sql_comments: false
     show-sql: false
     database-platform: org.hibernate.dialect.MariaDB103Dialect
-  security:
-    oauth2:
-      client:
-        registration:
-          github:
-            client-id: ${PAC_GITHUB_CLIENT_ID}
-            client-secret: ${PAC_GITHUB_SECRET}
   data:
-    redis:
-      host: ${PAC_REDIS_HOST}
-      port: ${PAC_REDIS_PORT}
-      repositories:
-        enabled: false
     mongodb:
       host: ${PAC_MONGODB_HOST}
       port: ${PAC_MONGODB_PORT}
       database: ${PAC_MONGODB_DB}
       username: ${PAC_MONGODB_USERNAME}
       password: ${PAC_MONGODB_PASSWORD}
-  session:
-    store-type: redis
+    repositories:
+      enabled: false
   main:
     allow-bean-definition-overriding: true

@@ -46,15 +46,12 @@ public class MessageBroadcaster {
                 String uniqueKey = messageFlux.getChannelUniqueKey(channel, session);
                 FluxSink<WebSocketMessage> sink = messageFlux.getSink(uniqueKey);
                 if (sink != null) {
-                    WebSocketResponse webSocketResponse = WebSocketResponse.builder()
-                            .command("broadcast")
-                            .message(message)
-                            .timestamp(formatHHMMSS(LocalDateTime.now()))
-                            .identifier(Identifier.builder()
-                                    .channel(channel)
-                                    .nickname(nickname)
-                                    .build())
-                            .build();
+                    WebSocketResponse webSocketResponse = new WebSocketResponse(
+                            "broadcast",
+                            message,
+                            formatHHMMSS(LocalDateTime.now()),
+                            new Identifier(channel, null, nickname, null)
+                    );
                     try {
                         String payload = objectMapper.writeValueAsString(webSocketResponse);
                         //brokerService.sendChatMessage(channel, message);

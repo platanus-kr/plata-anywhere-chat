@@ -1,7 +1,7 @@
 package org.platanus.platachat.web.config;
 
 import lombok.RequiredArgsConstructor;
-import org.platanus.platachat.web.auth.argumentresolver.LoginMemberArgumentResolver;
+import org.platanus.platachat.web.auth.argumentresolver.AuthServiceMemberArgumentResolver;
 import org.platanus.platachat.web.util.URLAddressFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -13,7 +13,7 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 public class CustomWebMvcConfig implements WebMvcConfigurer {
-    private final LoginMemberArgumentResolver loginMemberArgumentResolver;
+    private final AuthServiceMemberArgumentResolver authServiceMemberArgumentResolver;
     private final URLAddressFactory URLAddressFactory;
 
     @Override
@@ -28,7 +28,7 @@ public class CustomWebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(loginMemberArgumentResolver);
+        resolvers.add(authServiceMemberArgumentResolver);
     }
 
 }

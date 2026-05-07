@@ -1,12 +1,10 @@
 package org.platanus.platachat.web.room.model;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
  * 방의 공개상태 : 입장 가능, 옵저버, 비공개, 비노출, 입장 금지
  */
-@Getter
 @RequiredArgsConstructor
 public enum RoomPublic {
     // 제한없이 입장이 가능한 방
@@ -26,4 +24,12 @@ public enum RoomPublic {
 
     private final String key;
     private final String name;
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

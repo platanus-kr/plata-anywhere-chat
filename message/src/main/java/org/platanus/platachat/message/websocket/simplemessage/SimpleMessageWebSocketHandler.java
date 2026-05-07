@@ -66,18 +66,23 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
     private Mono<Void> handleMessage(String payload, WebSocketSession session, AtomicReference<WebSocketMessageMetadata> channelSub) {
         try {
             WebSocketRequest webSocketRequest = objectMapper.readValue(payload, WebSocketRequest.class);
-            CommandType command = webSocketRequest.getCommand();
-            Identifier identifier = webSocketRequest.getIdentifier();
-            WebSocketMessageMetadata stub = WebSocketMessageMetadata.builder().roomId(identifier.getChannel()).nickname(identifier.getNickname()).build();
+            CommandType command = webSocketRequest.command();
+            Identifier identifier = webSocketRequest.identifier();
+            WebSocketMessageMetadata stub = new WebSocketMessageMetadata(
+                    identifier.channel(),
+                    null,
+                    identifier.nickname(),
+                    null
+            );
             channelSub.set(stub);
 
             if (command.equals(CommandType.SUBSCRIBE)) {
                 return processSubscribeCommand(stub, session);
             } else if (command.equals(CommandType.MESSAGE)) {
-                if (webSocketRequest.getMessage().length() < 1) {
+                if (webSocketRequest.message().length() < 1) {
                     return Mono.empty();
                 }
-                return processMessageCommand(stub, webSocketRequest.getMessage());
+                return processMessageCommand(stub, webSocketRequest.message());
             }
         } catch (IOException e) {
             log.error("Error parsing WebSocket message", e);
@@ -93,9 +98,9 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
      * @return 구독 추가 후 Mono.empty()
      */
     private Mono<Void> processSubscribeCommand(WebSocketMessageMetadata subscribeDto, WebSocketSession session) {
-        subscriptionManager.addSubscription(subscribeDto.getRoomId(), session);
-        log.info(subscribeDto.getRoomId() + " 채널에 " + subscribeDto.getNickname() + " 님이 입장하셨습니다.");
-        messageBroadcaster.broadcastMessageToSubscribers(subscribeDto.getRoomId(), "SYSTEM", subscribeDto.getNickname() + "님이 채팅방에 입장 했습니다.");
+        subscriptionManager.addSubscription(subscribeDto.roomId(), session);
+        log.info(subscribeDto.roomId() + " 채널에 " + subscribeDto.nickname() + " 님이 입장하셨습니다.");
+        messageBroadcaster.broadcastMessageToSubscribers(subscribeDto.roomId(), "SYSTEM", subscribeDto.nickname() + "님이 채팅방에 입장 했습니다.");
         return Mono.empty();
     }
 
@@ -109,7 +114,7 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
     private Mono<Void> processMessageCommand(WebSocketMessageMetadata subscribeDto, String messageText) {
         String message = XSSFilter.filterXSS(messageText);
         // 채팅방에 있는 모든 사용자에게 메시지를 전달합니다.
-        messageBroadcaster.broadcastMessageToSubscribers(subscribeDto.getRoomId(), subscribeDto.getNickname(), message);
+        messageBroadcaster.broadcastMessageToSubscribers(subscribeDto.roomId(), subscribeDto.nickname(), message);
         return Mono.empty();
     }
 
@@ -129,8 +134,8 @@ public class SimpleMessageWebSocketHandler implements WebSocketHandler {
     private void handleDisconnection(SignalType signalType, AtomicReference<WebSocketMessageMetadata> channelSub, WebSocketSession session) {
         if (SignalType.ON_COMPLETE.equals(signalType) || SignalType.ON_ERROR.equals(signalType)) {
             WebSocketMessageMetadata stub = channelSub.get();
-            messageBroadcaster.broadcastMessageToSubscribers(stub.getRoomId(), "SYSTEM", stub.getNickname() + "가 퇴장합니다.");
-            subscriptionManager.removeSubscription(stub.getRoomId(), session);
+            messageBroadcaster.broadcastMessageToSubscribers(stub.roomId(), "SYSTEM", stub.nickname() + "가 퇴장합니다.");
+            subscriptionManager.removeSubscription(stub.roomId(), session);
         }
     }
 }

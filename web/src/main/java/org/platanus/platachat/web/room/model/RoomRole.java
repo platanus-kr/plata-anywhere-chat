@@ -1,10 +1,8 @@
 package org.platanus.platachat.web.room.model;
 
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Getter
 @RequiredArgsConstructor
 public enum RoomRole {
     SYSOP("SYSOP", "관리자"),
@@ -12,5 +10,12 @@ public enum RoomRole {
     OBSERVER("OBSERVER", "옵저버");
     private final String key;
     private final String name;
-}
 
+    public String getKey() {
+        return key;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
